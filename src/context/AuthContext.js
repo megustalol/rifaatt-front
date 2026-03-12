@@ -41,8 +41,14 @@ export const AuthProvider = ({ children }) => {
     const register = async (userData) => {
         try {
             const response = await api.post('/users/register', userData);
-            // After register, auto login or redirect to login
-            const { user: newUser } = response.data;
+            const { user: newUser, token } = response.data;
+            
+            if (newUser && token) {
+                setUser(newUser);
+                localStorage.setItem('@RifaBot:token', token);
+                localStorage.setItem('@RifaBot:user', JSON.stringify(newUser));
+                return true;
+            }
             return !!newUser;
         } catch (error) {
             console.error('Registration error:', error);
