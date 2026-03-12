@@ -53,11 +53,6 @@ const Header = ({ onMenuClick }) => {
                     />
                 </div>
 
-                <button className={styles.iconButton}>
-                    <div className={styles.notificationBadge}>3</div>
-                    <Bell size={20} />
-                </button>
-
                 <div className={styles.divider} />
 
                 <div className={styles.profileContainer}>

@@ -153,8 +153,14 @@
 }
 
 @media (max-width: 768px) {
+    .container {
+        padding: 0 var(--space-2);
+        overflow-x: hidden;
+    }
+
     .header {
         text-align: center;
+        margin-bottom: var(--space-4);
     }
 
     .statsOverview {
@@ -171,18 +177,34 @@
     .chartWrapper {
         width: 100%;
         max-width: 200px;
+        margin-bottom: var(--space-4);
     }
 
     .statValue {
         font-size: 1.25rem;
     }
 
-    .table th:nth-child(n+3),
-    .table td:nth-child(n+3) {
-        display: none;
+    /* Table Responsiveness */
+    .rankingCard {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-top: var(--space-4);
     }
 
-    .rankingCard {
-        overflow-x: auto;
+    .table {
+        min-width: 500px; /* Allow horizontal scroll instead of breaking layout */
+    }
+
+    /* Instead of hiding columns, let's allow horizontal scroll for better UX */
+    .table th:nth-child(n+3),
+    .table td:nth-child(n+3) {
+        display: table-cell; 
     }
 }
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 1.5rem;
+    }
+}
