@@ -126,37 +126,46 @@ export default function LandingPage() {
           />
         </div>
 
-        <button
-          className={styles.mobileMenuToggle}
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
-
-        <nav className={clsx(styles.desktopNav, isMenuOpen && styles.mobileNavVisible)}>
-          <a href="#features" onClick={() => setIsMenuOpen(false)}>Funcionalidades</a>
-          <a href="#how-it-works" onClick={() => setIsMenuOpen(false)}>Como funciona</a>
-          <a href="#pricing" onClick={() => setIsMenuOpen(false)}>Preços</a>
-
-          <div className={styles.mobileOnlyActions}>
-            <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-              <Button variant="white" fullWidth>Entrar</Button>
-            </Link>
-            <Link href="/login?tab=register" onClick={() => setIsMenuOpen(false)}>
-              <Button fullWidth>Começar Agora</Button>
-            </Link>
-          </div>
+        <nav className={styles.desktopNav}>
+          <a href="#features">Funcionalidades</a>
+          <a href="#how-it-works">Como funciona</a>
+          <a href="#pricing">Preços</a>
         </nav>
 
         <div className={styles.navActions}>
-          <ThemeToggle />
           <div className={styles.desktopOnlyActions}>
+            <ThemeToggle />
             <Link href="/login">
               <Button variant="white">Entrar</Button>
             </Link>
             <Link href="/login?tab=register">
               <Button>Começar Agora</Button>
             </Link>
+          </div>
+          <button
+            className={styles.mobileMenuToggle}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+        </div>
+
+        {/* Mobile Menu Overlay */}
+        <div className={clsx(styles.mobileNavOverlay, isMenuOpen && styles.mobileNavVisible)}>
+          <div className={styles.mobileNavLinks}>
+            <a href="#features" onClick={() => setIsMenuOpen(false)}>Funcionalidades</a>
+            <a href="#how-it-works" onClick={() => setIsMenuOpen(false)}>Como funciona</a>
+            <a href="#pricing" onClick={() => setIsMenuOpen(false)}>Preços</a>
+            
+            <div className={styles.mobileMenuFooter}>
+              <ThemeToggle />
+              <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="white" fullWidth>Entrar</Button>
+              </Link>
+              <Link href="/login?tab=register" onClick={() => setIsMenuOpen(false)}>
+                <Button fullWidth>Começar Agora</Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
