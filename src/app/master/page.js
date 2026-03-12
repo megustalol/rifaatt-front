@@ -6,9 +6,14 @@ import UsersTable from '@/components/master/UsersTable/UsersTable';
 import PaymentsTable from '@/components/master/PaymentsTable/PaymentsTable';
 import StatsCard from '@/components/dashboard/StatsCard/StatsCard';
 import Card from '@/components/ui/Card/Card';
-import { Users, DollarSign, TrendingUp, CreditCard } from 'lucide-react';
+import { Users, DollarSign, TrendingUp, CreditCard, Plus } from 'lucide-react';
 import styles from './page.module.css';
 import clsx from 'clsx';
+import PlansTable from '@/components/master/PlansTable/PlansTable';
+import CreatePlanModal from '@/components/master/CreatePlanModal/CreatePlanModal';
+import api from '@/services/api';
+import Button from '@/components/ui/Button/Button';
+import { useEffect } from 'react';
 
 const mockUsers = [
     { id: '1', name: 'Lucas Silva', email: 'lucas@rifa.com', phone: '11987654321', activeGroups: 5, totalSpent: 245.00, status: 'active' },
@@ -24,6 +29,62 @@ const mockPayments = [
 
 export default function MasterPage() {
     const [activeTab, setActiveTab] = useState('users');
+    const [plans, setPlans] = useState([]);
+    const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+    const [editingPlan, setEditingPlan] = useState(null);
+    const [loadingPlans, setLoadingPlans] = useState(false);
+
+    useEffect(() => {
+        if (activeTab === 'plans') {
+            fetchPlans();
+        }
+    }, [activeTab]);
+
+    const fetchPlans = async () => {
+        setLoadingPlans(true);
+        try {
+            const res = await api.get('/plans');
+            setPlans(res.data);
+        } catch (error) {
+            console.error('Error fetching plans:', error);
+        } finally {
+            setLoadingPlans(false);
+        }
+    };
+
+    const handleSavePlan = async (payload, id) => {
+        try {
+            if (id) {
+                await api.patch(`/plans/${id}`, payload);
+            } else {
+                await api.post('/plans', payload);
+            }
+            fetchPlans();
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    const handleDeletePlan = async (id) => {
+        if (confirm('Tem certeza que deseja excluir este plano?')) {
+            try {
+                await api.delete(`/plans/${id}`);
+                fetchPlans();
+            } catch (error) {
+                alert('Erro ao excluir plano: ' + (error.response?.data?.error || error.message));
+            }
+        }
+    };
+
+    const openCreateModal = () => {
+        setEditingPlan(null);
+        setIsPlanModalOpen(true);
+    };
+
+    const openEditModal = (plan) => {
+        setEditingPlan(plan);
+        setIsPlanModalOpen(true);
+    };
 
     return (
         <DashboardLayout>
@@ -33,6 +94,9 @@ export default function MasterPage() {
                         <h2 className={styles.title}>Painel Master</h2>
                         <p className={styles.subtitle}>Visão global do sistema, gestão de usuários e faturamento.</p>
                     </div>
+                    {activeTab === 'plans' && (
+                        <Button icon={Plus} onClick={openCreateModal}>Novo Plano</Button>
+                    )}
                 </div>
 
                 <div className={styles.statsGrid}>
@@ -56,17 +120,37 @@ export default function MasterPage() {
                         >
                             Pagamentos
                         </button>
+                        <button
+                            className={clsx(styles.tab, activeTab === 'plans' && styles.activeTab)}
+                            onClick={() => setActiveTab('plans')}
+                        >
+                            Planos
+                        </button>
                     </div>
 
                     <Card className={styles.tableCard}>
                         {activeTab === 'users' ? (
                             <UsersTable users={mockUsers} />
-                        ) : (
+                        ) : activeTab === 'payments' ? (
                             <PaymentsTable payments={mockPayments} />
+                        ) : (
+                            <PlansTable
+                                plans={plans}
+                                onEdit={openEditModal}
+                                onDelete={handleDeletePlan}
+                                loading={loadingPlans}
+                            />
                         )}
                     </Card>
                 </div>
             </div>
+
+            <CreatePlanModal
+                isOpen={isPlanModalOpen}
+                onClose={() => setIsPlanModalOpen(false)}
+                onCreate={handleSavePlan}
+                planToEdit={editingPlan}
+            />
         </DashboardLayout>
     );
 }

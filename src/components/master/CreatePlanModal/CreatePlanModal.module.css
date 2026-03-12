@@ -1,0 +1,176 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-2) 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.field label {
+    font-size: var(--font-body-xs);
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.field input, .field textarea {
+    padding: var(--space-3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-size: var(--font-body-sm);
+    transition: border-color var(--transition-base);
+}
+
+.field input:focus, .field textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.inputWithIcon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inputWithIcon span, .inputWithIcon svg {
+    position: absolute;
+    left: var(--space-3);
+    color: var(--text-muted);
+}
+
+.inputWithIcon input {
+    width: 100%;
+    padding-left: var(--space-10);
+}
+
+.checkboxGroup {
+    display: flex;
+    gap: var(--space-6);
+    margin: var(--space-2) 0;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    font-size: var(--font-body-sm);
+    color: var(--text-secondary);
+}
+
+.checkboxLabel input {
+    cursor: pointer;
+}
+
+.featuresSection {
+    background: var(--bg-secondary);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.labelWithAction {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-body-xs);
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.addFeature {
+    display: flex;
+    gap: var(--space-2);
+    width: 240px;
+}
+
+.addFeature input {
+    flex: 1;
+    padding: var(--space-1) var(--space-2);
+    font-size: 11px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-main);
+}
+
+.addFeature button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.featuresList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.featureItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 4px 8px;
+    background: var(--bg-main);
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+.featureInactive {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.toggleBtn, .removeBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.removeBtn {
+    margin-left: auto;
+    color: var(--text-muted);
+}
+
+.removeBtn:hover {
+    color: var(--danger);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

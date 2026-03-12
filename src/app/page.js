@@ -25,14 +25,17 @@ import Image from 'next/image';
 import clsx from 'clsx';
 import { QRScanVisual, ConfigVisual, AutopilotVisual } from '@/components/landing/StepVisuals/StepVisuals';
 import IPhoneShowcase from '@/components/landing/IPhoneShowcase/IPhoneShowcase';
+import api from '@/services/api';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function LandingPage() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const metricsRef = useRef(null);
+  const [plans, setPlans] = React.useState([]);
 
   useEffect(() => {
+    fetchPlans();
+    
     // GSAP ScrollTrigger for "How it works" cards
     const cards = gsap.utils.toArray(`.${styles.stepCard}`);
     const sections = gsap.utils.toArray(`section:not(.${styles.hero})`);
@@ -111,6 +114,15 @@ export default function LandingPage() {
       }
     );
   }, []);
+
+  const fetchPlans = async () => {
+    try {
+      const res = await api.get('/plans');
+      setPlans(res.data.filter(p => p.isPublic && p.status === 'active'));
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -237,43 +249,25 @@ export default function LandingPage() {
           </div>
 
           <div className={styles.pricingGrid}>
-            <PricingCard
-              id="basic"
-              name="Iniciante"
-              price="0"
-              features={[
-                { text: "1 Grupo Ativo", active: true },
-                { text: "100 Dezenas por mês", active: true },
-                { text: "Suporte via E-mail", active: true },
-                { text: "API de Integração", active: false },
-                { text: "Dashboard Avançado", active: false },
-              ]}
-            />
-            <PricingCard
-              id="pro"
-              name="Profissional"
-              price="49"
-              featured
-              features={[
-                { text: "5 Grupos Ativos", active: true },
-                { text: "Dezenas Ilimitadas", active: true },
-                { text: "Suporte Prioritário", active: true },
-                { text: "Relatórios de Vendas", active: true },
-                { text: "API de Integração", active: false },
-              ]}
-            />
-            <PricingCard
-              id="elite"
-              name="Elite"
-              price="99"
-              features={[
-                { text: "Grupos Ilimitados", active: true },
-                { text: "Dezenas Ilimitadas", active: true },
-                { text: "Suporte VIP 24/7", active: true },
-                { text: "API de Integração", active: true },
-                { text: "Domínio Personalizado", active: true },
-              ]}
-            />
+            {plans.length === 0 ? (
+              // Fallback skeleton or message
+              <div style={{ textAlign: 'center', width: '100%', padding: '40px', color: 'var(--text-secondary)' }}>
+                Carregando planos...
+              </div>
+            ) : (
+              plans.map((plan, index) => (
+                <PricingCard
+                  key={plan.id}
+                  id={plan.id}
+                  name={plan.name}
+                  price={plan.price}
+                  featured={index === 1} // Middle one featured by default
+                  features={plan.features || []}
+                  instanceLimit={plan.instanceLimit}
+                  groupLimit={plan.groupLimit}
+                />
+              ))
+            )}
           </div>
         </section>
 
@@ -382,7 +376,7 @@ export default function LandingPage() {
   );
 }
 
-function PricingCard({ id, name, price, features, featured }) {
+function PricingCard({ id, name, price, features, featured, instanceLimit, groupLimit }) {
   return (
     <Card className={clsx(styles.pricingCard, featured && styles.featuredCard)}>
       {featured && <div className={styles.popularBadge}>Mais Popular</div>}
@@ -391,6 +385,14 @@ function PricingCard({ id, name, price, features, featured }) {
         R$ {price} <span>/mês</span>
       </div>
       <div className={styles.planFeatures}>
+        <div className={styles.featureItem}>
+          <CheckCircle2 className={styles.checkIcon} size={18} />
+          {instanceLimit} {instanceLimit === 1 ? 'Instância' : 'Instâncias'}
+        </div>
+        <div className={styles.featureItem}>
+          <CheckCircle2 className={styles.checkIcon} size={18} />
+          {groupLimit} {groupLimit === 1 ? 'Grupo Ativo' : 'Grupos Ativos'}
+        </div>
         {features.map((feature, idx) => (
           <div key={idx} className={clsx(styles.featureItem, !feature.active && styles.disabled)}>
             {feature.active ? (
@@ -404,7 +406,7 @@ function PricingCard({ id, name, price, features, featured }) {
       </div>
       <Link href={`/login?tab=register&plan=${id}`} className={styles.pricingButton}>
         <Button variant={featured ? 'primary' : 'outline'} fullWidth>
-          {price === "0" ? "Começar Agora" : "Assinar Plano"}
+          {parseFloat(price) === 0 ? "Começar Agora" : "Assinar Plano"}
         </Button>
       </Link>
     </Card>
