@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
             setUser(userData);
             localStorage.setItem('@RifaBot:token', token);
             localStorage.setItem('@RifaBot:user', JSON.stringify(userData));
-            return true;
+            return userData;
         } catch (error) {
             console.error('Login error:', error);
             return false;
