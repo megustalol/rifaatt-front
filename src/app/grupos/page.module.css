@@ -376,12 +376,61 @@
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-4);
+        align-items: stretch;
+        text-align: center;
+        gap: var(--space-6);
+    }
+
+    .headerActions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .titleInfo {
+        align-items: center;
     }
 
     .summaryStats {
         width: 100%;
-        justify-content: space-around;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-4);
+        padding: var(--space-4);
+    }
+
+    .statDivider {
+        display: none;
+    }
+
+    .filtersWrapper {
+        flex-direction: column;
+        padding: var(--space-4);
+    }
+
+    .searchBar {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .filterGroup {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .selectWrapper,
+    .dateWrapper {
+        width: 100%;
+    }
+
+    .filterSelect {
+        width: 100%;
+    }
+
+    /* Hide less important columns on mobile */
+    .table th:nth-child(3),
+    .table td:nth-child(3),
+    .table th:nth-child(5),
+    .table td:nth-child(5) {
+        display: none;
     }
 }

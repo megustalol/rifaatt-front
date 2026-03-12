@@ -36,7 +36,7 @@ export default function DashboardPage() {
             <div className={styles.container}>
                 <div className={styles.header}>
                     <div className={styles.welcome}>
-                        <h2 className={styles.title}>Olá{user.name ? `, ${user.name}` : ''} 👋</h2>
+                        <h2 className={styles.title}>Olá{user?.name ? `, ${user.name}` : ''} 👋</h2>
                         <p className={styles.subtitle}>Aqui está o resumo das suas rifas hoje.</p>
                     </div>
                     <Link href="/grupos">

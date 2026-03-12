@@ -153,7 +153,36 @@
 }
 
 @media (max-width: 768px) {
+    .header {
+        text-align: center;
+    }
+
     .statsOverview {
         grid-template-columns: 1fr;
+        gap: var(--space-4);
+    }
+
+    .statCard {
+        flex-direction: column;
+        text-align: center;
+        padding: var(--space-6) var(--space-4);
+    }
+
+    .chartWrapper {
+        width: 100%;
+        max-width: 200px;
+    }
+
+    .statValue {
+        font-size: 1.25rem;
+    }
+
+    .table th:nth-child(n+3),
+    .table td:nth-child(n+3) {
+        display: none;
+    }
+
+    .rankingCard {
+        overflow-x: auto;
     }
 }
