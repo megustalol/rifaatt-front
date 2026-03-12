@@ -48,6 +48,31 @@ export default function InstanciasPage() {
         setIsModalOpen(false);
     };
 
+    const handleEdit = async (instance) => {
+        const newName = prompt('Novo nome para a instância:', instance.name);
+        if (!newName || newName === instance.name) return;
+
+        try {
+            await api.patch(`/instances/${instance.id}`, { name: newName });
+            fetchInstances();
+        } catch (error) {
+            console.error('Error updating instance:', error);
+            alert('Erro ao atualizar instância.');
+        }
+    };
+
+    const handleDelete = async (instance) => {
+        if (!confirm(`Tem certeza que deseja excluir a instância "${instance.name}"?`)) return;
+
+        try {
+            await api.delete(`/instances/${instance.id}`);
+            fetchInstances();
+        } catch (error) {
+            console.error('Error deleting instance:', error);
+            alert('Erro ao excluir instância.');
+        }
+    };
+
     return (
         <DashboardLayout>
             <div className={styles.container}>
@@ -70,8 +95,8 @@ export default function InstanciasPage() {
                                 key={instance.id}
                                 {...instance}
                                 onReconnect={() => handleReconnect(instance)}
-                                onEdit={() => console.log('Edit', instance.id)}
-                                onDelete={() => console.log('Delete', instance.id)}
+                                onEdit={() => handleEdit(instance)}
+                                onDelete={() => handleDelete(instance)}
                             />
                         ))
                     )}
