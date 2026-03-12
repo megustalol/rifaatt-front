@@ -11,6 +11,7 @@ import { Trophy, Share2, RefreshCcw, Search, Loader2 } from 'lucide-react';
 import styles from './page.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAnimalForNumber } from '@/utils/animalDictionary';
+import clsx from 'clsx';
 import api from '@/services/api';
 import Skeleton from '@/components/ui/Skeleton/Skeleton';
 
@@ -234,14 +235,3 @@ export default function RifaPage() {
     );
 }
 
-function Card({ children, className }) {
-    return (
-        <div className={clsx(styles.card, className)}>
-            {children}
-        </div>
-    );
-}
-
-function clsx(...args) {
-    return args.filter(Boolean).join(' ');
-}
