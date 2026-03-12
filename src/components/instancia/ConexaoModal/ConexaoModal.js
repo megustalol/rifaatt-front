@@ -41,12 +41,18 @@ const ConexaoModal = ({ isOpen, onClose, instance, onSuccess }) => {
         setLoading(true);
         try {
             const response = await api.get(`/instances/connect/${id}`);
-            if (response.data.base64) {
-                setQrBase64(response.data.base64);
+            const data = response.data;
+            
+            // Handle Uazapi nested response structure
+            const qrcodeData = data.instance?.qrcode || data.base64;
+            const pairingCodeData = data.instance?.paircode || data.pairingCode;
+
+            if (qrcodeData) {
+                setQrBase64(qrcodeData);
                 setTimeLeft(60);
             }
-            if (response.data.pairingCode) {
-                setPairingCode(response.data.pairingCode);
+            if (pairingCodeData) {
+                setPairingCode(pairingCodeData);
             }
             startPolling(id);
         } catch (error) {
