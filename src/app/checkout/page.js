@@ -19,35 +19,36 @@ import ThemeToggle from '@/components/ui/ThemeToggle/ThemeToggle';
 import styles from './page.module.css';
 import Image from 'next/image';
 import clsx from 'clsx';
-
-const PLANS = {
-    basic: {
-        name: 'Iniciante',
-        price: '0',
-        features: ['1 Grupo Ativo', '100 Dezenas por mês', 'Suporte via E-mail']
-    },
-    pro: {
-        name: 'Profissional',
-        price: '49',
-        features: ['5 Grupos Ativos', 'Dezenas Ilimitadas', 'Suporte Prioritário', 'Relatórios de Vendas']
-    },
-    elite: {
-        name: 'Elite',
-        price: '99',
-        features: ['Grupos Ilimitados', 'Dezenas Ilimitadas', 'Suporte VIP 24/7', 'API de Integração', 'Domínio Personalizado']
-    }
-};
+import api from '@/services/api';
 
 function CheckoutContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const initialPlan = searchParams.get('plan') || 'pro';
-
-    const [selectedPlan, setSelectedPlan] = useState(initialPlan);
+    const [plans, setPlans] = useState([]);
+    const [selectedPlanId, setSelectedPlanId] = useState(searchParams.get('plan'));
+    const [loading, setLoading] = useState(true);
     const [copied, setCopied] = useState(false);
-    const [step, setStep] = useState(1); // 1: Confirm Plan, 2: Payment
 
-    const planInfo = PLANS[selectedPlan] || PLANS.pro;
+    useEffect(() => {
+        fetchPlans();
+    }, []);
+
+    const fetchPlans = async () => {
+        try {
+            const res = await api.get('/plans');
+            const activePlans = res.data.filter(p => p.status === 'active');
+            setPlans(activePlans);
+            if (!selectedPlanId && activePlans.length > 0) {
+                setSelectedPlanId(activePlans[0].id);
+            }
+        } catch (error) {
+            console.error('Error fetching plans:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const selectedPlan = plans.find(p => p.id === selectedPlanId) || plans[0];
 
     const handleCopyPix = () => {
         navigator.clipboard.writeText('00020126580014br.gov.bcb.pix01362e49c824-3f2d-4e92-9c1a-1a2b3c4d5e6f520400005303986540549.005802BR5913RIFAATT SAAS6009SAO PAULO62070503***6304E2A1');
@@ -76,11 +77,11 @@ function CheckoutContent() {
                         <p className={styles.subtitle}>Você pode alterar seu plano antes de prosseguir com o pagamento.</p>
 
                         <div className={styles.planOptions}>
-                            {Object.entries(PLANS).map(([id, plan]) => (
+                            {plans.map((plan) => (
                                 <div
-                                    key={id}
-                                    className={clsx(styles.planOption, selectedPlan === id && styles.selected)}
-                                    onClick={() => setSelectedPlan(id)}
+                                    key={plan.id}
+                                    className={clsx(styles.planOption, selectedPlanId === plan.id && styles.selected)}
+                                    onClick={() => setSelectedPlanId(plan.id)}
                                 >
                                     <div className={styles.planRadio}>
                                         <div className={styles.radioInner} />
@@ -89,42 +90,54 @@ function CheckoutContent() {
                                         <span className={styles.optionName}>{plan.name}</span>
                                         <span className={styles.optionPrice}>R$ {plan.price}/mês</span>
                                     </div>
-                                    {id === 'pro' && <span className={styles.badge}>Recomendado</span>}
+                                    {plan.name === 'Profissional' && <span className={styles.badge}>Recomendado</span>}
                                 </div>
                             ))}
                         </div>
 
-                        <div className={styles.featureList}>
-                            <h3>O que está incluso no plano {planInfo.name}:</h3>
-                            {planInfo.features.map((feature, i) => (
-                                <div key={i} className={styles.featureItem}>
+                        {selectedPlan && (
+                            <div className={styles.featureList}>
+                                <h3>O que está incluso no plano {selectedPlan.name}:</h3>
+                                <div className={styles.featureItem}>
                                     <CheckCircle2 size={18} className={styles.checkIcon} />
-                                    {feature}
+                                    {selectedPlan.instanceLimit} {selectedPlan.instanceLimit === 1 ? 'Instância' : 'Instâncias'}
                                 </div>
-                            ))}
-                        </div>
+                                <div className={styles.featureItem}>
+                                    <CheckCircle2 size={18} className={styles.checkIcon} />
+                                    {selectedPlan.groupLimit} {selectedPlan.groupLimit === 1 ? 'Grupo Ativo' : 'Grupos Ativos'}
+                                </div>
+                                {(selectedPlan.features || []).map((feature, i) => (
+                                    <div key={i} className={clsx(styles.featureItem, !feature.active && styles.disabled)}>
+                                        <CheckCircle2 size={18} className={styles.checkIcon} />
+                                        {feature.text}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </section>
 
                     {/* Right: Payment Sidebar */}
                     <aside className={styles.paymentSection}>
                         <Card className={styles.paymentCard}>
-                            <div className={styles.orderSummary}>
-                                <div className={styles.summaryRow}>
-                                    <span>Plano Selecionado</span>
-                                    <span>{planInfo.name}</span>
+                            {selectedPlan && (
+                                <div className={styles.orderSummary}>
+                                    <div className={styles.summaryRow}>
+                                        <span>Plano Selecionado</span>
+                                        <span>{selectedPlan.name}</span>
+                                    </div>
+                                    <div className={styles.summaryRow}>
+                                        <span>Subtotal</span>
+                                        <span>R$ {selectedPlan.price}</span>
+                                    </div>
+                                    <div className={styles.divider} />
+                                    <div className={clsx(styles.summaryRow, styles.total)}>
+                                        <span>Total</span>
+                                        <span>R$ {selectedPlan.price}</span>
+                                    </div>
                                 </div>
-                                <div className={styles.summaryRow}>
-                                    <span>Subtotal</span>
-                                    <span>R$ {planInfo.price},00</span>
-                                </div>
-                                <div className={styles.divider} />
-                                <div className={clsx(styles.summaryRow, styles.total)}>
-                                    <span>Total</span>
-                                    <span>R$ {planInfo.price},00</span>
-                                </div>
-                            </div>
+                            )}
 
-                            {planInfo.price === "0" ? (
+                            {selectedPlan && parseFloat(selectedPlan.price) === 0 ? (
                                 <div className={styles.freePlanNotice}>
                                     <Zap size={32} className={styles.zapIcon} />
                                     <h3>Plano Gratuito Ativado</h3>

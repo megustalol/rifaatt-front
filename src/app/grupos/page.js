@@ -226,8 +226,8 @@ export default function GruposPage() {
                     {paymentStep === 'pix' ? (
                         <div className={styles.checkout}>
                             <div className={styles.checkoutInfo}>
-                                <p className={styles.planName}>Plano Mensal (30 dias)</p>
-                                <h4 className={styles.planPrice}>R$ 49,90</h4>
+                                <p className={styles.planName}>Ativação de Robô</p>
+                                <h4 className={styles.planPrice}>Assinatura Mensal</h4>
                                 <p className={styles.checkoutDesc}>Grupo: {selectedGroup?.name}</p>
                             </div>
 
