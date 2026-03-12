@@ -7,11 +7,14 @@ import Input from '@/components/ui/Input/Input';
 import { Trophy, AlertTriangle } from 'lucide-react';
 import styles from './RaffleFinalizeModal.module.css';
 import api from '@/services/api';
+import { getAnimalForNumber } from '@/utils/animalDictionary';
 
 export default function RaffleFinalizeModal({ isOpen, onClose, raffle, onRaffleFinalized }) {
     const [winningNumber, setWinningNumber] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    const animal = winningNumber && winningNumber.length >= 1 ? getAnimalForNumber(winningNumber) : null;
 
     const handleFinalize = async () => {
         if (!winningNumber) {
@@ -50,6 +53,12 @@ export default function RaffleFinalizeModal({ isOpen, onClose, raffle, onRaffleF
                         onChange={(e) => setWinningNumber(e.target.value)}
                         className={styles.input}
                     />
+                    {animal && (
+                        <div className={styles.animalPreview}>
+                            <span className={styles.previewEmoji}>{animal.emoji}</span>
+                            <span className={styles.previewName}>{animal.name}</span>
+                        </div>
+                    )}
                     {error && <p className={styles.error}>{error}</p>}
                 </div>
 

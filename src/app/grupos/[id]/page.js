@@ -19,6 +19,7 @@ import {
 import styles from './page.module.css';
 import Link from 'next/link';
 import clsx from 'clsx';
+import { getAnimalForNumber } from '@/utils/animalDictionary';
 
 const mockGroupDetails = {
     id: '1',
@@ -107,13 +108,33 @@ export default function GroupDetailsPage() {
         </DashboardLayout>
     );
 
-    const total = raffle.numbersCount || 100;
-    const paid = raffle.Reservations?.filter(r => r.status === 'PAID').length || 0;
-    const reserved = raffle.Reservations?.filter(r => r.status === 'RESERVED').length || 0;
-    const free = total - paid - reserved;
+    const total = 100;
+    const reservations = raffle.Reservations || [];
+    const paid = reservations.filter(r => r.status === 'PAID').length;
+    const pending = reservations.filter(r => r.status === 'PENDING').length;
+    const free = total - paid - pending;
 
     const paidPercent = (paid / total) * 100;
-    const reservedPercent = (reserved / total) * 100;
+    const pendingPercent = (pending / total) * 100;
+
+    // Group reservations by buyer to show in the list
+    const participantMap = {};
+    reservations.forEach(r => {
+        if (!participantMap[r.buyerPhone]) {
+            participantMap[r.buyerPhone] = {
+                name: r.buyerName,
+                phone: r.buyerPhone,
+                numbers: [],
+                paidCount: 0,
+                pendingCount: 0
+            };
+        }
+        participantMap[r.buyerPhone].numbers.push(r.number);
+        if (r.status === 'PAID') participantMap[r.buyerPhone].paidCount++;
+        else participantMap[r.buyerPhone].pendingCount++;
+    });
+
+    const participants = Object.values(participantMap);
 
     return (
         <DashboardLayout>
@@ -144,7 +165,6 @@ export default function GroupDetailsPage() {
                 </div>
 
                 <div className={styles.grid}>
-                    {/* Raffle Summary */}
                     <Card className={styles.raffleCard}>
                         <div className={styles.cardHeader}>
                             <Ticket className={styles.cardIcon} />
@@ -153,19 +173,19 @@ export default function GroupDetailsPage() {
 
                         <div className={styles.raffleStats}>
                             <div className={styles.statBox}>
-                                <span className={styles.statLabel}>Preço p/ Número</span>
+                                <span className={styles.statLabel}>Preço p/ Dezena</span>
                                 <span className={styles.statValue}>R$ {raffle.ticketValue}</span>
                             </div>
                             <div className={styles.statBox}>
-                                <span className={styles.statLabel}>Sorteio</span>
-                                <span className={styles.statValue}>{raffle.drawDate ? new Date(raffle.drawDate).toLocaleDateString() : 'A definir'}</span>
+                                <span className={styles.statLabel}>Prêmio</span>
+                                <span className={styles.statValue}>{raffle.prize || 'A definir'}</span>
                             </div>
                         </div>
 
                         <div className={styles.progressSection}>
                             <div className={styles.progressInfo}>
                                 <span>Progresso de Venda</span>
-                                <span>{Math.round(paidPercent + reservedPercent)}%</span>
+                                <span>{Math.round(paidPercent + pendingPercent)}%</span>
                             </div>
                             <div className={styles.progressBar}>
                                 <div
@@ -174,7 +194,7 @@ export default function GroupDetailsPage() {
                                 />
                                 <div
                                     className={styles.reservada}
-                                    style={{ width: `${reservedPercent}%` }}
+                                    style={{ width: `${pendingPercent}%` }}
                                 />
                             </div>
                             <div className={styles.legend}>
@@ -184,7 +204,7 @@ export default function GroupDetailsPage() {
                                 </div>
                                 <div className={styles.legendItem}>
                                     <div className={clsx(styles.dot, styles.bgReservada)} />
-                                    <span>Reservados ({reserved})</span>
+                                    <span>Pendentes ({pending})</span>
                                 </div>
                                 <div className={styles.legendItem}>
                                     <div className={clsx(styles.dot, styles.bgLivre)} />
@@ -203,47 +223,54 @@ export default function GroupDetailsPage() {
                         </Button>
                     </Card>
 
-                    {/* Member List */}
                     <Card className={styles.membersCard}>
                         <div className={styles.cardHeader}>
                             <Users className={styles.cardIcon} />
-                            <h3>Membros do Grupo ({group.membersCount})</h3>
+                            <h3>Participantes ({participants.length})</h3>
                         </div>
 
                         <div className={styles.membersList}>
-                            {group.members.length === 0 ? (
+                            {participants.length === 0 ? (
                                 <div className={styles.emptyMembers}>
-                                    <p>Nenhum membro detectado ainda.</p>
+                                    <p>Nenhuma reserva detectada ainda.</p>
                                 </div>
                             ) : (
                                 <table className={styles.table}>
                                     <thead>
                                         <tr>
                                             <th>Usuário</th>
-                                            <th>Telefone</th>
-                                            <th>Participações</th>
+                                            <th>Dezenas</th>
+                                            <th>Valor</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {group.members.map((member) => (
-                                            <tr key={member.id}>
+                                        {participants.map((p) => (
+                                            <tr key={p.phone}>
                                                 <td className={styles.userName}>
                                                     <div className={styles.avatar}>
-                                                        {member.name.charAt(0)}
+                                                        {p.name.charAt(0)}
                                                     </div>
-                                                    {member.name}
+                                                    <div>
+                                                        <div>{p.name}</div>
+                                                        <div className={styles.phoneSub}>{p.phone.split('@')[0]}</div>
+                                                    </div>
                                                 </td>
-                                                <td className={styles.phoneCell}>{member.phone}</td>
-                                                <td className={styles.purchasesCell}>
-                                                    <div className={styles.purchaseBadge}>
-                                                        <Trophy size={14} />
-                                                        {member.purchases || 0} números
+                                                <td className={styles.phoneCell}>
+                                                    <div className={styles.numberList}>
+                                                        {p.numbers.map(num => (
+                                                            <span key={num} className={styles.numberTag}>
+                                                                {getAnimalForNumber(num).emoji} {num}
+                                                            </span>
+                                                        ))}
                                                     </div>
+                                                </td>
+                                                <td className={styles.purchasesCell}>
+                                                    R$ {(p.numbers.length * raffle.ticketValue).toFixed(2)}
                                                 </td>
                                                 <td>
-                                                    <div className={clsx(styles.statusBadge, styles[member.status || 'online'])}>
-                                                        {member.status === 'away' ? 'Ocupado' : member.status === 'offline' ? 'Offline' : 'Ativo'}
+                                                    <div className={clsx(styles.statusBadge, p.pendingCount === 0 ? styles.online : styles.away)}>
+                                                        {p.pendingCount === 0 ? 'Pago' : 'Pendente'}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -252,7 +279,6 @@ export default function GroupDetailsPage() {
                                 </table>
                             )}
                         </div>
-                        <Button fullWidth variant="secondary" className={styles.viewAllBtn}>Ver Todos os Membros</Button>
                     </Card>
                 </div>
 

@@ -15,14 +15,34 @@ export default function CreateGroupModal({ isOpen, onClose, onCreate }) {
     const [jid, setJid] = useState('');
     const [selectedInstanceId, setSelectedInstanceId] = useState('');
     const [instances, setInstances] = useState([]);
-    const [mode, setMode] = useState('link'); // 'link' or 'create'
+    const [availableGroups, setAvailableGroups] = useState([]);
+    const [loadingGroups, setLoadingGroups] = useState(false);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
             api.get('/instances').then(res => setInstances(res.data));
+            setAvailableGroups([]);
         }
     }, [isOpen]);
+
+    useEffect(() => {
+        if (selectedInstanceId) {
+            fetchInstanceGroups(selectedInstanceId);
+        }
+    }, [selectedInstanceId]);
+
+    const fetchInstanceGroups = async (id) => {
+        setLoadingGroups(true);
+        try {
+            const res = await api.get(`/raffles/groups-from-instance/${id}`);
+            setAvailableGroups(res.data);
+        } catch (error) {
+            console.error('Error loading groups:', error);
+        } finally {
+            setLoadingGroups(false);
+        }
+    };
 
     const selectedInstance = instances.find(i => i.id === selectedInstanceId);
 
@@ -30,20 +50,12 @@ export default function CreateGroupModal({ isOpen, onClose, onCreate }) {
         e.preventDefault();
         setLoading(true);
         try {
-            if (mode === 'create') {
-                const res = await api.post('/raffles/create-group', {
-                    instanceId: selectedInstanceId,
-                    groupName: name
-                });
-                onCreate(res.data);
-            } else {
-                const res = await api.post('/raffles/groups', {
-                    name,
-                    jid,
-                    instanceId: selectedInstanceId
-                });
-                onCreate(res.data);
-            }
+            const res = await api.post('/raffles/groups', {
+                name: availableGroups.find(g => g.id === jid)?.subject || name,
+                jid,
+                instanceId: selectedInstanceId
+            });
+            onCreate(res.data);
             onClose();
             // Reset form
             setName('');
@@ -65,47 +77,10 @@ export default function CreateGroupModal({ isOpen, onClose, onCreate }) {
         >
             <form onSubmit={handleSubmit} className={styles.form}>
                 <p className={styles.description}>
-                    Preencha os dados abaixo para vincular um grupo do WhatsApp à plataforma.
+                    Selecione uma instância conectada e o grupo que deseja vincular.
                 </p>
 
-                <div className={styles.modeToggle}>
-                    <button
-                        type="button"
-                        className={clsx(styles.modeBtn, mode === 'link' && styles.active)}
-                        onClick={() => setMode('link')}
-                    >
-                        Vincular Existente
-                    </button>
-                    <button
-                        type="button"
-                        className={clsx(styles.modeBtn, mode === 'create' && styles.active)}
-                        onClick={() => setMode('create')}
-                    >
-                        Criar Novo no Painel
-                    </button>
-                </div>
-
                 <div className={styles.fields}>
-                    <Input
-                        label="Nome do Grupo"
-                        placeholder="Ex: Rifa Mensal de Amigos"
-                        icon={Users}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-
-                    {mode === 'link' && (
-                        <Input
-                            label="ID do Grupo (JID)"
-                            placeholder="Ex: 1203630234567890@g.us"
-                            icon={Hash}
-                            value={jid}
-                            onChange={(e) => setJid(e.target.value)}
-                            required
-                        />
-                    )}
-
                     <div className={styles.selectWrapper}>
                         <label className={styles.selectLabel}>Instância (WhatsApp)</label>
                         <div className={styles.selectContainer}>
@@ -125,6 +100,34 @@ export default function CreateGroupModal({ isOpen, onClose, onCreate }) {
                             </select>
                         </div>
                     </div>
+
+                    {selectedInstanceId && (
+                        <div className={styles.selectWrapper}>
+                            <label className={styles.selectLabel}>Grupo para Vincular</label>
+                            <div className={styles.selectContainer}>
+                                <Users className={styles.selectIcon} size={20} />
+                                <select
+                                    className={styles.select}
+                                    value={jid}
+                                    onChange={(e) => setJid(e.target.value)}
+                                    required
+                                    disabled={loadingGroups}
+                                >
+                                    <option value="" disabled>
+                                        {loadingGroups ? 'Carregando grupos...' : 'Selecione um grupo (onde você é admin)...'}
+                                    </option>
+                                    {availableGroups.map(group => (
+                                        <option key={group.id} value={group.id}>
+                                            {group.subject}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            {availableGroups.length === 0 && !loadingGroups && selectedInstanceId && (
+                                <p className={styles.warningText}>Nenhum grupo encontrado onde você é administrador.</p>
+                            )}
+                        </div>
+                    )}
 
                     {selectedInstance && (
                         <div className={styles.phoneDisplay}>

@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import styles from './page.module.css';
 import Link from 'next/link';
+import { getAnimalForNumber } from '@/utils/animalDictionary';
 
 const mockFinalizedRaffles = [
     {
@@ -147,9 +148,9 @@ export default function HistoryPage() {
                                     <div className={styles.winnerList}>
                                         <div className={styles.winnerItem}>
                                             <div className={styles.winnerAvatar}>
-                                                {raffle.winningNumber ? '🏆' : '?'}
+                                                {raffle.winningNumber ? getAnimalForNumber(raffle.winningNumber).emoji : '🏆'}
                                             </div>
-                                            <span>Número: {raffle.winningNumber || 'Aguardando'}</span>
+                                            <span>Número: {raffle.winningNumber || 'Aguardando'} {raffle.winningNumber && `(${getAnimalForNumber(raffle.winningNumber).name})`}</span>
                                         </div>
                                     </div>
                                 </div>

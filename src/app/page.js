@@ -27,6 +27,7 @@ import IPhoneShowcase from '@/components/landing/IPhoneShowcase/IPhoneShowcase';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function LandingPage() {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const metricsRef = useRef(null);
 
   useEffect(() => {
@@ -111,7 +112,7 @@ export default function LandingPage() {
 
   return (
     <div className={styles.container}>
-      <header className={styles.navHeader}>
+      <header className={clsx(styles.navHeader, isMenuOpen && styles.menuOpen)}>
         <div className={styles.logo}>
           <Image
             src="/logogrande.png"
@@ -122,19 +123,39 @@ export default function LandingPage() {
             priority
           />
         </div>
-        <nav className={styles.desktopNav}>
-          <a href="#features">Funcionalidades</a>
-          <a href="#how-it-works">Como funciona</a>
-          <a href="#pricing">Preços</a>
+
+        <button
+          className={styles.mobileMenuToggle}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          {isMenuOpen ? <X size={28} /> : <MenuIcon size={28} />}
+        </button>
+
+        <nav className={clsx(styles.desktopNav, isMenuOpen && styles.mobileNavVisible)}>
+          <a href="#features" onClick={() => setIsMenuOpen(false)}>Funcionalidades</a>
+          <a href="#how-it-works" onClick={() => setIsMenuOpen(false)}>Como funciona</a>
+          <a href="#pricing" onClick={() => setIsMenuOpen(false)}>Preços</a>
+
+          <div className={styles.mobileOnlyActions}>
+            <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+              <Button variant="white" fullWidth>Entrar</Button>
+            </Link>
+            <Link href="/login?tab=register" onClick={() => setIsMenuOpen(false)}>
+              <Button fullWidth>Começar Agora</Button>
+            </Link>
+          </div>
         </nav>
+
         <div className={styles.navActions}>
           <ThemeToggle />
-          <Link href="/login">
-            <Button variant="white">Entrar</Button>
-          </Link>
-          <Link href="/login?tab=register">
-            <Button>Começar Agora</Button>
-          </Link>
+          <div className={styles.desktopOnlyActions}>
+            <Link href="/login">
+              <Button variant="white">Entrar</Button>
+            </Link>
+            <Link href="/login?tab=register">
+              <Button>Começar Agora</Button>
+            </Link>
+          </div>
         </div>
       </header>
 

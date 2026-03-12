@@ -22,6 +22,7 @@ import {
 } from 'recharts';
 import styles from './UserProfileModal.module.css';
 import clsx from 'clsx';
+import { getAnimalForNumber } from '@/utils/animalDictionary';
 
 const COLORS = ['#1FC98E', '#3B82F6', '#F59E0B', '#EF4444'];
 
@@ -46,9 +47,9 @@ const UserProfileModal = ({ isOpen, onClose, user }) => {
     ];
 
     const winHistory = [
-        { id: '1', raffle: 'Rifa de Natal', date: '24/12/2025', prize: 'R$ 500,00', group: 'Amigos do Bairro' },
-        { id: '2', raffle: 'Sorteio iPhone 15', date: '15/01/2026', prize: 'iPhone 15 Pro', group: 'Rifa VIP SP' },
-        { id: '3', raffle: 'Churrasco Jan', date: '30/01/2026', prize: 'Kit Churrasco Master', group: 'Rifa do Churrasco' },
+        { id: '1', raffle: 'Rifa de Natal', date: '24/12/2025', prize: 'R$ 500,00', group: 'Amigos do Bairro', number: '03' },
+        { id: '2', raffle: 'Sorteio Mensal', date: '15/01/2026', prize: 'R$ 1.000,00', group: 'Rifa VIP SP', number: '42' },
+        { id: '3', raffle: 'Churrasco Jan', date: '30/01/2026', prize: 'Kit Churrasco', group: 'Rifa do Churrasco', number: '57' },
     ];
 
     return (
@@ -137,10 +138,10 @@ const UserProfileModal = ({ isOpen, onClose, user }) => {
                             {winHistory.map((win) => (
                                 <div key={win.id} className={styles.winItem}>
                                     <div className={styles.winIcon}>
-                                        <Trophy size={16} />
+                                        {win.number ? getAnimalForNumber(win.number).emoji : <Trophy size={16} />}
                                     </div>
                                     <div className={styles.winInfo}>
-                                        <span className={styles.winRaffle}>{win.raffle}</span>
+                                        <span className={styles.winRaffle}>{win.raffle} {win.number && `(${getAnimalForNumber(win.number).name})`}</span>
                                         <span className={styles.winDetails}>{win.prize} • {win.date}</span>
                                     </div>
                                     <ChevronRight size={14} className={styles.chevron} />
