@@ -60,7 +60,7 @@ const ConexaoModal = ({ isOpen, onClose, instance, onSuccess }) => {
         if (!name) return;
         setLoading(true);
         try {
-            const response = await api.post('/instances', { name });
+            const response = await api.post('/instances/init', { name });
             setCurrentInstance(response.data);
             startConnection(response.data.id);
         } catch (error) {

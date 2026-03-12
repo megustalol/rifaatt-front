@@ -112,9 +112,15 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(to right,
-            rgba(0, 0, 0, 0.2) 0%,
-            rgba(0, 0, 0, 0.7) 100%);
+            rgba(0, 0, 0, 0.4) 0%,
+            rgba(0, 0, 0, 0.8) 100%);
     z-index: 2;
+}
+
+@media (max-width: 768px) {
+    .videoOverlay {
+        background: radial-gradient(circle at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.9) 100%);
+    }
 }
 
 .textSection {
@@ -132,14 +138,23 @@
     z-index: 10;
     max-width: 550px;
     background: #0D1219;
-    padding: var(--space-16);
-    border-radius: 60px;
+    padding: var(--space-10) var(--space-12);
+    border-radius: 40px;
     border: 1px solid rgba(31, 201, 142, 0.2);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     transition: all var(--transition-base);
+    margin-top: 40px;
+    /* Space from header */
+}
+
+@media (max-width: 1400px) {
+    .heroContentBox {
+        max-width: 500px;
+        padding: var(--space-8) var(--space-10);
+    }
 }
 
 :global([data-theme='light']) .heroContentBox {

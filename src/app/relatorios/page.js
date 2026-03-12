@@ -120,26 +120,26 @@ export default function ReportsPage() {
                             )}
                         </div>
                         <div className={styles.statInfo}>
-                            <span className={styles.statLabel}>Vendas (Semana)</span>
+                            <span className={styles.statLabel}>Total Arrecadado</span>
                             {loading ? (
                                 <Skeleton width="120px" height="24px" margin="4px 0" />
                             ) : (
-                                <span className={styles.statValue}>{stats.totalSales}</span>
+                                <span className={styles.statValue}>{stats.totalSales || 'R$ 0,00'}</span>
                             )}
                             <span className={styles.statTrend} style={{ color: 'var(--success)' }}>
-                                {stats.trend} vs anterior
+                                {loading ? '...' : stats.trend || '0%'} vs anterior
                             </span>
                         </div>
                     </Card>
                     <Card className={styles.statCard}>
                         <div className={styles.statInfo}>
-                            <span className={styles.statLabel}>Novos Participantes</span>
+                            <span className={styles.statLabel}>Total de Reservas</span>
                             {loading ? (
                                 <Skeleton width="80px" height="24px" margin="4px 0" />
                             ) : (
-                                <span className={styles.statValue}>+142</span>
+                                <span className={styles.statValue}>{rankings.recurrent.reduce((acc, curr) => acc + curr.participations, 0)}</span>
                             )}
-                            <span className={styles.statTrend} style={{ color: 'var(--success)' }}>+24% vs anterior</span>
+                            <span className={styles.statTrend} style={{ color: 'var(--success)' }}>Atividade Geral</span>
                         </div>
                     </Card>
                 </div>
