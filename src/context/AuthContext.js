@@ -47,9 +47,9 @@ export const AuthProvider = ({ children }) => {
                 setUser(newUser);
                 localStorage.setItem('@RifaBot:token', token);
                 localStorage.setItem('@RifaBot:user', JSON.stringify(newUser));
-                return true;
+                return newUser;
             }
-            return !!newUser;
+            return newUser;
         } catch (error) {
             console.error('Registration error:', error);
             return false;

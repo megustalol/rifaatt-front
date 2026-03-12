@@ -38,24 +38,24 @@ function LoginContent() {
         const password = formData.get('password');
 
         try {
-            let success = false;
-            let role = 'organizer';
+            let userData = null;
             if (mode === 'login') {
-                success = await login(email, password);
-                if (success && email === 'admin@rifaatt.com') role = 'master';
+                userData = await login(email, password);
             } else {
                 const name = formData.get('name');
                 const phone = formData.get('phone');
-                success = await register({ name, phone, email, password });
+                userData = await register({ name, phone, email, password });
             }
 
-            if (success) {
-                setRedirecting(role);
+            if (userData) {
+                const targetRole = userData.role === 'ADMIN' ? 'master' : 'organizer';
+                setRedirecting(targetRole);
+                
                 // Delay actual redirect for animation
                 setTimeout(() => {
                     if (plan) {
                         router.push(`/checkout?plan=${plan}`);
-                    } else if (role === 'master') {
+                    } else if (targetRole === 'master') {
                         router.push('/master');
                     } else {
                         router.push('/dashboard');

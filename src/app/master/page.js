@@ -18,7 +18,7 @@ import { useEffect } from 'react';
 export default function MasterPage() {
     const [activeTab, setActiveTab] = useState('users');
     const [users, setUsers] = useState([]);
-    const [payments, setPayments] = useState(mockPayments);
+    const [payments, setPayments] = useState([]);
     const [plans, setPlans] = useState([]);
     const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
     const [editingPlan, setEditingPlan] = useState(null);
@@ -142,7 +142,7 @@ export default function MasterPage() {
                                 plans={plans}
                             />
                         ) : activeTab === 'payments' ? (
-                            <PaymentsTable payments={mockPayments} />
+                            <PaymentsTable payments={payments} />
                         ) : (
                             <PlansTable
                                 plans={plans}
