@@ -13,7 +13,9 @@ import {
   QrCode,
   ShieldCheck,
   Users,
-  LayoutDashboard
+  LayoutDashboard,
+  Menu,
+  X
 } from 'lucide-react';
 import Button from '@/components/ui/Button/Button';
 import Card from '@/components/ui/Card/Card';
@@ -128,7 +130,7 @@ export default function LandingPage() {
           className={styles.mobileMenuToggle}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          {isMenuOpen ? <X size={28} /> : <MenuIcon size={28} />}
+          {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
 
         <nav className={clsx(styles.desktopNav, isMenuOpen && styles.mobileNavVisible)}>
