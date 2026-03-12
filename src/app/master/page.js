@@ -185,3 +185,8 @@ export default function MasterPage() {
         </DashboardLayout>
     );
 }
+
+function calculateVariation(current, previous) {
+    if (!previous) return 0;
+    return Math.round(((current - previous) / previous) * 100);
+}
