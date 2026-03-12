@@ -105,10 +105,31 @@ export default function MasterPage() {
                 </div>
 
                 <div className={styles.statsGrid}>
-                    <StatsCard label="Total de Usuários" value={1250} icon={Users} variation={15} />
-                    <StatsCard label="Vaturamento Mensal" value={8450} prefix="R$ " icon={DollarSign} variation={22} />
-                    <StatsCard label="Grupos Ativos" value={342} icon={TrendingUp} variation={12} />
-                    <StatsCard label="Inadimplência" value={2} suffix="%" icon={CreditCard} trend="down" variation={1} />
+                    <StatsCard 
+                        label="Total de Usuários" 
+                        value={users.length} 
+                        icon={Users} 
+                        variation={calculateVariation(users.length, 1000)} // Mocked variation for now
+                    />
+                    <StatsCard 
+                        label="Vaturamento Previsto" 
+                        value={plans.length > 0 ? users.reduce((acc, user) => {
+                            const userPlan = plans.find(p => p.id === user.planId);
+                            return acc + (userPlan ? userPlan.price : 0);
+                        }, 0) : 0} 
+                        prefix="R$ " 
+                        icon={DollarSign} 
+                    />
+                    <StatsCard 
+                        label="Grupos Ativos" 
+                        value={users.reduce((acc, user) => acc + (user.activeGroups || 0), 0)} 
+                        icon={TrendingUp} 
+                    />
+                    <StatsCard 
+                        label="Planos Ativos" 
+                        value={plans.filter(p => p.status === 'active').length} 
+                        icon={CreditCard} 
+                    />
                 </div>
 
                 <div className={styles.tableSection}>

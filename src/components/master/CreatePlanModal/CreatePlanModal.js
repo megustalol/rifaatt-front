@@ -3,10 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../../ui/Modal/Modal';
 import Button from '../../ui/Button/Button';
-import { Plus, X, Percent, Smartphone, Users as UsersIcon, List } from 'lucide-react';
+import { Plus, X, Percent, Smartphone, Users as UsersIcon, List, CheckCircle } from 'lucide-react';
 import styles from './CreatePlanModal.module.css';
 
 const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
+    // ... items omitted for brevity ...
+    // Note: I'm replacing the entire component body for clarity as per user request to improve it
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
@@ -162,7 +164,7 @@ const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
                             checked={isPublic}
                             onChange={(e) => setIsPublic(e.target.checked)}
                         />
-                        <span>Público (visível na Landing Page)</span>
+                        <span>Público (exibir na Landing Page)</span>
                     </label>
                     <label className={styles.checkboxLabel}>
                         <input
@@ -175,21 +177,23 @@ const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
                 </div>
 
                 <div className={styles.featuresSection}>
-                    <label className={styles.labelWithAction}>
-                        <span>Funcionalidades</span>
-                        <div className={styles.addFeature}>
-                            <input
-                                type="text"
-                                value={newFeature}
-                                onChange={(e) => setNewFeature(e.target.value)}
-                                placeholder="Nova funcionalidade..."
-                                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddFeature())}
-                            />
-                            <button type="button" onClick={handleAddFeature}>
-                                <Plus size={16} />
-                            </button>
-                        </div>
-                    </label>
+                    <div className={styles.sectionHeader}>
+                        <label>Benefícios do Plano</label>
+                        <p className={styles.hint}>Estes itens aparecerão na Landing Page e no Checkout.</p>
+                    </div>
+                    
+                    <div className={styles.addFeature}>
+                        <input
+                            type="text"
+                            value={newFeature}
+                            onChange={(e) => setNewFeature(e.target.value)}
+                            placeholder="Adicionar benefício..."
+                            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddFeature())}
+                        />
+                        <button type="button" onClick={handleAddFeature} className={styles.plusBtn}>
+                            <Plus size={18} />
+                        </button>
+                    </div>
                     
                     <div className={styles.featuresList}>
                         {features.map((feature, index) => (
@@ -198,14 +202,16 @@ const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
                                     type="button"
                                     className={styles.toggleBtn}
                                     onClick={() => toggleFeatureStatus(index)}
+                                    title={feature.active ? 'Desativar item' : 'Ativar item'}
                                 >
-                                    {feature.active ? <CheckCircle size={14} color="var(--success)" /> : <List size={14} color="var(--text-muted)" />}
+                                    <CheckCircle size={16} className={feature.active ? styles.vivid : styles.muted} />
                                 </button>
                                 <span className={!feature.active ? styles.featureInactive : ''}>{feature.text}</span>
                                 <button
                                     type="button"
                                     className={styles.removeBtn}
                                     onClick={() => handleRemoveFeature(index)}
+                                    title="Remover"
                                 >
                                     <X size={14} />
                                 </button>
