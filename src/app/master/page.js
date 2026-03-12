@@ -15,30 +15,35 @@ import api from '@/services/api';
 import Button from '@/components/ui/Button/Button';
 import { useEffect } from 'react';
 
-const mockUsers = [
-    { id: '1', name: 'Lucas Silva', email: 'lucas@rifa.com', phone: '11987654321', activeGroups: 5, totalSpent: 245.00, status: 'active' },
-    { id: '2', name: 'Maria Santos', email: 'maria@gmail.com', phone: '21988887777', activeGroups: 2, totalSpent: 99.80, status: 'active' },
-    { id: '3', name: 'José Souza', email: 'jose@uol.com.br', phone: '31977776666', activeGroups: 0, totalSpent: 49.90, status: 'inactive' },
-];
-
-const mockPayments = [
-    { id: '1', date: '10/03/2026', user: 'Lucas Silva', group: 'Rifa do iPhone', amount: 49.90, status: 'paid' },
-    { id: '2', date: '09/03/2026', user: 'Maria Santos', group: 'Rifa Amigos', amount: 49.90, status: 'paid' },
-    { id: '3', date: '08/03/2026', user: 'José Souza', group: 'Sorteio Mensal', amount: 49.90, status: 'pending' },
-];
-
 export default function MasterPage() {
     const [activeTab, setActiveTab] = useState('users');
+    const [users, setUsers] = useState([]);
+    const [payments, setPayments] = useState(mockPayments);
     const [plans, setPlans] = useState([]);
     const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
     const [editingPlan, setEditingPlan] = useState(null);
     const [loadingPlans, setLoadingPlans] = useState(false);
+    const [loadingUsers, setLoadingUsers] = useState(false);
 
     useEffect(() => {
         if (activeTab === 'plans') {
             fetchPlans();
+        } else if (activeTab === 'users') {
+            fetchUsers();
         }
     }, [activeTab]);
+
+    const fetchUsers = async () => {
+        setLoadingUsers(true);
+        try {
+            const res = await api.get('/users');
+            setUsers(res.data);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        } finally {
+            setLoadingUsers(false);
+        }
+    };
 
     const fetchPlans = async () => {
         setLoadingPlans(true);
@@ -130,7 +135,12 @@ export default function MasterPage() {
 
                     <Card className={styles.tableCard}>
                         {activeTab === 'users' ? (
-                            <UsersTable users={mockUsers} />
+                            <UsersTable 
+                                users={users} 
+                                loading={loadingUsers} 
+                                onRefresh={fetchUsers}
+                                plans={plans}
+                            />
                         ) : activeTab === 'payments' ? (
                             <PaymentsTable payments={mockPayments} />
                         ) : (

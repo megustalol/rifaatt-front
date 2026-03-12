@@ -145,3 +145,30 @@
     color: var(--error);
     border-color: var(--error);
 }
+
+.success:hover {
+    background-color: rgba(31, 201, 142, 0.1);
+    color: var(--success);
+    border-color: var(--success);
+}
+
+.planSelect {
+    background-color: var(--bg-surface-saturate);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: var(--text-main);
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+}
+
+.planSelect:focus {
+    border-color: var(--primary);
+}
+
+.centerText {
+    text-align: center;
+    color: var(--text-muted);
+    padding: var(--space-8) !important;
+}
