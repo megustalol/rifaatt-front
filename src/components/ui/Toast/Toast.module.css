@@ -1,0 +1,96 @@
+.toast {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    min-width: 300px;
+    max-width: 450px;
+    overflow: hidden;
+    pointer-events: auto;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--text-main);
+    font-weight: 500;
+    font-size: var(--font-body-sm);
+}
+
+.icon {
+    flex-shrink: 0;
+}
+
+.success .icon {
+    color: var(--success);
+}
+
+.error .icon {
+    color: var(--error);
+}
+
+.warning .icon {
+    color: var(--warning);
+}
+
+.info .icon {
+    color: var(--info);
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: var(--space-1);
+    border-radius: 50%;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.closeButton:hover {
+    background-color: var(--bg-surface-saturate);
+    color: var(--text-main);
+}
+
+.progressBar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: var(--primary);
+    width: 100%;
+    transform-origin: left;
+    animation: progress linear forwards;
+}
+
+.error .progressBar {
+    background-color: var(--error);
+}
+
+.warning .progressBar {
+    background-color: var(--warning);
+}
+
+.info .progressBar {
+    background-color: var(--info);
+}
+
+@keyframes progress {
+    from {
+        transform: scaleX(1);
+    }
+
+    to {
+        transform: scaleX(0);
+    }
+}

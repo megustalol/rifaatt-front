@@ -1,0 +1,242 @@
+.header {
+    height: 72px;
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-8);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.menuButton {
+    background: none;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.pageTitle {
+    font-size: var(--font-h3);
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.searchBox {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-surface-saturate);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-base);
+    width: 40px;
+    overflow: hidden;
+}
+
+.searchBox.expanded {
+    width: 240px;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.searchInput {
+    background: none;
+    border: none;
+    outline: none;
+    padding: var(--space-2);
+    color: var(--text-main);
+    font-size: var(--font-body-sm);
+    width: 100%;
+}
+
+.iconButton {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.iconButton:hover {
+    background-color: var(--bg-surface-saturate);
+    color: var(--text-main);
+}
+
+.notificationBadge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background-color: var(--error);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--bg-surface);
+}
+
+.divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--border-color);
+    margin: 0 var(--space-2);
+}
+
+.profileContainer {
+    position: relative;
+}
+
+.profileButton {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+}
+
+.profileButton:hover {
+    background-color: var(--bg-surface-saturate);
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    background-color: var(--primary-glow);
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.userName {
+    font-size: var(--font-body-sm);
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.rotate {
+    transform: rotate(180deg);
+}
+
+.dropdownOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99;
+}
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 200px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-2);
+    z-index: 100;
+    animation: slideBottom 0.2s ease-out;
+}
+
+.dropdownItem,
+.logoutItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-body-sm);
+    font-weight: 500;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    width: 100%;
+}
+
+.dropdownItem {
+    color: var(--text-secondary);
+}
+
+.dropdownItem:hover {
+    background-color: var(--bg-surface-saturate);
+    color: var(--text-main);
+}
+
+.logoutItem {
+    color: var(--error);
+}
+
+.logoutItem:hover {
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+.dropdownDivider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: var(--space-2) 0;
+}
+
+@keyframes slideBottom {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 1024px) {
+    .header {
+        padding: 0 var(--space-4);
+    }
+
+    .menuButton {
+        display: flex;
+    }
+
+    .userName {
+        display: none;
+    }
+
+    .searchBox {
+        display: none;
+    }
+}

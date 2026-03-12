@@ -1,0 +1,182 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.titleInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.title {
+    font-size: var(--font-h2);
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.subtitle {
+    font-size: var(--font-body-sm);
+    color: var(--text-secondary);
+}
+
+.actions {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.contentGrid {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: var(--space-8);
+    align-items: flex-start;
+}
+
+.leftCol {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.card {
+    background-color: var(--bg-surface);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    border: 1px solid var(--border-color);
+}
+
+.groupSelector {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.groupSelector label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.select {
+    width: 100%;
+    height: 48px;
+    background-color: var(--bg-surface-saturate);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-3);
+    color: var(--text-main);
+    font-size: var(--font-body-sm);
+    outline: none;
+    cursor: pointer;
+}
+
+.gridHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.gridHeader h3 {
+    font-size: var(--font-body);
+    font-weight: 700;
+}
+
+.gridStats {
+    display: flex;
+    gap: var(--space-4);
+    font-size: var(--font-caption);
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+/* Winner Modal */
+.winnerWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-6);
+}
+
+.winnerNumber {
+    width: 100px;
+    height: 100px;
+    background-color: var(--primary);
+    color: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: 900;
+    box-shadow: 0 0 40px var(--primary-glow);
+}
+
+.winnerInfo h4 {
+    font-size: var(--font-h3);
+    font-weight: 700;
+}
+
+.winnerInfo p {
+    color: var(--text-muted);
+}
+
+.prizeLabel {
+    font-size: var(--font-body-sm);
+    color: var(--text-secondary);
+}
+
+/* Drawing Overlay */
+.drawingOverlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.drawingContent {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+    color: var(--primary);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 1200px) {
+    .contentGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-4);
+    }
+}

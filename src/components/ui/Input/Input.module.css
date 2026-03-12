@@ -1,0 +1,141 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    width: 100%;
+}
+
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    width: 100%;
+    height: 52px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-4);
+    padding-top: var(--space-4);
+    color: var(--text-main);
+    font-size: var(--font-body-sm);
+    transition: all var(--transition-base);
+    outline: none;
+}
+
+/* Floating Label Logic */
+.label {
+    position: absolute;
+    left: var(--space-4);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: all var(--transition-base);
+    font-size: var(--font-body-sm);
+    z-index: 2;
+}
+
+.input::placeholder {
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.input:focus::placeholder {
+    opacity: 1;
+}
+
+.input:focus~.label,
+.input:not(:placeholder-shown)~.label {
+    top: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--primary);
+}
+
+.input:not(:focus)~.label {
+    color: var(--text-muted);
+}
+
+.input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.leftIcon {
+    position: absolute;
+    left: var(--space-4);
+    color: var(--text-muted);
+}
+
+.withLeftIcon {
+    padding-left: var(--space-12);
+}
+
+.withLeftIcon~.label {
+    left: var(--space-12);
+}
+
+.passwordToggle {
+    position: absolute;
+    right: var(--space-4);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--transition-fast);
+}
+
+.passwordToggle:hover {
+    color: var(--text-main);
+}
+
+.withRightIcon {
+    padding-right: var(--space-12);
+}
+
+/* Error State */
+.hasError .input {
+    border-color: var(--error);
+}
+
+.hasError .input:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.errorMessage {
+    font-size: var(--font-caption);
+    color: var(--error);
+    font-weight: 500;
+    animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}

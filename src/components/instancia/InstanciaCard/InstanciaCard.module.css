@@ -1,0 +1,137 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding: var(--space-6);
+    position: relative;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.iconWrapper {
+    width: 48px;
+    height: 48px;
+    background-color: var(--bg-surface-saturate);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.name {
+    font-size: var(--font-body);
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.phone {
+    font-size: var(--font-body-sm);
+    color: var(--text-muted);
+}
+
+.statusSection {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.statusBadge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: var(--font-caption);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.success {
+    background-color: rgba(31, 201, 142, 0.1);
+    color: var(--success);
+}
+
+.error {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--error);
+}
+
+.warning {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+.pulse {
+    width: 8px;
+    height: 8px;
+    background-color: var(--warning);
+    border-radius: 50%;
+    animation: pulseAnim 1.5s infinite;
+}
+
+@keyframes pulseAnim {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.5);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: auto;
+}
+
+.smallActions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.actionBtn {
+    flex: 1;
+    height: 40px;
+    background-color: var(--bg-surface-saturate);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.actionBtn:hover {
+    background-color: var(--border-color);
+    color: var(--text-main);
+}
+
+.delete:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--error);
+    border-color: var(--error);
+}

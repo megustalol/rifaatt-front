@@ -1,0 +1,40 @@
+.skeleton {
+    background-color: var(--bg-surface-saturate);
+    background-image: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.05),
+            transparent);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-sm);
+}
+
+.text {
+    height: 1em;
+    width: 100%;
+}
+
+.circular {
+    border-radius: 50%;
+}
+
+.rectangular {
+    border-radius: var(--radius-sm);
+}
+
+@keyframes shimmer {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
+}
+
+[data-theme="light"] .skeleton {
+    background-image: linear-gradient(90deg,
+            transparent,
+            rgba(0, 0, 0, 0.05),
+            transparent);
+}

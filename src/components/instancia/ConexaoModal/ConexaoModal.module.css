@@ -1,0 +1,146 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.tabWrapper {
+    display: flex;
+    background-color: var(--bg-surface-saturate);
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+    gap: var(--space-1);
+}
+
+.tabWrapper button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    font-size: var(--font-body-sm);
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all var(--transition-fast);
+}
+
+.activeTab {
+    background-color: var(--bg-surface) !important;
+    color: var(--primary) !important;
+    box-shadow: var(--shadow-sm);
+}
+
+.infoBox {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background-color: var(--bg-surface-saturate);
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--primary);
+    margin-bottom: var(--space-8);
+}
+
+.infoBox p {
+    font-size: var(--font-body-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.qrSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.qrDisplay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-8);
+    background-color: white;
+    /* Always white for QR contrast */
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    width: 100%;
+}
+
+.qrCodePlaceholder {
+    color: #000;
+}
+
+.qrLoading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    color: var(--text-muted);
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+.timer {
+    font-size: var(--font-body-sm);
+    color: var(--text-secondary);
+}
+
+.timer span {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.pairingSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.pairingForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.label {
+    font-size: var(--font-body-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.phoneInput {
+    height: 52px;
+    background-color: var(--bg-surface-saturate);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-4);
+    color: var(--text-main);
+    font-size: var(--font-body);
+    outline: none;
+    transition: border-color var(--transition-base);
+}
+
+.phoneInput:focus {
+    border-color: var(--primary);
+}
+
+.pairingSteps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: var(--font-body-sm);
+    color: var(--text-secondary);
+    padding: var(--space-4);
+}

@@ -1,0 +1,52 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background-color: #0D1219;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.logoWrapper {
+    background: white;
+    padding: var(--space-6);
+    border-radius: 24px;
+    box-shadow: 0 0 50px rgba(31, 201, 142, 0.2);
+    margin-bottom: var(--space-4);
+}
+
+.title {
+    font-size: var(--font-h3);
+    font-weight: 700;
+    margin: 0;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.loader {
+    width: 180px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: var(--space-4);
+}
+
+.progress {
+    height: 100%;
+    background: var(--primary);
+    box-shadow: 0 0 15px var(--primary);
+}

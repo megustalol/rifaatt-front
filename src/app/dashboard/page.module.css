@@ -1,0 +1,127 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.welcome {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.title {
+    font-size: var(--font-h2);
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.subtitle {
+    font-size: var(--font-body-sm);
+    color: var(--text-secondary);
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-6);
+}
+
+.mainGrid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: var(--space-8);
+}
+
+.feedSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sectionTitle {
+    font-size: var(--font-body);
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.viewAll {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-size: var(--font-caption);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.feedCard {
+    padding: var(--space-2) !important;
+}
+
+.promoSection {
+    display: flex;
+    flex-direction: column;
+}
+
+.promoCard {
+    background-color: #0A0F14 !important;
+    color: white;
+    text-align: center;
+    padding: var(--space-8) !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    border: none !important;
+}
+
+.promoIcon {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-2);
+}
+
+.promoCard h4 {
+    font-size: var(--font-body);
+    font-weight: 700;
+}
+
+.promoCard p {
+    font-size: var(--font-body-sm);
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: var(--space-4);
+}
+
+@media (max-width: 1280px) {
+    .mainGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .promoSection {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-4);
+    }
+
+    .header button {
+        width: 100%;
+    }
+}

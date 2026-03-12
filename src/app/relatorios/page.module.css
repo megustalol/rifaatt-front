@@ -1,0 +1,159 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.title {
+    font-size: var(--font-h2);
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: var(--font-body-sm);
+    color: var(--text-secondary);
+}
+
+.statsOverview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+}
+
+.statCard {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-6);
+}
+
+.chartWrapper {
+    width: 120px;
+}
+
+.statInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.statLabel {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.statValue {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 4px 0;
+}
+
+.statTrend {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tabContent {
+    margin-top: var(--space-6);
+}
+
+.rankingCard {
+    padding: 0;
+    overflow: hidden;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table th {
+    text-align: left;
+    padding: var(--space-6) var(--space-8);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background-color: var(--bg-surface-saturate);
+    font-weight: 800;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table tr {
+    transition: all var(--transition-fast);
+}
+
+.table tr:hover td {
+    background-color: var(--bg-surface-saturate);
+    cursor: default;
+}
+
+.table td {
+    padding: var(--space-6) var(--space-8);
+    font-size: var(--font-body-sm);
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.rankIdx {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background-color: var(--bg-surface-saturate);
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+}
+
+.rankFirst {
+    background: linear-gradient(135deg, var(--primary), #10b981);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(31, 201, 142, 0.3);
+}
+
+.userName {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(to bottom right, var(--primary), var(--primary-glow));
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.valCell {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+@media (max-width: 768px) {
+    .statsOverview {
+        grid-template-columns: 1fr;
+    }
+}
