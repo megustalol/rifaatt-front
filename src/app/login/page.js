@@ -19,7 +19,7 @@ function LoginContent() {
 
     const [mode, setMode] = useState(initialMode);
     const [loading, setLoading] = useState(false);
-    const [redirecting, setRedirecting] = useState(null); // somente para build na vercel 'master' or 'organizer'
+    const [redirecting, setRedirecting] = useState(null); // 'master' or 'organizer'
     const [error, setError] = useState('');
     const { login, register } = useAuth();
 
