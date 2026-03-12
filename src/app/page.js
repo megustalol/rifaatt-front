@@ -30,6 +30,7 @@ import api from '@/services/api';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function LandingPage() {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const metricsRef = useRef(null);
   const [plans, setPlans] = React.useState([]);
 
