@@ -56,9 +56,13 @@ export default function GruposPage() {
     };
 
     const filteredGroups = groups.filter(group => {
+        const name = (group.groupName || group.name || '').toLowerCase();
+        const jid = (group.groupJid || group.jid || '');
+        const search = filterSearch.toLowerCase();
+
         const matchesInstance = filterInstance === '' || group.instanceId === filterInstance;
-        const matchesSearch = group.name.toLowerCase().includes(filterSearch.toLowerCase()) ||
-            group.jid.includes(filterSearch);
+        const matchesSearch = name.includes(search) || jid.includes(filterSearch);
+        
         return matchesInstance && matchesSearch;
     });
 
