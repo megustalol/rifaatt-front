@@ -46,7 +46,7 @@ const DashboardLayout = ({ children }) => {
             </AnimatePresence>
 
             <div className={styles.mainContainer}>
-                {!user?.Plan && <FreePlanBanner />}
+                {(!user?.Plan && user?.role?.toUpperCase() !== 'ADMIN') && <FreePlanBanner />}
                 <Header onMenuClick={toggleSidebar} />
                 <main className={styles.content}>
                     {children}

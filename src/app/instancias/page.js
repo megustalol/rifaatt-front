@@ -43,15 +43,17 @@ export default function InstanciasPage() {
     };
 
     const handleCreate = () => {
-        // Free Plan Lock
-        if (!user?.Plan) {
+        const isAdmin = user?.role?.toUpperCase() === 'ADMIN';
+
+        // Free Plan Lock (Skip for Admin)
+        if (!user?.Plan && !isAdmin) {
             setIsUpgradeModalOpen(true);
             return;
         }
 
-        // Check Limit
+        // Check Limit (Skip for Admin)
         const limit = user?.Plan?.instanceLimit || 1;
-        if (instances.length >= limit) {
+        if (instances.length >= limit && !isAdmin) {
             setIsUpgradeModalOpen(true);
             return;
         }

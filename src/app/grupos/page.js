@@ -92,12 +92,15 @@ export default function GruposPage() {
                     </div>
                     <div className={styles.headerActions}>
                         <Button icon={Plus} onClick={() => {
-                            if (!user?.Plan) {
+                            const isAdmin = user?.role?.toUpperCase() === 'ADMIN';
+                            
+                            if (!user?.Plan && !isAdmin) {
                                 setIsUpgradeModalOpen(true);
                                 return;
                             }
+                            
                             const limit = user?.Plan?.groupLimit || 1;
-                            if (groups.length >= limit) {
+                            if (groups.length >= limit && !isAdmin) {
                                 setIsUpgradeModalOpen(true);
                             } else {
                                 setIsCreateModalOpen(true);
