@@ -26,7 +26,8 @@ export default function MasterPage() {
     const [loadingUsers, setLoadingUsers] = useState(false);
     const [settings, setSettings] = useState({
         asaas_api_key: '',
-        asaas_webhook_url: ''
+        asaas_webhook_secret: '',
+        asaas_environment: 'sandbox'
     });
     const [savingSettings, setSavingSettings] = useState(false);
 
@@ -45,7 +46,8 @@ export default function MasterPage() {
             const res = await api.get('/master/settings');
             setSettings({
                 asaas_api_key: res.data.asaas_api_key || '',
-                asaas_webhook_url: res.data.asaas_webhook_url || ''
+                asaas_webhook_secret: res.data.asaas_webhook_secret || '',
+                asaas_environment: res.data.asaas_environment || 'sandbox'
             });
         } catch (error) {
             console.error('Error fetching settings:', error);
@@ -215,6 +217,19 @@ export default function MasterPage() {
                                 <h3 className={styles.sectionTitle}>Configurações de Pagamento (Asaas)</h3>
                                 <form onSubmit={handleSaveSettings} className={styles.settingsForm}>
                                     <div className={styles.inputGroup}>
+                                        <label>Ambiente Asaas</label>
+                                        <select 
+                                            value={settings.asaas_environment}
+                                            onChange={(e) => setSettings({...settings, asaas_environment: e.target.value})}
+                                            className={styles.input}
+                                        >
+                                            <option value="sandbox">Sandbox (Teste)</option>
+                                            <option value="production">Produção (Real)</option>
+                                        </select>
+                                        <p className={styles.inputHint}>Selecione "Produção" apenas quando estiver pronto para receber pagamentos reais.</p>
+                                    </div>
+
+                                    <div className={styles.inputGroup}>
                                         <label>Asaas API Key</label>
                                         <input 
                                             type="password" 
@@ -227,15 +242,29 @@ export default function MasterPage() {
                                     </div>
 
                                     <div className={styles.inputGroup}>
-                                        <label>Webhook URL (Exibição)</label>
+                                        <label>Token de Segurança do Webhook</label>
                                         <input 
-                                            type="text" 
-                                            value={settings.asaas_webhook_url || 'https://geral-uazapiapi.r954jc.easypanel.host/api/payments/webhook'}
-                                            readOnly
+                                            type="password" 
+                                            value={settings.asaas_webhook_secret}
+                                            onChange={(e) => setSettings({...settings, asaas_webhook_secret: e.target.value})}
+                                            placeholder="Inserir token de segurança"
                                             className={styles.input}
-                                            style={{ backgroundColor: 'var(--bg-main)', cursor: 'default' }}
                                         />
-                                        <p className={styles.inputHint}>Esta é a URL que você deve colar no seu painel Asaas.</p>
+                                        <p className={styles.inputHint}>Configure este mesmo token no painel do Asaas {'>'} Fila de Webhooks para validar as notificações.</p>
+                                    </div>
+
+                                    <div className={styles.inputGroup}>
+                                        <label>Webhook URL (Para copiar)</label>
+                                        <div className={styles.copyInputGroup}>
+                                            <input 
+                                                type="text" 
+                                                value="https://geral-uazapiapi.r954jc.easypanel.host/api/payments/webhook"
+                                                readOnly
+                                                className={styles.input}
+                                                style={{ backgroundColor: 'var(--bg-main)', cursor: 'default' }}
+                                            />
+                                        </div>
+                                        <p className={styles.inputHint}>Copie esta URL e cole no campo "URL de destino" nas configurações de Webhook do Asaas.</p>
                                     </div>
 
                                     <Button type="submit" loading={savingSettings} className={styles.saveSettingsBtn}>
