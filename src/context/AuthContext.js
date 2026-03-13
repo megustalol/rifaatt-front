@@ -14,13 +14,25 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         // Check for saved user/token in localStorage
-        const token = localStorage.getItem('@RifaBot:token');
-        const savedUser = localStorage.getItem('@RifaBot:user');
+        const fetchUser = async () => {
+            const token = localStorage.getItem('@RifaBot:token');
+            if (token) {
+                try {
+                    const response = await api.get('/users/me');
+                    setUser(response.data);
+                    localStorage.setItem('@RifaBot:user', JSON.stringify(response.data));
+                } catch (error) {
+                    console.error('Error refreshing user profile:', error);
+                    // If token is invalid or server error, logout
+                    if (error.response?.status === 401) {
+                        logout();
+                    }
+                }
+            }
+            setLoading(false);
+        };
 
-        if (token && savedUser) {
-            setUser(JSON.parse(savedUser));
-        }
-        setLoading(false);
+        fetchUser();
     }, []);
 
     const login = async (email, password) => {

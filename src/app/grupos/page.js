@@ -10,6 +10,8 @@ import styles from './page.module.css';
 import clsx from 'clsx';
 import CreateGroupModal from '@/components/grupos/CreateGroupModal/CreateGroupModal';
 import Link from 'next/link';
+import UpgradeModal from '@/components/shared/UpgradeModal/UpgradeModal';
+import { useAuth } from '@/context/AuthContext';
 
 import api from '@/services/api';
 import Skeleton from '@/components/ui/Skeleton/Skeleton';
@@ -21,8 +23,10 @@ const statusStyles = {
 };
 
 export default function GruposPage() {
+    const { user } = useAuth();
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState(null);
     const [paymentStep, setPaymentStep] = useState('pix');
     const [loading, setLoading] = useState(true);
@@ -87,7 +91,14 @@ export default function GruposPage() {
                         <p className={styles.subtitle}>Gerencie os grupos onde o robô está ativo e suas assinaturas.</p>
                     </div>
                     <div className={styles.headerActions}>
-                        <Button icon={Plus} onClick={() => setIsCreateModalOpen(true)}>Novo Grupo</Button>
+                        <Button icon={Plus} onClick={() => {
+                            const limit = user?.Plan?.groupLimit || 1;
+                            if (groups.length >= limit) {
+                                setIsUpgradeModalOpen(true);
+                            } else {
+                                setIsCreateModalOpen(true);
+                            }
+                        }}>Novo Grupo</Button>
                         <div className={styles.summaryStats}>
                             <div className={styles.statItem}>
                                 <span className={styles.statLabel}>Total</span>
@@ -260,6 +271,13 @@ export default function GruposPage() {
                     isOpen={isCreateModalOpen}
                     onClose={() => setIsCreateModalOpen(false)}
                     onCreate={() => fetchInitialData()}
+                />
+
+                <UpgradeModal 
+                    isOpen={isUpgradeModalOpen}
+                    onClose={() => setIsUpgradeModalOpen(false)}
+                    featureName="Grupos"
+                    limit={user?.Plan?.groupLimit || 1}
                 />
             </div>
         </DashboardLayout>

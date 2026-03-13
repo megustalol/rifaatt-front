@@ -7,12 +7,16 @@ import ConexaoModal from '@/components/instancia/ConexaoModal/ConexaoModal';
 import Button from '@/components/ui/Button/Button';
 import { Plus } from 'lucide-react';
 import styles from './page.module.css';
+import UpgradeModal from '@/components/shared/UpgradeModal/UpgradeModal';
+import { useAuth } from '@/context/AuthContext';
 
 import api from '@/services/api';
 import Skeleton from '@/components/ui/Skeleton/Skeleton';
 
 export default function InstanciasPage() {
+    const { user } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
     const [selectedInstance, setSelectedInstance] = useState(null);
     const [instances, setInstances] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -39,6 +43,13 @@ export default function InstanciasPage() {
     };
 
     const handleCreate = () => {
+        // Check Limit
+        const limit = user?.Plan?.instanceLimit || 1;
+        if (instances.length >= limit) {
+            setIsUpgradeModalOpen(true);
+            return;
+        }
+
         setSelectedInstance(null);
         setIsModalOpen(true);
     };
@@ -107,6 +118,13 @@ export default function InstanciasPage() {
                     onClose={() => setIsModalOpen(false)}
                     instance={selectedInstance}
                     onSuccess={handleCreated}
+                />
+
+                <UpgradeModal 
+                    isOpen={isUpgradeModalOpen}
+                    onClose={() => setIsUpgradeModalOpen(false)}
+                    featureName="Instâncias"
+                    limit={user?.Plan?.instanceLimit || 1}
                 />
             </div>
         </DashboardLayout>
