@@ -16,7 +16,13 @@ import Button from '@/components/ui/Button/Button';
 import { useEffect } from 'react';
 
 export default function MasterPage() {
-    const [activeTab, setActiveTab] = useState('users');
+    const [users, setUsers] = useState([]);
+    const [payments, setPayments] = useState([]);
+    const [plans, setPlans] = useState([]);
+    const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+    const [editingPlan, setEditingPlan] = useState(null);
+    const [loadingPlans, setLoadingPlans] = useState(false);
+    const [loadingUsers, setLoadingUsers] = useState(false);
     const [settings, setSettings] = useState({
         asaas_api_key: '',
         asaas_webhook_url: ''
