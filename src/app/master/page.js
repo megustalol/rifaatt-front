@@ -16,6 +16,7 @@ import Button from '@/components/ui/Button/Button';
 import { useEffect } from 'react';
 
 export default function MasterPage() {
+    const [activeTab, setActiveTab] = useState('users');
     const [users, setUsers] = useState([]);
     const [payments, setPayments] = useState([]);
     const [plans, setPlans] = useState([]);
