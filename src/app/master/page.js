@@ -147,11 +147,15 @@ export default function MasterPage() {
                         variation={calculateVariation(users.length, 1000)} // Mocked variation for now
                     />
                     <StatsCard 
-                        label="Vaturamento Previsto" 
-                        value={plans.length > 0 ? users.reduce((acc, user) => {
-                            const userPlan = plans.find(p => p.id === user.planId);
-                            return acc + (userPlan ? userPlan.price : 0);
-                        }, 0) : 0} 
+                        label="Faturamento Previsto" 
+                        value={(() => {
+                            const total = plans.length > 0 ? users.reduce((acc, user) => {
+                                const userPlan = plans.find(p => p.id === user.planId);
+                                const price = parseFloat(userPlan?.price || 0);
+                                return acc + (isNaN(price) ? 0 : price);
+                            }, 0) : 0;
+                            return total;
+                        })()} 
                         prefix="R$ " 
                         icon={DollarSign} 
                     />

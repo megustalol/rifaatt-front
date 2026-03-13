@@ -65,7 +65,11 @@ export default function DashboardPage() {
                             />
                             <StatsCard
                                 label="Faturamento Total"
-                                value={summary?.totalValue.replace('R$ ', '') || '0,00'}
+                                value={(() => {
+                                    const val = summary?.totalValue?.replace('R$ ', '')?.replace(',', '.') || '0.00';
+                                    const num = parseFloat(val);
+                                    return isNaN(num) ? '0,00' : num.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                                })()}
                                 prefix="R$ "
                                 icon={DollarSign}
                             />
