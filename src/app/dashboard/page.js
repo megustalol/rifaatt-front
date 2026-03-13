@@ -97,7 +97,9 @@ export default function DashboardPage() {
                             <div className={styles.promoIcon}>🚀</div>
                             <h4>Escala sua Operação</h4>
                             <p>Adicione mais instâncias e grupos para aumentar seu alcance e faturamento.</p>
-                            <Button variant="outline" fullWidth>Expandir Plano</Button>
+                            <Link href="/checkout" className={styles.fullWidthLink}>
+                                <Button variant="outline" fullWidth>Expandir Plano</Button>
+                            </Link>
                         </Card>
                     </aside>
                 </div>

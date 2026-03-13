@@ -20,8 +20,10 @@ import styles from './page.module.css';
 import Image from 'next/image';
 import clsx from 'clsx';
 import api from '@/services/api';
+import { useAuth } from '@/context/AuthContext';
 
 function CheckoutContent() {
+    const { user } = useAuth();
     const searchParams = useSearchParams();
     const router = useRouter();
     const [plans, setPlans] = useState([]);
@@ -62,7 +64,8 @@ function CheckoutContent() {
     const fetchPlans = async () => {
         try {
             const res = await api.get('/plans');
-            const activePlans = res.data.filter(p => p.status === 'active');
+            // Filter: Active plans AND NOT the user's current plan
+            const activePlans = res.data.filter(p => p.status === 'active' && p.id !== user?.planId);
             setPlans(activePlans);
             if (!selectedPlanId && activePlans.length > 0) {
                 setSelectedPlanId(activePlans[0].id);
