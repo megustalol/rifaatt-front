@@ -27,11 +27,37 @@ function CheckoutContent() {
     const [plans, setPlans] = useState([]);
     const [selectedPlanId, setSelectedPlanId] = useState(searchParams.get('plan'));
     const [loading, setLoading] = useState(true);
+    const [generatingPayment, setGeneratingPayment] = useState(false);
+    const [paymentData, setPaymentData] = useState(null);
+    const [document, setDocument] = useState('');
+    const [error, setError] = useState('');
     const [copied, setCopied] = useState(false);
+    const [paymentStatus, setPaymentStatus] = useState('PENDING');
 
     useEffect(() => {
         fetchPlans();
     }, []);
+
+    useEffect(() => {
+        let interval;
+        if (paymentData?.paymentId && paymentStatus === 'PENDING') {
+            interval = setInterval(async () => {
+                try {
+                    const res = await api.get(`/payments/status/${paymentData.paymentId}`);
+                    if (res.data.status === 'RECEIVED' || res.data.status === 'CONFIRMED') {
+                        setPaymentStatus('CONFIRMED');
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            router.push('/dashboard?success=plan_active');
+                        }, 3000);
+                    }
+                } catch (error) {
+                    console.error('Error polling status:', error);
+                }
+            }, 5000);
+        }
+        return () => clearInterval(interval);
+    }, [paymentData, paymentStatus, router]);
 
     const fetchPlans = async () => {
         try {
@@ -48,13 +74,43 @@ function CheckoutContent() {
         }
     };
 
+    const handleGeneratePayment = async () => {
+        if (!document || document.length < 11) {
+            setError('CPF ou CNPJ válido é obrigatório.');
+            return;
+        }
+
+        setGeneratingPayment(true);
+        setError('');
+        try {
+            const res = await api.post('/payments/checkout', {
+                planId: selectedPlanId,
+                document: document.replace(/\D/g, '')
+            });
+            setPaymentData(res.data);
+        } catch (error) {
+            console.error('Error generating payment:', error);
+            setError(error.response?.data?.error || 'Erro ao gerar pagamento. Tente novamente.');
+        } finally {
+            setGeneratingPayment(false);
+        }
+    };
+
     const selectedPlan = plans.find(p => p.id === selectedPlanId) || plans[0];
 
     const handleCopyPix = () => {
-        navigator.clipboard.writeText('00020126580014br.gov.bcb.pix01362e49c824-3f2d-4e92-9c1a-1a2b3c4d5e6f520400005303986540549.005802BR5913RIFAATT SAAS6009SAO PAULO62070503***6304E2A1');
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        if (paymentData?.payload) {
+            navigator.clipboard.writeText(paymentData.payload);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }
     };
+
+    if (loading) return (
+        <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-main)', color: 'var(--text-main)' }}>
+            Carregando checkout...
+        </div>
+    );
 
     return (
         <div className={styles.container}>
@@ -71,17 +127,16 @@ function CheckoutContent() {
 
             <main className={styles.main}>
                 <div className={styles.checkoutGrid}>
-                    {/* Left: Plan Summary/Selection */}
                     <section className={styles.selectionSection}>
                         <h1 className={styles.title}>Confirme seu plano</h1>
-                        <p className={styles.subtitle}>Você pode alterar seu plano antes de prosseguir com o pagamento.</p>
+                        <p className={styles.subtitle}>Escolha o plano ideal para seu negócio e automatize suas vendas.</p>
 
                         <div className={styles.planOptions}>
                             {plans.map((plan) => (
                                 <div
                                     key={plan.id}
                                     className={clsx(styles.planOption, selectedPlanId === plan.id && styles.selected)}
-                                    onClick={() => setSelectedPlanId(plan.id)}
+                                    onClick={() => !paymentData && setSelectedPlanId(plan.id)}
                                 >
                                     <div className={styles.planRadio}>
                                         <div className={styles.radioInner} />
@@ -95,8 +150,33 @@ function CheckoutContent() {
                             ))}
                         </div>
 
+                        {!paymentData && (
+                            <div className={styles.documentInputSection}>
+                                <div className={styles.inputGroup}>
+                                    <label className={styles.inputLabel}>CPF ou CNPJ para emissão</label>
+                                    <input
+                                        type="text"
+                                        placeholder="000.000.000-00"
+                                        className={styles.inputField}
+                                        value={document}
+                                        onChange={(e) => setDocument(e.target.value)}
+                                    />
+                                    {error && <span className={styles.inputError}>{error}</span>}
+                                </div>
+                                <Button
+                                    fullWidth
+                                    className={styles.generateBtn}
+                                    style={{ marginTop: '20px' }}
+                                    onClick={handleGeneratePayment}
+                                    loading={generatingPayment}
+                                >
+                                    Gerar Pagamento PIX
+                                </Button>
+                            </div>
+                        )}
+
                         {selectedPlan && (
-                            <div className={styles.featureList}>
+                            <div className={styles.featureList} style={{ marginTop: '30px' }}>
                                 <h3>O que está incluso no plano {selectedPlan.name}:</h3>
                                 <div className={styles.featureItem}>
                                     <CheckCircle2 size={18} className={styles.checkIcon} />
@@ -106,17 +186,10 @@ function CheckoutContent() {
                                     <CheckCircle2 size={18} className={styles.checkIcon} />
                                     {selectedPlan.groupLimit} {selectedPlan.groupLimit === 1 ? 'Grupo Ativo' : 'Grupos Ativos'}
                                 </div>
-                                {(selectedPlan.features || []).map((feature, i) => (
-                                    <div key={i} className={clsx(styles.featureItem, !feature.active && styles.disabled)}>
-                                        <CheckCircle2 size={18} className={styles.checkIcon} />
-                                        {feature.text}
-                                    </div>
-                                ))}
                             </div>
                         )}
                     </section>
 
-                    {/* Right: Payment Sidebar */}
                     <aside className={styles.paymentSection}>
                         <Card className={styles.paymentCard}>
                             {selectedPlan && (
@@ -137,46 +210,52 @@ function CheckoutContent() {
                                 </div>
                             )}
 
-                            {selectedPlan && parseFloat(selectedPlan.price) === 0 ? (
-                                <div className={styles.freePlanNotice}>
-                                    <Zap size={32} className={styles.zapIcon} />
-                                    <h3>Plano Gratuito Ativado</h3>
-                                    <p>Você será redirecionado para o dashboard em instantes.</p>
-                                    <Button fullWidth onClick={() => router.push('/dashboard')}>
-                                        Ir para o Dashboard
-                                    </Button>
+                            {paymentData ? (
+                                <div className={styles.pixFlow}>
+                                    {paymentStatus === 'CONFIRMED' ? (
+                                        <div className={styles.successNotice}>
+                                            <CheckCircle2 size={48} className={styles.successIcon} />
+                                            <h3>Pagamento Confirmado!</h3>
+                                            <p>Seu plano foi ativado. Redirecionando...</p>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className={styles.pixHeader}>
+                                                <QrCode size={24} />
+                                                <span>Pagamento via PIX</span>
+                                            </div>
+
+                                            <div className={styles.qrPlaceholder}>
+                                                <img
+                                                    src={`data:image/png;base64,${paymentData.qrCode}`}
+                                                    alt="QR Code PIX"
+                                                    style={{ width: '200px', height: '200px' }}
+                                                />
+                                            </div>
+
+                                            <p className={styles.pixInstructions}>
+                                                Escaneie o QR Code acima ou copie a chave PIX abaixo para pagar.
+                                            </p>
+
+                                            <div className={styles.pixCopyArea}>
+                                                <div className={styles.pixKey}>
+                                                    {paymentData.payload}
+                                                </div>
+                                                <button onClick={handleCopyPix} className={styles.copyBtn}>
+                                                    {copied ? <Check size={18} /> : <Copy size={18} />}
+                                                </button>
+                                            </div>
+
+                                            <div className={styles.secureNotice}>
+                                                <ShieldCheck size={16} />
+                                                Pagamento processado via Asaas
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             ) : (
-                                <div className={styles.pixFlow}>
-                                    <div className={styles.pixHeader}>
-                                        <QrCode size={24} />
-                                        <span>Pagamento via PIX</span>
-                                    </div>
-
-                                    <div className={styles.qrPlaceholder}>
-                                        {/* In a real app, generate actual QR here */}
-                                        <div className={styles.mockQr}>
-                                            <QrCode size={160} strokeWidth={1} />
-                                        </div>
-                                    </div>
-
-                                    <p className={styles.pixInstructions}>
-                                        Escaneie o QR Code acima ou copie a chave PIX abaixo para pagar.
-                                    </p>
-
-                                    <div className={styles.pixCopyArea}>
-                                        <div className={styles.pixKey}>
-                                            00020126580014br.gov.bcb.pix01362e49c824...
-                                        </div>
-                                        <button onClick={handleCopyPix} className={styles.copyBtn}>
-                                            {copied ? <Check size={18} /> : <Copy size={18} />}
-                                        </button>
-                                    </div>
-
-                                    <div className={styles.secureNotice}>
-                                        <ShieldCheck size={16} />
-                                        Pagamento 100% Seguro via Mercado Pago
-                                    </div>
+                                <div className={styles.waitingNotice}>
+                                    <p>Selecione um plano e informe seu CPF para gerar o pagamento.</p>
                                 </div>
                             )}
                         </Card>

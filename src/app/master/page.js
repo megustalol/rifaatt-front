@@ -17,21 +17,47 @@ import { useEffect } from 'react';
 
 export default function MasterPage() {
     const [activeTab, setActiveTab] = useState('users');
-    const [users, setUsers] = useState([]);
-    const [payments, setPayments] = useState([]);
-    const [plans, setPlans] = useState([]);
-    const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
-    const [editingPlan, setEditingPlan] = useState(null);
-    const [loadingPlans, setLoadingPlans] = useState(false);
-    const [loadingUsers, setLoadingUsers] = useState(false);
+    const [settings, setSettings] = useState({
+        asaas_api_key: '',
+        asaas_webhook_url: ''
+    });
+    const [savingSettings, setSavingSettings] = useState(false);
 
     useEffect(() => {
         if (activeTab === 'plans') {
             fetchPlans();
         } else if (activeTab === 'users') {
             fetchUsers();
+        } else if (activeTab === 'settings') {
+            fetchSettings();
         }
     }, [activeTab]);
+
+    const fetchSettings = async () => {
+        try {
+            const res = await api.get('/master/settings');
+            setSettings({
+                asaas_api_key: res.data.asaas_api_key || '',
+                asaas_webhook_url: res.data.asaas_webhook_url || ''
+            });
+        } catch (error) {
+            console.error('Error fetching settings:', error);
+        }
+    };
+
+    const handleSaveSettings = async (e) => {
+        e.preventDefault();
+        setSavingSettings(true);
+        try {
+            await api.post('/master/settings', settings);
+            alert('Configurações salvas com sucesso!');
+        } catch (error) {
+            console.error('Error saving settings:', error);
+            alert('Erro ao salvar configurações.');
+        } finally {
+            setSavingSettings(false);
+        }
+    };
 
     const fetchUsers = async () => {
         setLoadingUsers(true);
@@ -152,6 +178,12 @@ export default function MasterPage() {
                         >
                             Planos
                         </button>
+                        <button
+                            className={clsx(styles.tab, activeTab === 'settings' && styles.activeTab)}
+                            onClick={() => setActiveTab('settings')}
+                        >
+                            Configurações
+                        </button>
                     </div>
 
                     <Card className={styles.tableCard}>
@@ -164,13 +196,46 @@ export default function MasterPage() {
                             />
                         ) : activeTab === 'payments' ? (
                             <PaymentsTable payments={payments} />
-                        ) : (
+                        ) : activeTab === 'plans' ? (
                             <PlansTable
                                 plans={plans}
                                 onEdit={openEditModal}
                                 onDelete={handleDeletePlan}
                                 loading={loadingPlans}
                             />
+                        ) : (
+                            <div className={styles.settingsSection}>
+                                <h3 className={styles.sectionTitle}>Configurações de Pagamento (Asaas)</h3>
+                                <form onSubmit={handleSaveSettings} className={styles.settingsForm}>
+                                    <div className={styles.inputGroup}>
+                                        <label>Asaas API Key</label>
+                                        <input 
+                                            type="password" 
+                                            value={settings.asaas_api_key}
+                                            onChange={(e) => setSettings({...settings, asaas_api_key: e.target.value})}
+                                            placeholder="Inserir chave de API"
+                                            className={styles.input}
+                                        />
+                                        <p className={styles.inputHint}>Obtenha sua chave em Minha Conta {'>'} Integração no painel do Asaas.</p>
+                                    </div>
+
+                                    <div className={styles.inputGroup}>
+                                        <label>Webhook URL (Exibição)</label>
+                                        <input 
+                                            type="text" 
+                                            value={settings.asaas_webhook_url || 'https://geral-uazapiapi.r954jc.easypanel.host/api/payments/webhook'}
+                                            readOnly
+                                            className={styles.input}
+                                            style={{ backgroundColor: 'var(--bg-main)', cursor: 'default' }}
+                                        />
+                                        <p className={styles.inputHint}>Esta é a URL que você deve colar no seu painel Asaas.</p>
+                                    </div>
+
+                                    <Button type="submit" loading={savingSettings} className={styles.saveSettingsBtn}>
+                                        Salvar Configurações
+                                    </Button>
+                                </form>
+                            </div>
                         )}
                     </Card>
                 </div>

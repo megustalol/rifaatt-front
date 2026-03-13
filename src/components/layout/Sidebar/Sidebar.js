@@ -33,7 +33,7 @@ const Sidebar = ({ onClose }) => {
     const pathname = usePathname();
     const { user, logout } = useAuth();
 
-    const isAdmin = user?.role === 'admin';
+    const isAdmin = user?.role?.toUpperCase() === 'ADMIN';
 
     return (
         <div className={styles.sidebar}>
