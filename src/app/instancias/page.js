@@ -43,6 +43,12 @@ export default function InstanciasPage() {
     };
 
     const handleCreate = () => {
+        // Free Plan Lock
+        if (!user?.Plan) {
+            setIsUpgradeModalOpen(true);
+            return;
+        }
+
         // Check Limit
         const limit = user?.Plan?.instanceLimit || 1;
         if (instances.length >= limit) {
@@ -125,6 +131,7 @@ export default function InstanciasPage() {
                     onClose={() => setIsUpgradeModalOpen(false)}
                     featureName="Instâncias"
                     limit={user?.Plan?.instanceLimit || 1}
+                    isLocked={!user?.Plan}
                 />
             </div>
         </DashboardLayout>

@@ -92,6 +92,10 @@ export default function GruposPage() {
                     </div>
                     <div className={styles.headerActions}>
                         <Button icon={Plus} onClick={() => {
+                            if (!user?.Plan) {
+                                setIsUpgradeModalOpen(true);
+                                return;
+                            }
                             const limit = user?.Plan?.groupLimit || 1;
                             if (groups.length >= limit) {
                                 setIsUpgradeModalOpen(true);
@@ -278,6 +282,7 @@ export default function GruposPage() {
                     onClose={() => setIsUpgradeModalOpen(false)}
                     featureName="Grupos"
                     limit={user?.Plan?.groupLimit || 1}
+                    isLocked={!user?.Plan}
                 />
             </div>
         </DashboardLayout>

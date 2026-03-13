@@ -7,7 +7,7 @@ import { Rocket, ShieldAlert, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import styles from './UpgradeModal.module.css';
 
-const UpgradeModal = ({ isOpen, onClose, featureName, limit }) => {
+const UpgradeModal = ({ isOpen, onClose, featureName, limit, isLocked = false }) => {
     const router = useRouter();
 
     const handleUpgrade = () => {
@@ -20,7 +20,7 @@ const UpgradeModal = ({ isOpen, onClose, featureName, limit }) => {
             isOpen={isOpen}
             onClose={onClose}
             size="sm"
-            showClose={true}
+            showClose={!isLocked}
             title=""
         >
             <div className={styles.container}>
@@ -34,10 +34,13 @@ const UpgradeModal = ({ isOpen, onClose, featureName, limit }) => {
                 </div>
 
                 <div className={styles.content}>
-                    <h2 className={styles.title}>Limite Atingido!</h2>
+                    <h2 className={styles.title}>{isLocked ? 'Funcionalidade Bloqueada' : 'Limite Atingido!'}</h2>
                     <p className={styles.description}>
-                        Seu plano atual permite até <strong>{limit} {featureName}</strong>. 
-                        Para continuar escalando sua operação e adicionar mais, você precisa de um plano superior.
+                        {isLocked ? (
+                            <>Sua conta está no <strong>Plano Gratuito</strong> e não possui acesso a esta funcionalidade. Assine um plano para começar a usar.</>
+                        ) : (
+                            <>Seu plano atual permite até <strong>{limit} {featureName}</strong>. Para continuar escalando sua operação e adicionar mais, você precisa de um plano superior.</>
+                        )}
                     </p>
                 </div>
 
@@ -48,11 +51,13 @@ const UpgradeModal = ({ isOpen, onClose, featureName, limit }) => {
                         icon={ArrowRight}
                         className={styles.upgradeBtn}
                     >
-                        Fazer Upgrade Agora
+                        {isLocked ? 'Assinar um Plano' : 'Fazer Upgrade Agora'}
                     </Button>
-                    <button className={styles.maybeLater} onClick={onClose}>
-                        Talvez depois
-                    </button>
+                    {!isLocked && (
+                        <button className={styles.maybeLater} onClick={onClose}>
+                            Talvez depois
+                        </button>
+                    )}
                 </div>
 
                 <div className={styles.benefits}>

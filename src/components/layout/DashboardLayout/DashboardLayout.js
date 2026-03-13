@@ -5,8 +5,11 @@ import Sidebar from '../Sidebar/Sidebar';
 import Header from '../Header/Header';
 import styles from './DashboardLayout.module.css';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useAuth } from '@/context/AuthContext';
+import FreePlanBanner from '@/components/shared/FreePlanBanner/FreePlanBanner';
 
 const DashboardLayout = ({ children }) => {
+    const { user } = useAuth();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -43,6 +46,7 @@ const DashboardLayout = ({ children }) => {
             </AnimatePresence>
 
             <div className={styles.mainContainer}>
+                {!user?.Plan && <FreePlanBanner />}
                 <Header onMenuClick={toggleSidebar} />
                 <main className={styles.content}>
                     {children}
