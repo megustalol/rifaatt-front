@@ -15,7 +15,8 @@ import {
     UserCircle,
     Copy,
     MessageCircle,
-    Plus
+    Plus,
+    Trash2
 } from 'lucide-react';
 import styles from './page.module.css';
 import Link from 'next/link';
@@ -81,6 +82,22 @@ export default function GroupDetailsPage() {
             console.error('Error fetching group details:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDeleteGroup = async () => {
+        if (raffle && raffle.status === 'ACTIVE') {
+            alert('Não é possível excluir o grupo pois existe uma rifa em andamento. Finalize a rifa primeiro.');
+            return;
+        }
+
+        if (confirm('Tem certeza que deseja excluir as configurações deste grupo? Todas as rifas vinculadas serão perdidas.')) {
+            try {
+                await api.delete(`/raffles/groups/${groupJid}`);
+                window.location.href = '/grupos';
+            } catch (error) {
+                alert(error.response?.data?.error || 'Erro ao excluir grupo');
+            }
         }
     };
 
@@ -171,6 +188,13 @@ export default function GroupDetailsPage() {
                         </div>
                         <div className={styles.actions}>
                             <Button variant="secondary" icon={MessageCircle}>Abrir no WhatsApp</Button>
+                            <Button 
+                                variant="danger" 
+                                icon={Trash2}
+                                onClick={handleDeleteGroup}
+                            >
+                                Excluir Grupo
+                            </Button>
                         </div>
                     </div>
                 </div>
