@@ -42,13 +42,13 @@ const ConexaoModal = ({ isOpen, onClose, instance, onSuccess }) => {
         console.log('[START_CONN] Starting connection for ID:', id, 'Phone:', phoneInput);
         try {
             const response = await api.post(`/instances/connect/${id}`, { phone: phoneInput });
-            console.log('[START_CONN] API full response:', response.data);
+            console.log('[START_CONN] Raw Response Data:', JSON.stringify(response.data));
 
             const data = response.data;
             
             // Handle Uazapi nested response structure
-            const qrcodeData = data.instance?.qrcode || data.base64 || data.qrcode;
-            const pairingCodeData = data.instance?.paircode || data.paircode || data.pairingCode;
+            const qrcodeData = data.instance?.qrcode || data.base64 || data.qrcode || data.instance?.qrCode;
+            const pairingCodeData = data.instance?.paircode || data.paircode || data.pairingCode || data.instance?.pairCode;
 
             console.log('[START_CONN] Extracted QR:', qrcodeData ? 'exists' : 'null');
             console.log('[START_CONN] Extracted Pairing:', pairingCodeData);
