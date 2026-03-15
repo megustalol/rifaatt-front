@@ -86,7 +86,16 @@ const ConexaoModal = ({ isOpen, onClose, instance, onSuccess }) => {
         const interval = setInterval(async () => {
             try {
                 const response = await api.get(`/instances/status/${id}`);
-                if (response.data.instance.status === 'connected') {
+                const data = response.data;
+                console.log('[POLL] Status check:', data.instance?.status, 'Code:', data.instance?.paircode || data.paircode);
+
+                // Update pairing code if it arrived later
+                const pCode = data.instance?.paircode || data.paircode || data.pairingCode || data.instance?.pairCode;
+                if (pCode && pCode.length > 0) {
+                    setPairingCode(pCode);
+                }
+
+                if (data.instance?.status === 'connected') {
                     clearInterval(interval);
                     onSuccess && onSuccess();
                     onClose();
