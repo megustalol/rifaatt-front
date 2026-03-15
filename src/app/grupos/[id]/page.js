@@ -265,48 +265,89 @@ export default function GroupDetailsPage() {
                                         <p>Nenhuma reserva detectada ainda.</p>
                                     </div>
                                 ) : (
-                                    <table className={styles.table}>
-                                        <thead>
-                                            <tr>
-                                                <th>Usuário</th>
-                                                <th>Dezenas</th>
-                                                <th>Valor</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {participants.map((p) => (
-                                                <tr key={p.phone}>
-                                                    <td className={styles.userName}>
-                                                        <div className={styles.avatar}>
-                                                            {p.name.charAt(0)}
-                                                        </div>
-                                                        <div>
-                                                            <div>{p.name}</div>
-                                                            <div className={styles.phoneSub}>{p.phone.split('@')[0]}</div>
-                                                        </div>
-                                                    </td>
-                                                    <td className={styles.phoneCell}>
-                                                        <div className={styles.numberList}>
-                                                            {p.numbers.map(num => (
-                                                                <span key={num} className={styles.numberTag}>
-                                                                    {getAnimalForNumber(num).emoji} {num}
-                                                                </span>
-                                                            ))}
-                                                        </div>
-                                                    </td>
-                                                    <td className={styles.purchasesCell}>
-                                                        R$ {(p.numbers.length * raffle.ticketValue).toFixed(2)}
-                                                    </td>
-                                                    <td>
-                                                        <div className={clsx(styles.statusBadge, p.pendingCount === 0 ? styles.online : styles.away)}>
-                                                            {p.pendingCount === 0 ? 'Pago' : 'Pendente'}
-                                                        </div>
-                                                    </td>
+                                    <>
+                                        {/* Desktop Table */}
+                                        <table className={clsx(styles.table, styles.desktopOnly)}>
+                                            <thead>
+                                                <tr>
+                                                    <th>Usuário</th>
+                                                    <th>Dezenas</th>
+                                                    <th>Valor</th>
+                                                    <th>Status</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                {participants.map((p) => (
+                                                    <tr key={p.phone}>
+                                                        <td className={styles.userName}>
+                                                            <div className={styles.avatar}>
+                                                                {p.name.charAt(0)}
+                                                            </div>
+                                                            <div>
+                                                                <div>{p.name}</div>
+                                                                <div className={styles.phoneSub}>{p.phone.split('@')[0]}</div>
+                                                            </div>
+                                                        </td>
+                                                        <td className={styles.phoneCell}>
+                                                            <div className={styles.numberList}>
+                                                                {p.numbers.map(num => (
+                                                                    <span key={num} className={styles.numberTag}>
+                                                                        {getAnimalForNumber(num).emoji} {num}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </td>
+                                                        <td className={styles.purchasesCell}>
+                                                            R$ {(p.numbers.length * raffle.ticketValue).toFixed(2)}
+                                                        </td>
+                                                        <td>
+                                                            <div className={clsx(styles.statusBadge, p.pendingCount === 0 ? styles.online : styles.away)}>
+                                                                {p.pendingCount === 0 ? 'Pago' : 'Pendente'}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+
+                                        {/* Mobile Cards */}
+                                        <div className={styles.mobileOnly}>
+                                            <div className={styles.participantCards}>
+                                                {participants.map((p) => (
+                                                    <div key={p.phone} className={styles.participantCard}>
+                                                        <div className={styles.participantHeader}>
+                                                            <div className={styles.participantMeta}>
+                                                                <div className={styles.avatar}>{p.name.charAt(0)}</div>
+                                                                <div className={styles.participantNameInfo}>
+                                                                    <span className={styles.pName}>{p.name}</span>
+                                                                    <span className={styles.pPhone}>{p.phone.split('@')[0]}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className={clsx(styles.statusBadge, p.pendingCount === 0 ? styles.online : styles.away)}>
+                                                                {p.pendingCount === 0 ? 'Pago' : 'Pendente'}
+                                                            </div>
+                                                        </div>
+                                                        <div className={styles.participantBody}>
+                                                            <div className={styles.pItem}>
+                                                                <span className={styles.pLabel}>Dezenas:</span>
+                                                                <div className={styles.numberList}>
+                                                                    {p.numbers.map(num => (
+                                                                        <span key={num} className={styles.numberTag}>
+                                                                            {getAnimalForNumber(num).emoji} {num}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                            <div className={styles.pFooter}>
+                                                                <span className={styles.pLabel}>Valor Total:</span>
+                                                                <span className={styles.pPrice}>R$ {(p.numbers.length * raffle.ticketValue).toFixed(2)}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </>
                                 )}
                             </div>
                         </Card>

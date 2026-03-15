@@ -361,6 +361,14 @@
     }
 }
 
+.desktopOnly {
+    display: table;
+}
+
+.mobileOnly {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .headerContent {
         flex-direction: column;
@@ -373,5 +381,99 @@
 
     .actions button {
         width: 100%;
+    }
+
+    .desktopOnly {
+        display: none !important;
+    }
+
+    .mobileOnly {
+        display: block !important;
+    }
+
+    .participantCards {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        margin-top: var(--space-2);
+    }
+
+    .participantCard {
+        background-color: var(--bg-surface-saturate);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        margin-bottom: var(--space-2);
+    }
+
+    .participantHeader {
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .participantMeta {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+    }
+
+    .participantNameInfo {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .pName {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .pPhone {
+        font-size: 11px;
+        color: var(--text-muted);
+    }
+
+    .participantBody {
+        padding: var(--space-4);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+
+    .pItem {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .pLabel {
+        font-size: 10px;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--text-muted);
+    }
+
+    .pFooter {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: var(--space-4);
+        border-top: 1px solid var(--border-color);
+    }
+
+    .pPrice {
+        font-weight: 800;
+        color: var(--primary);
+        font-size: 16px;
+    }
+
+    .emptyMembers {
+        text-align: center;
+        padding: var(--space-12) var(--space-4);
+        color: var(--text-muted);
     }
 }

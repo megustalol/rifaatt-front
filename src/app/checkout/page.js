@@ -145,22 +145,39 @@ function CheckoutContent() {
                         <p className={styles.subtitle}>Escolha o plano ideal para seu negócio e automatize suas vendas.</p>
 
                         <div className={styles.planOptions}>
-                            {plans.map((plan) => (
-                                <div
-                                    key={plan.id}
-                                    className={clsx(styles.planOption, selectedPlanId === plan.id && styles.selected)}
-                                    onClick={() => !paymentData && setSelectedPlanId(plan.id)}
-                                >
-                                    <div className={styles.planRadio}>
-                                        <div className={styles.radioInner} />
+                            {plans.length === 0 ? (
+                                <div className={styles.noPlansAvailable}>
+                                    <div className={styles.noPlansIcon}>
+                                        <Zap size={32} />
                                     </div>
-                                    <div className={styles.planDetails}>
-                                        <span className={styles.optionName}>{plan.name}</span>
-                                        <span className={styles.optionPrice}>R$ {plan.price}/mês</span>
-                                    </div>
-                                    {plan.name === 'Profissional' && <span className={styles.badge}>Recomendado</span>}
+                                    <h3>Nenhum plano disponível no momento</h3>
+                                    <p>Não encontramos planos públicos ativos. Para uma solução personalizada, entre em contato conosco.</p>
+                                    <Button 
+                                        variant="secondary" 
+                                        className={styles.contactBtn}
+                                        onClick={() => window.open('https://wa.me/5511999999999', '_blank')}
+                                    >
+                                        Contato para Planos Personalizados
+                                    </Button>
                                 </div>
-                            ))}
+                            ) : (
+                                plans.map((plan) => (
+                                    <div
+                                        key={plan.id}
+                                        className={clsx(styles.planOption, selectedPlanId === plan.id && styles.selected)}
+                                        onClick={() => !paymentData && setSelectedPlanId(plan.id)}
+                                    >
+                                        <div className={styles.planRadio}>
+                                            <div className={styles.radioInner} />
+                                        </div>
+                                        <div className={styles.planDetails}>
+                                            <span className={styles.optionName}>{plan.name}</span>
+                                            <span className={styles.optionPrice}>R$ {plan.price}/mês</span>
+                                        </div>
+                                        {plan.name?.toLowerCase().includes('profissional') && <span className={styles.badge}>Recomendado</span>}
+                                    </div>
+                                ))
+                            )}
                         </div>
 
                         {!paymentData && (
