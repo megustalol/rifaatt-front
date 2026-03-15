@@ -7,7 +7,8 @@ import RifaConfigForm from '@/components/rifa/RifaConfigForm/RifaConfigForm';
 import Button from '@/components/ui/Button/Button';
 import Modal from '@/components/ui/Modal/Modal';
 import Card from '@/components/ui/Card/Card';
-import { Trophy, Share2, RefreshCcw, Search, Loader2, Plus, Smartphone } from 'lucide-react';
+import { Trophy, Share2, RefreshCcw, Search, Loader2, Plus, Smartphone, ChevronLeft } from 'lucide-react';
+import Link from 'next/link';
 import styles from './page.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAnimalForNumber } from '@/utils/animalDictionary';
@@ -343,6 +344,5 @@ export default function RifaPage() {
     );
 }
 
-import { Smartphone, ChevronLeft } from 'lucide-react';
-import Link from 'next/link';
+
 
