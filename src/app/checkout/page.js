@@ -266,7 +266,17 @@ const CheckoutContent = () => {
                                                     {paymentData.payload}
                                                 </div>
                                                 <button onClick={handleCopyPix} className={styles.copyBtn}>
-                                                    {copied ? <Check size={18} /> : <Copy size={18} />}
+                                                    {copied ? (
+                                                        <>
+                                                            <Check size={18} />
+                                                            <span>Copiado!</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Copy size={18} />
+                                                            <span>Copiar Código PIX</span>
+                                                        </>
+                                                    )}
                                                 </button>
                                             </div>
 
