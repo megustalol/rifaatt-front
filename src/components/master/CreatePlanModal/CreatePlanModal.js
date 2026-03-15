@@ -1,24 +1,34 @@
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import Modal from '../../ui/Modal/Modal';
 import Button from '../../ui/Button/Button';
-import { Plus, X, Percent, Smartphone, Users as UsersIcon, List, CheckCircle } from 'lucide-react';
+import { Plus, X, Smartphone, Users as UsersIcon, CheckCircle, Search, User, ShieldCheck, Clock, Calendar, Lock, Globe, Shield } from 'lucide-react';
 import styles from './CreatePlanModal.module.css';
+import api from '@/services/api';
 
 const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
-    // ... items omitted for brevity ...
-    // Note: I'm replacing the entire component body for clarity as per user request to improve it
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [instanceLimit, setInstanceLimit] = useState(1);
     const [groupLimit, setGroupLimit] = useState(1);
+    const [durationDays, setDurationDays] = useState(30);
     const [isPublic, setIsPublic] = useState(true);
     const [status, setStatus] = useState('active');
     const [features, setFeatures] = useState([]);
     const [newFeature, setNewFeature] = useState('');
     const [loading, setLoading] = useState(false);
+    
+    // User Selection State
+    const [allUsers, setAllUsers] = useState([]);
+    const [selectedUserIds, setSelectedUserIds] = useState([]);
+    const [userSearch, setUserSearch] = useState('');
+    const [loadingUsers, setLoadingUsers] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            fetchUsers();
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         if (planToEdit) {
@@ -27,20 +37,36 @@ const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
             setPrice(planToEdit.price || '');
             setInstanceLimit(planToEdit.instanceLimit || 1);
             setGroupLimit(planToEdit.groupLimit || 1);
+            setDurationDays(planToEdit.durationDays || 30);
             setIsPublic(planToEdit.isPublic !== false);
             setStatus(planToEdit.status || 'active');
             setFeatures(planToEdit.features || []);
+            setSelectedUserIds(planToEdit.allowedUsers?.map(u => u.id) || []);
         } else {
             setName('');
             setDescription('');
             setPrice('');
             setInstanceLimit(1);
             setGroupLimit(1);
+            setDurationDays(30);
             setIsPublic(true);
             setStatus('active');
             setFeatures([]);
+            setSelectedUserIds([]);
         }
     }, [planToEdit, isOpen]);
+
+    const fetchUsers = async () => {
+        setLoadingUsers(true);
+        try {
+            const res = await api.get('/users');
+            setAllUsers(res.data);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        } finally {
+            setLoadingUsers(false);
+        }
+    };
 
     const handleAddFeature = () => {
         if (newFeature.trim()) {
@@ -59,6 +85,14 @@ const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
         setFeatures(updated);
     };
 
+    const toggleUserSelection = (userId) => {
+        if (selectedUserIds.includes(userId)) {
+            setSelectedUserIds(selectedUserIds.filter(id => id !== userId));
+        } else {
+            setSelectedUserIds([...selectedUserIds, userId]);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -69,9 +103,11 @@ const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
                 price: parseFloat(price),
                 instanceLimit: parseInt(instanceLimit),
                 groupLimit: parseInt(groupLimit),
+                durationDays: parseInt(durationDays),
                 isPublic,
                 status,
-                features
+                features,
+                allowedUserIds: isPublic ? [] : selectedUserIds
             };
             await onCreate(payload, planToEdit?.id);
             onClose();
@@ -82,6 +118,11 @@ const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
             setLoading(false);
         }
     };
+
+    const filteredUsers = allUsers.filter(u => 
+        u.name?.toLowerCase().includes(userSearch.toLowerCase()) ||
+        u.email?.toLowerCase().includes(userSearch.toLowerCase())
+    );
 
     return (
         <Modal
@@ -94,16 +135,19 @@ const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
                 <div className={styles.grid}>
                     <div className={styles.field}>
                         <label>Nome do Plano</label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Ex: Profissional, Elite"
-                            required
-                        />
+                        <div className={styles.inputWithIcon}>
+                            <Shield size={16} />
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Ex: Profissional, Elite"
+                                required
+                            />
+                        </div>
                     </div>
                     <div className={styles.field}>
-                        <label>Preço (Mensal)</label>
+                        <label>Preço (R$)</label>
                         <div className={styles.inputWithIcon}>
                             <span>R$</span>
                             <input
@@ -118,17 +162,21 @@ const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
                     </div>
                 </div>
 
-                <div className={styles.field}>
-                    <label>Descrição</label>
-                    <textarea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Breve descrição do plano"
-                        rows={2}
-                    />
-                </div>
-
                 <div className={styles.grid}>
+                    <div className={styles.field}>
+                        <label>Duração (dias)</label>
+                        <div className={styles.inputWithIcon}>
+                            <Clock size={16} />
+                            <input
+                                type="number"
+                                value={durationDays}
+                                onChange={(e) => setDurationDays(e.target.value)}
+                                min="1"
+                                placeholder="Ex: 30"
+                                required
+                            />
+                        </div>
+                    </div>
                     <div className={styles.field}>
                         <label>Limite de Instâncias</label>
                         <div className={styles.inputWithIcon}>
@@ -142,39 +190,116 @@ const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
                             />
                         </div>
                     </div>
-                    <div className={styles.field}>
-                        <label>Limite de Grupos</label>
-                        <div className={styles.inputWithIcon}>
-                            <UsersIcon size={16} />
-                            <input
-                                type="number"
-                                value={groupLimit}
-                                onChange={(e) => setGroupLimit(e.target.value)}
-                                min="1"
-                                required
-                            />
+                </div>
+
+                <div className={styles.field}>
+                    <label>Limite de Grupos</label>
+                    <div className={styles.inputWithIcon}>
+                        <UsersIcon size={16} />
+                        <input
+                            type="number"
+                            value={groupLimit}
+                            onChange={(e) => setGroupLimit(e.target.value)}
+                            min="1"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div className={styles.visibilityToggle}>
+                    <div 
+                        className={clsx(styles.toggleOption, isPublic && styles.toggleOptionActive)}
+                        onClick={() => setIsPublic(true)}
+                    >
+                        <Globe size={16} />
+                        <div>
+                            <span>Público</span>
+                            <p>Exibir na Landing Page</p>
+                        </div>
+                    </div>
+                    <div 
+                        className={clsx(styles.toggleOption, !isPublic && styles.toggleOptionActive)}
+                        onClick={() => setIsPublic(false)}
+                    >
+                        <Lock size={16} />
+                        <div>
+                            <span>Personalizado</span>
+                            <p>Vender sob demanda</p>
                         </div>
                     </div>
                 </div>
 
-                <div className={styles.checkboxGroup}>
-                    <label className={styles.checkboxLabel}>
-                        <input
-                            type="checkbox"
-                            checked={isPublic}
-                            onChange={(e) => setIsPublic(e.target.checked)}
-                        />
-                        <span>Público (exibir na Landing Page)</span>
-                    </label>
-                    <label className={styles.checkboxLabel}>
-                        <input
-                            type="checkbox"
-                            checked={status === 'active'}
-                            onChange={(e) => setStatus(e.target.checked ? 'active' : 'inactive')}
-                        />
-                        <span>Ativo</span>
-                    </label>
+                <div className={styles.statusToggles}>
+                    <div className={styles.checkboxGroup}>
+                        <label className={styles.checkboxLabel}>
+                            <input
+                                type="checkbox"
+                                checked={status === 'active'}
+                                onChange={(e) => setStatus(e.target.checked ? 'active' : 'inactive')}
+                            />
+                            <span><strong>Plano Ativo:</strong> Disponível para checkout e uso.</span>
+                        </label>
+                    </div>
+
+                    <div className={styles.checkboxGroup}>
+                        <label className={styles.checkboxLabel}>
+                            <input
+                                type="checkbox"
+                                checked={isPublic}
+                                onChange={(e) => setIsPublic(e.target.checked)}
+                            />
+                            <span><strong>Visualização Pública:</strong> Aparece na Landing Page e Site.</span>
+                        </label>
+                    </div>
                 </div>
+
+                {!isPublic && (
+                    <div className={styles.userSelectionSection}>
+                        <div className={styles.sectionHeader}>
+                            <label>Vincular a Usuários Específicos</label>
+                            <p className={styles.hint}>Este plano só será visível para os usuários selecionados.</p>
+                        </div>
+
+                        <div className={styles.searchBox}>
+                            <Search size={14} />
+                            <input
+                                type="text"
+                                placeholder="Buscar usuários por nome ou email..."
+                                value={userSearch}
+                                onChange={(e) => setUserSearch(e.target.value)}
+                            />
+                        </div>
+
+                        <div className={styles.userList}>
+                            {loadingUsers ? (
+                                <div className={styles.emptyState}>Carregando usuários...</div>
+                            ) : filteredUsers.length === 0 ? (
+                                <div className={styles.emptyState}>Nenhum usuário encontrado.</div>
+                            ) : (
+                                filteredUsers.map(u => (
+                                    <div 
+                                        key={u.id} 
+                                        className={clsx(styles.userItem, selectedUserIds.includes(u.id) && styles.userItemActive)}
+                                        onClick={() => toggleUserSelection(u.id)}
+                                    >
+                                        <div className={styles.userAvatar}>
+                                            {u.name?.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className={styles.userInfo}>
+                                            <span className={styles.userName}>{u.name}</span>
+                                            <span className={styles.userEmail}>{u.email}</span>
+                                        </div>
+                                        {selectedUserIds.includes(u.id) && (
+                                            <div className={styles.selectedBadge}>
+                                                <CheckCircle size={14} />
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 <div className={styles.featuresSection}>
                     <div className={styles.sectionHeader}>
@@ -234,3 +359,7 @@ const CreatePlanModal = ({ isOpen, onClose, onCreate, planToEdit }) => {
 };
 
 export default CreatePlanModal;
+
+function clsx(...args) {
+    return args.filter(Boolean).join(' ');
+}

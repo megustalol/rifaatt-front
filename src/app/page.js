@@ -15,7 +15,9 @@ import {
   Users,
   LayoutDashboard,
   Menu,
-  X
+  X,
+  MessageCircle,
+  Star
 } from 'lucide-react';
 import Button from '@/components/ui/Button/Button';
 import Card from '@/components/ui/Card/Card';
@@ -33,6 +35,14 @@ export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const metricsRef = useRef(null);
   const [plans, setPlans] = React.useState([]);
+  const fetchPlans = async () => {
+    try {
+      const res = await api.get('/plans');
+      setPlans(res.data.filter(p => p.isPublic && p.status === 'active'));
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+    }
+  };
 
   useEffect(() => {
     fetchPlans();
@@ -115,15 +125,6 @@ export default function LandingPage() {
       }
     );
   }, []);
-
-  const fetchPlans = async () => {
-    try {
-      const res = await api.get('/plans');
-      setPlans(res.data.filter(p => p.isPublic && p.status === 'active'));
-    } catch (error) {
-      console.error('Error fetching plans:', error);
-    }
-  };
 
   return (
     <div className={styles.container}>
@@ -222,7 +223,7 @@ export default function LandingPage() {
 
               <div className={styles.heroActions}>
                 <Link href="/login?tab=register">
-                  <Button size="lg">Começar grátis</Button>
+                  <Button size="lg">Começar agora</Button>
                 </Link>
                 <Link href="#demo">
                   <Button variant="outline" size="lg" icon={Zap}>Ver demonstração</Button>
@@ -269,6 +270,7 @@ export default function LandingPage() {
                 />
               ))
             )}
+            <CustomPricingCard />
           </div>
         </section>
 
@@ -410,6 +412,47 @@ function PricingCard({ id, name, price, features, featured, instanceLimit, group
           {parseFloat(price) === 0 ? "Começar Agora" : "Assinar Plano"}
         </Button>
       </Link>
+    </Card>
+  );
+}
+
+function CustomPricingCard() {
+  const handleContact = () => {
+    const phone = '5581992106048';
+    const message = encodeURIComponent('Olá! Gostaria de saber mais sobre planos personalizados para o Rifaatt.');
+    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+  };
+
+  return (
+    <Card className={clsx(styles.pricingCard, styles.customCard)}>
+      <div className={styles.customIconWrapper}>
+        <Star size={32} className={styles.customStarIcon} />
+      </div>
+      <h3 className={styles.planName}>Personalizado</h3>
+      <div className={styles.planPrice}>
+        Sob medida
+      </div>
+      <p className={styles.customDesc}>
+        Precisa de uma estrutura maior? Criamos um plano específico para a escala da sua organização.
+      </p>
+      <div className={styles.planFeatures}>
+        <div className={styles.featureItem}>
+          <CheckCircle2 className={styles.checkIcon} size={18} />
+          Instâncias sob medida
+        </div>
+        <div className={styles.featureItem}>
+          <CheckCircle2 className={styles.checkIcon} size={18} />
+          Grupos ativos sob medida
+        </div>
+        <div className={styles.featureItem}>
+          <CheckCircle2 className={styles.checkIcon} size={18} />
+          Suporte sob demanda
+        </div>
+      </div>
+      <Button variant="primary" fullWidth onClick={handleContact}>
+        <MessageCircle size={18} style={{ marginRight: '8px' }} />
+        Consultar Preços
+      </Button>
     </Card>
   );
 }

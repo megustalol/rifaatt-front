@@ -1,6 +1,5 @@
 .tableWrapper {
     width: 100%;
-    overflow-x: auto;
 }
 
 .table {
@@ -61,4 +60,123 @@
 .pending {
     background-color: rgba(245, 158, 11, 0.1);
     color: var(--warning);
+}
+
+/* Responsive display logic */
+.desktopTable {
+    display: block;
+}
+
+.mobileCards {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .desktopTable {
+        display: none !important;
+    }
+
+    .mobileCards {
+        display: flex !important;
+        flex-direction: column;
+        gap: var(--space-4);
+        padding: var(--space-2) 0;
+    }
+}
+
+.paymentCard {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    transition: all 0.2s;
+}
+
+.paymentCard:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.userName {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 14px;
+}
+
+.paymentDate {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.cardBody {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-color);
+}
+
+.cardInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.infoLabel {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.infoValue {
+    font-size: 13px;
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+.infoValueHighlight {
+    font-size: 14px;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.emptyState {
+    text-align: center;
+    padding: var(--space-8);
+    color: var(--text-muted);
+    font-style: italic;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-lg);
 }

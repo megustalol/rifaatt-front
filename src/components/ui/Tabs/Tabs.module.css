@@ -4,6 +4,13 @@
     padding: var(--space-1);
     border-radius: var(--radius-sm);
     gap: var(--space-1);
+    overflow-x: auto;
+    scrollbar-width: none; /* Hide scrollbar Firefox */
+    -ms-overflow-style: none;  /* Hide scrollbar IE/Edge */
+}
+
+.tabs::-webkit-scrollbar {
+    display: none; /* Hide scrollbar Chrome/Safari */
 }
 
 .tab {
@@ -12,7 +19,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    padding: var(--space-2);
+    padding: var(--space-2) var(--space-4);
     border: none;
     background: none;
     color: var(--text-secondary);
@@ -21,6 +28,13 @@
     cursor: pointer;
     border-radius: 4px;
     transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .tab {
+        flex: none;
+    }
 }
 
 .active {

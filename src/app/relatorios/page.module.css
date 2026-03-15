@@ -4,6 +4,12 @@
     gap: var(--space-8);
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .title {
     font-size: var(--font-h2);
     font-weight: 700;
@@ -29,6 +35,36 @@
 
 .chartWrapper {
     width: 120px;
+    height: 100px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emptyChartPlaceholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    opacity: 0.3;
+}
+
+.emptyChartPlaceholder span {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.emptyBar {
+    width: 100%;
+    height: 2px;
+    background-color: var(--border-color);
+    border-radius: 1px;
 }
 
 .statInfo {
@@ -152,10 +188,13 @@
     color: var(--text-main);
 }
 
-@media (max-width: 768px) {
+.mobileCards {
+    display: none;
+}
+
+@media (max-width: 900px) {
     .container {
-        padding: 0 var(--space-2);
-        overflow-x: hidden;
+        padding: 0 var(--space-4);
     }
 
     .header {
@@ -184,27 +223,103 @@
         font-size: 1.25rem;
     }
 
-    /* Table Responsiveness */
     .rankingCard {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+        display: none;
+    }
+
+    .mobileCards {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
         margin-top: var(--space-4);
     }
 
-    .table {
-        min-width: 500px; /* Allow horizontal scroll instead of breaking layout */
+    .mobileCard {
+        padding: var(--space-5);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
     }
 
-    /* Instead of hiding columns, let's allow horizontal scroll for better UX */
-    .table th:nth-child(n+3),
-    .table td:nth-child(n+3) {
-        display: table-cell; 
+    .mobileCardHeader {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        padding-bottom: var(--space-4);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .mobileCardBody {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-4);
+    }
+
+    .mobileDetail {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .mobileLabel {
+        font-size: 10px;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--text-muted);
+    }
+
+    .mobileValue {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .mobileCardFooter {
+        margin-top: var(--space-2);
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+    .mobileCardBody {
+        grid-template-columns: 1fr;
+    }
+
     .title {
         font-size: 1.5rem;
     }
-}
+}
+.emptyCard {
+    padding: var(--space-12) var(--space-8);
+    background-color: var(--bg-surface);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: var(--space-4);
+}
+
+.emptyContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-4);
+    max-width: 300px;
+    color: var(--text-muted);
+}
+
+.emptyIcon {
+    opacity: 0.5;
+    color: var(--text-muted);
+}
+
+.emptyContent h3 {
+    color: var(--text-main);
+    font-size: var(--font-body);
+    font-weight: 700;
+}
+
+.emptyContent p {
+    font-size: var(--font-body-sm);
+}

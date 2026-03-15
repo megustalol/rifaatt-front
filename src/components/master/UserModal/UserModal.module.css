@@ -1,0 +1,243 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--space-4);
+}
+
+.modal {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-2xl);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-6);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header h3 {
+    margin: 0;
+    font-size: var(--font-h3);
+    color: var(--text-main);
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.closeBtn:hover {
+    color: var(--error);
+}
+
+.form {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+}
+
+.labelIcon {
+    margin-right: 6px;
+    color: var(--primary);
+}
+
+.select {
+    background-color: var(--bg-surface-saturate);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    color: var(--text-main);
+    font-size: var(--font-body-sm);
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.select:focus {
+    border-color: var(--primary);
+}
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-color);
+}
+
+.accessSection {
+    background-color: var(--bg-surface-saturate);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+}
+
+.sectionTitle {
+    margin: 0 0 var(--space-4) 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.titleIcon {
+    color: var(--primary);
+}
+
+.planAccessGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: var(--space-3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.checkboxLabel:hover {
+    background-color: rgba(31, 201, 142, 0.05);
+}
+
+.checkboxLabel input {
+    margin-top: 3px;
+    accent-color: var(--primary);
+}
+
+.planSelectItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: var(--space-3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    background: var(--bg-main);
+    transition: all var(--transition-fast);
+}
+
+.planSelectItem:hover {
+    border-color: var(--primary-glow);
+    background: var(--bg-surface-hover);
+}
+
+.planSelectItemActive {
+    border-color: var(--primary);
+    background: var(--primary-glow);
+}
+
+.planSelectIcon {
+    color: var(--text-muted);
+}
+
+.planSelectItemActive .planSelectIcon {
+    color: var(--primary);
+}
+
+.circle {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+}
+
+.planSelectInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.planSelectName {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.planSelectPrice {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+.hint {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.expiryValue {
+    background-color: var(--bg-surface-saturate);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.expiryWarning {
+    border-color: #f59e0b;
+    color: #f59e0b;
+    background-color: rgba(245, 158, 11, 0.05);
+}

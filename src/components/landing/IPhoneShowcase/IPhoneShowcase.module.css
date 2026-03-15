@@ -1,8 +1,5 @@
 .section {
-    padding: var(--space-24) 5%;
-    background-color: var(--bg-surface-saturate);
-    border-radius: 60px;
-    margin: 40px 5%;
+    width: 100%;
     overflow: hidden;
 }
 
@@ -13,6 +10,7 @@
     grid-template-columns: 1fr 1fr;
     align-items: center;
     gap: var(--space-12);
+    padding: var(--space-6) 0;
 }
 
 .title {

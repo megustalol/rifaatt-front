@@ -44,7 +44,7 @@ const IPhoneShowcase = () => {
     }, [visibleMessages]);
 
     return (
-        <section className={styles.section}>
+        <div className={styles.section}>
             <div className={styles.container}>
                 <div className={styles.textContent}>
                     <motion.h2
@@ -145,7 +145,7 @@ const IPhoneShowcase = () => {
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     );
 };
 

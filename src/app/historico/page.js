@@ -19,6 +19,10 @@ import styles from './page.module.css';
 import Link from 'next/link';
 import { getAnimalForNumber } from '@/utils/animalDictionary';
 
+function clsx(...args) {
+    return args.filter(Boolean).join(' ');
+}
+
 const mockFinalizedRaffles = [
     {
         id: '101',
@@ -56,6 +60,9 @@ export default function HistoryPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [history, setHistory] = useState([]);
+    const [isFilterExpanded, setIsFilterExpanded] = useState(false);
+    const [dateStart, setDateStart] = useState('');
+    const [dateEnd, setDateEnd] = useState('');
 
     useEffect(() => {
         const fetchHistory = async () => {
@@ -72,10 +79,20 @@ export default function HistoryPage() {
         fetchHistory();
     }, []);
 
-    const filtered = history.filter(r =>
-        (r.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (r.groupName || '').toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filtered = history.filter(r => {
+        const titleMatch = (r.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (r.groupName || '').toLowerCase().includes(searchTerm.toLowerCase());
+        
+        const date = new Date(r.drawDate || r.updatedAt);
+        const start = dateStart ? new Date(dateStart + 'T00:00:00') : null;
+        const end = dateEnd ? new Date(dateEnd + 'T23:59:59') : null;
+        
+        let dateMatch = true;
+        if (start && date < start) dateMatch = false;
+        if (end && date > end) dateMatch = false;
+
+        return titleMatch && dateMatch;
+    });
 
     return (
         <DashboardLayout>
@@ -109,14 +126,56 @@ export default function HistoryPage() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    <Button variant="secondary" icon={Filter}>Mais Filtros</Button>
+                    <Button 
+                        variant={isFilterExpanded ? "primary" : "secondary"} 
+                        icon={Filter}
+                        onClick={() => setIsFilterExpanded(!isFilterExpanded)}
+                    >
+                        {isFilterExpanded ? "Fechar Filtros" : "Mais Filtros"}
+                    </Button>
                 </div>
 
-                <div className={styles.grid}>
+                {isFilterExpanded && (
+                    <div className={styles.filterRow}>
+                        <div className={styles.filterGroup}>
+                            <div className={styles.dateField}>
+                                <Calendar size={16} />
+                                <span className={styles.filterLabel}>Período de:</span>
+                                <input 
+                                    type="date" 
+                                    className={styles.dateInput} 
+                                    value={dateStart}
+                                    onChange={(e) => setDateStart(e.target.value)}
+                                />
+                                <span className={styles.dateSeparator}>até</span>
+                                <input 
+                                    type="date" 
+                                    className={styles.dateInput} 
+                                    value={dateEnd}
+                                    onChange={(e) => setDateEnd(e.target.value)}
+                                />
+                                {(dateStart || dateEnd) && (
+                                    <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        className={styles.resetBtn}
+                                        onClick={() => { setDateStart(''); setDateEnd(''); }}
+                                    >
+                                        Limpar
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div className={styles.contentArea}>
                     {loading ? (
-                        [...Array(3)].map((_, i) => (
-                            <Skeleton key={i} height="300px" width="100%" />
-                        ))
+                        <div className={styles.grid}>
+                            {[...Array(3)].map((_, i) => (
+                                <Skeleton key={i} height="300px" width="100%" />
+                            ))}
+                        </div>
                     ) : filtered.length === 0 ? (
                         <div className={styles.emptyState}>
                             <History size={48} />
@@ -124,55 +183,110 @@ export default function HistoryPage() {
                             <p>O histórico aparecerá aqui assim que as rifas forem finalizadas.</p>
                         </div>
                     ) : (
-                        filtered.map((raffle) => (
-                            <Card key={raffle.id} className={styles.historyCard}>
-                                <div className={styles.cardHeader}>
-                                    <div className={styles.raffleInfo}>
-                                        <h4>{raffle.title}</h4>
-                                        <span className={styles.groupName}>
-                                            <Users size={14} />
-                                            {raffle.groupName || 'Grupo Geral'}
-                                        </span>
-                                    </div>
-                                    <span className={styles.dateBadge}>
-                                        <Calendar size={12} />
-                                        {new Date(raffle.drawDate || raffle.updatedAt).toLocaleDateString()}
-                                    </span>
-                                </div>
+                        <>
+                            {/* Desktop Table View */}
+                            <div className={styles.desktopTable}>
+                                <table className={styles.table}>
+                                    <thead>
+                                        <tr>
+                                            <th>Rifa</th>
+                                            <th>Grupo</th>
+                                            <th>Finalizada em</th>
+                                            <th>Ganhador</th>
+                                            <th>Vendido</th>
+                                            <th style={{ textAlign: 'right' }}>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filtered.map((raffle) => (
+                                            <tr key={raffle.id}>
+                                                <td>
+                                                    <div className={styles.raffleNameCell}>
+                                                        <span className={styles.raffleTitle}>{raffle.title}</span>
+                                                        <span className={styles.raffleId}>#{raffle.id.slice(0, 8)}</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className={styles.groupCell}>
+                                                        <Users size={14} />
+                                                        {raffle.groupName || 'Grupo Geral'}
+                                                    </div>
+                                                </td>
+                                                <td className={styles.dateCell}>
+                                                    {new Date(raffle.drawDate || raffle.updatedAt).toLocaleDateString()}
+                                                </td>
+                                                <td>
+                                                    <div className={styles.winnerBadge}>
+                                                        <span className={styles.winnerEmoji}>
+                                                            {raffle.winningNumber ? getAnimalForNumber(raffle.winningNumber).emoji : '🏆'}
+                                                        </span>
+                                                        <span className={styles.winnerNum}>
+                                                            {raffle.winningNumber || '---'}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td className={styles.salesCell}>
+                                                    <div className={styles.salesInfo}>
+                                                        <strong>{raffle.Reservations?.length || 0}</strong>
+                                                        <span>bilhetes</span>
+                                                    </div>
+                                                </td>
+                                                <td style={{ textAlign: 'right' }}>
+                                                    <Link href={`/grupos/${raffle.groupId || raffle.groupJid}`}>
+                                                        <Button size="sm" variant="outline" icon={ArrowUpRight}>Relatório</Button>
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
 
-                                <div className={styles.winnerSection}>
-                                    <div className={styles.winnerHeader}>
-                                        <Trophy size={16} />
-                                        <span>Ganhador</span>
-                                    </div>
-                                    <div className={styles.winnerList}>
-                                        <div className={styles.winnerItem}>
-                                            <div className={styles.winnerAvatar}>
-                                                {raffle.winningNumber ? getAnimalForNumber(raffle.winningNumber).emoji : '🏆'}
+                            {/* Mobile Cards View */}
+                            <div className={styles.mobileCards}>
+                                {filtered.map((raffle) => (
+                                    <div key={raffle.id} className={styles.mobileHistoryCard}>
+                                        <div className={styles.cardHeader}>
+                                            <div className={styles.raffleMain}>
+                                                <h4>{raffle.title}</h4>
+                                                <span className={styles.groupSub}>
+                                                    <Users size={12} />
+                                                    {raffle.groupName || 'Grupo Geral'}
+                                                </span>
                                             </div>
-                                            <span>Número: {raffle.winningNumber || 'Aguardando'} {raffle.winningNumber && `(${getAnimalForNumber(raffle.winningNumber).name})`}</span>
+                                            <span className={styles.mobileDate}>
+                                                {new Date(raffle.drawDate || raffle.updatedAt).toLocaleDateString()}
+                                            </span>
                                         </div>
-                                    </div>
-                                </div>
 
-                                <div className={styles.salesRow}>
-                                    <div className={styles.salesStat}>
-                                        <span className={styles.salesLabel}>Valor do Bilhete</span>
-                                        <span className={styles.salesValue}>R$ {raffle.ticketValue}</span>
-                                    </div>
-                                    <div className={styles.salesStat}>
-                                        <span className={styles.salesLabel}>Vendido</span>
-                                        <span className={styles.salesValue}>{raffle.Reservations?.length || 0} n°</span>
-                                    </div>
-                                </div>
+                                        <div className={styles.cardBody}>
+                                            <div className={styles.cardWinner}>
+                                                <Trophy size={14} />
+                                                <span className={styles.winnerLabel}>Ganhador:</span>
+                                                <span className={styles.winnerResult}>
+                                                    {raffle.winningNumber ? `${raffle.winningNumber} (${getAnimalForNumber(raffle.winningNumber).name})` : 'Aguardando'}
+                                                </span>
+                                            </div>
+                                            
+                                            <div className={styles.cardMeta}>
+                                                <div className={styles.metaItem}>
+                                                    <span className={styles.metaLabel}>Vendidos</span>
+                                                    <span className={styles.metaValue}>{raffle.Reservations?.length || 0} n°</span>
+                                                </div>
+                                                <div className={styles.metaItem}>
+                                                    <span className={styles.metaLabel}>Valor</span>
+                                                    <span className={styles.metaValueHighlight}>R$ {raffle.ticketValue}</span>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                <Link href={`/grupos/${raffle.groupId || raffle.groupJid}`} className={styles.detailsLink}>
-                                    <Button fullWidth variant="ghost" className={styles.detailsBtn} icon={ArrowUpRight}>
-                                        Ver Relatório Completo
-                                    </Button>
-                                </Link>
-                            </Card>
-                        ))
+                                        <Link href={`/grupos/${raffle.groupId || raffle.groupJid}`} className={styles.cardAction}>
+                                            <Button fullWidth icon={ArrowUpRight} variant="ghost">Relatório Completo</Button>
+                                        </Link>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
                     )}
                 </div>
             </div>

@@ -185,7 +185,13 @@ function LoginContent() {
                         />
 
                         {mode === 'login' && (
-                            <a href="#" className={styles.forgotPassword}>Esqueci minha senha</a>
+                            <button 
+                                type="button" 
+                                className={styles.forgotPassword}
+                                onClick={() => router.push('/forgot-password')}
+                            >
+                                Esqueci minha senha
+                            </button>
                         )}
 
                         <Button

@@ -11,6 +11,7 @@ import styles from './page.module.css';
 import api from '@/services/api';
 import Skeleton from '@/components/ui/Skeleton/Skeleton';
 import { useAuth } from '@/context/AuthContext';
+import SidebarCarousel from '@/components/dashboard/SidebarCarousel/SidebarCarousel';
 
 export default function DashboardPage() {
     const { user } = useAuth();
@@ -98,14 +99,7 @@ export default function DashboardPage() {
                     </section>
 
                     <aside className={styles.promoSection}>
-                        <Card className={styles.promoCard}>
-                            <div className={styles.promoIcon}>🚀</div>
-                            <h4>Escala sua Operação</h4>
-                            <p>Adicione mais instâncias e grupos para aumentar seu alcance e faturamento.</p>
-                            <Link href="/checkout" className={styles.fullWidthLink}>
-                                <Button variant="outline" fullWidth>Expandir Plano</Button>
-                            </Link>
-                        </Card>
+                        <SidebarCarousel />
                     </aside>
                 </div>
             </div>

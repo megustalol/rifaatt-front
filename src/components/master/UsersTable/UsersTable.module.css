@@ -6,8 +6,36 @@
 
 .tableHeader {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     padding: var(--space-4) var(--space-6);
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    gap: var(--space-4);
+}
+
+.filters {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.filterGroup {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.filterSelect {
+    background-color: var(--bg-surface-saturate);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    color: var(--text-main);
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    min-width: 140px;
 }
 
 .searchBox {
@@ -29,6 +57,14 @@
     outline: none;
     color: var(--text-main);
     font-size: var(--font-body-sm);
+}
+
+.desktopTable {
+    display: block;
+}
+
+.mobileCards {
+    display: none;
 }
 
 .tableWrapper {
@@ -152,6 +188,77 @@
     border-color: var(--success);
 }
 
+.passwordCell {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.passwordWrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    width: fit-content;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.passwordText {
+    font-family: monospace;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+
+.passwordToggle {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.passwordToggle:hover {
+    color: var(--primary);
+}
+
+.eyeActive {
+    color: var(--primary);
+}
+
+.passwordToggle {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.passwordToggle:hover {
+    color: var(--primary);
+}
+
+.eyeActive {
+    color: var(--primary);
+}
+
+.phoneNumber {
+    font-size: 13px;
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+.whatsappInfo {
+    display: flex;
+    flex-direction: column;
+}
+
 .planSelect {
     background-color: var(--bg-surface-saturate);
     border: 1px solid var(--border-color);
@@ -171,4 +278,263 @@
     text-align: center;
     color: var(--text-muted);
     padding: var(--space-8) !important;
+}
+
+.adminRow {
+    background-color: rgba(59, 130, 246, 0.05) !important;
+    box-shadow: inset 4px 0 0 0 #3b82f6, 0 0 15px rgba(59, 130, 246, 0.05);
+}
+
+.expiringRow {
+    background-color: rgba(245, 158, 11, 0.05) !important;
+    box-shadow: inset 4px 0 0 0 rgba(245, 158, 11, 0.8);
+}
+
+.blockedRow {
+    background-color: rgba(239, 68, 68, 0.05) !important;
+    box-shadow: inset 4px 0 0 0 rgba(239, 68, 68, 0.8);
+}
+
+.activeRow {
+    background-color: rgba(31, 201, 142, 0.05) !important;
+    box-shadow: inset 4px 0 0 0 rgba(31, 201, 142, 0.8);
+}
+
+.freeRow {
+    background-color: rgba(168, 85, 247, 0.05) !important;
+    box-shadow: inset 4px 0 0 0 rgba(168, 85, 247, 0.8);
+}
+
+.expiringRow td, .blockedRow td, .activeRow td, .freeRow td, .adminRow td {
+    border-top: none !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.legendContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    overflow-x: auto;
+    margin-bottom: 15px;
+}
+@media (max-width: 768px) {
+    .desktopTable {
+        display: none;
+    }
+
+    .mobileCards {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 0 4px;
+    }
+
+    .userCard {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        transition: transform 0.2s;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .cardHeader {
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .cardAvatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+    }
+
+    .cardTitle {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cardTitle strong {
+        font-size: 15px;
+        color: var(--text-main);
+    }
+
+    .cardTitle span {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .cardBody {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .cardInfoItem {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .cardInfoItem label {
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    .cardInfoItem span {
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    .cardPasswordWrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .cardPlanSelect {
+        background: var(--bg-main);
+        border: 1px solid var(--border-color);
+        color: var(--text-main);
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        outline: none;
+    }
+
+    .cardActions {
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.02);
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .statusBadgeSmall {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.legendColor {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+}
+
+.legendColorExpiring {
+    background-color: rgba(245, 158, 11, 1);
+}
+
+.legendColorAdmin {
+    background-color: #3b82f6;
+}
+
+.legendColorBlocked {
+    background-color: rgba(239, 68, 68, 1);
+}
+
+.legendColorFree {
+    background-color: rgba(168, 85, 247, 1);
+}
+
+.legendColorActive {
+    background-color: rgba(31, 201, 142, 1);
+}
+
+.legendColorNormal {
+    background-color: var(--bg-surface-saturate);
+    border-color: var(--border-color);
+}
+
+.expiringIndicator {
+    font-size: 10px;
+    color: #f59e0b;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 2px;
+}
+
+.expiringBadge {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+}
+
+@media (max-width: 900px) {
+    .tableHeader {
+        flex-direction: column;
+        align-items: center;
+        padding: var(--space-6);
+        gap: var(--space-6);
+    }
+    
+    .filters {
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+    }
+
+    .filterGroup {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .filterSelect {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .searchBox {
+        width: 100%;
+        max-width: 300px;
+        order: -1; /* Search at the top on mobile */
+    }
+
+    .legendContainer {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+        gap: 10px;
+        overflow-x: visible;
+    }
 }

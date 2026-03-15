@@ -6,11 +6,13 @@ import UsersTable from '@/components/master/UsersTable/UsersTable';
 import PaymentsTable from '@/components/master/PaymentsTable/PaymentsTable';
 import StatsCard from '@/components/dashboard/StatsCard/StatsCard';
 import Card from '@/components/ui/Card/Card';
-import { Users, DollarSign, TrendingUp, CreditCard, Plus } from 'lucide-react';
+import { Users, TrendingUp, Smartphone, Zap, Plus, Search, Eye } from 'lucide-react';
 import styles from './page.module.css';
 import clsx from 'clsx';
 import PlansTable from '@/components/master/PlansTable/PlansTable';
 import CreatePlanModal from '@/components/master/CreatePlanModal/CreatePlanModal';
+import UserModal from '@/components/master/UserModal/UserModal';
+import LinkedUsersModal from '@/components/master/LinkedUsersModal/LinkedUsersModal';
 import api from '@/services/api';
 import Button from '@/components/ui/Button/Button';
 import { useEffect } from 'react';
@@ -22,8 +24,17 @@ export default function MasterPage() {
     const [plans, setPlans] = useState([]);
     const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
     const [editingPlan, setEditingPlan] = useState(null);
+    const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
+    const [isLinkedUsersModalOpen, setIsLinkedUsersModalOpen] = useState(false);
+    const [selectedPlanForUsers, setSelectedPlanForUsers] = useState(null);
     const [loadingPlans, setLoadingPlans] = useState(false);
     const [loadingUsers, setLoadingUsers] = useState(false);
+    const [summary, setSummary] = useState({
+        totalActiveGroups: 0,
+        totalActiveInstances: 0,
+        paidInactiveInstances: 0
+    });
     const [settings, setSettings] = useState({
         asaas_api_key: '',
         asaas_webhook_secret: '',
@@ -32,6 +43,7 @@ export default function MasterPage() {
     const [savingSettings, setSavingSettings] = useState(false);
 
     useEffect(() => {
+        fetchSummary();
         if (activeTab === 'plans') {
             fetchPlans();
         } else if (activeTab === 'users') {
@@ -40,6 +52,15 @@ export default function MasterPage() {
             fetchSettings();
         }
     }, [activeTab]);
+
+    const fetchSummary = async () => {
+        try {
+            const res = await api.get('/master/summary');
+            setSummary(res.data);
+        } catch (error) {
+            console.error('Error fetching master summary:', error);
+        }
+    };
 
     const fetchSettings = async () => {
         try {
@@ -105,6 +126,19 @@ export default function MasterPage() {
         }
     };
 
+    const handleSaveUser = async (payload, id) => {
+        try {
+            if (id) {
+                await api.put(`/users/${id}`, payload);
+            } else {
+                await api.post('/users/register', payload);
+            }
+            fetchUsers();
+        } catch (error) {
+            throw error;
+        }
+    };
+
     const handleDeletePlan = async (id) => {
         if (confirm('Tem certeza que deseja excluir este plano?')) {
             try {
@@ -116,6 +150,15 @@ export default function MasterPage() {
         }
     };
 
+    const handleManageUsers = (plan) => {
+        setSelectedPlanForUsers(plan);
+        setIsLinkedUsersModalOpen(true);
+    };
+
+    const handleUpdatePlans = () => {
+        fetchPlans();
+    };
+
     const openCreateModal = () => {
         setEditingPlan(null);
         setIsPlanModalOpen(true);
@@ -124,6 +167,16 @@ export default function MasterPage() {
     const openEditModal = (plan) => {
         setEditingPlan(plan);
         setIsPlanModalOpen(true);
+    };
+
+    const openCreateUserModal = () => {
+        setEditingUser(null);
+        setIsUserModalOpen(true);
+    };
+
+    const openEditUserModal = (user) => {
+        setEditingUser(user);
+        setIsUserModalOpen(true);
     };
 
     return (
@@ -137,6 +190,9 @@ export default function MasterPage() {
                     {activeTab === 'plans' && (
                         <Button icon={Plus} onClick={openCreateModal}>Novo Plano</Button>
                     )}
+                    {activeTab === 'users' && (
+                        <Button icon={Plus} onClick={openCreateUserModal}>Novo Usuário</Button>
+                    )}
                 </div>
 
                 <div className={styles.statsGrid}>
@@ -144,30 +200,23 @@ export default function MasterPage() {
                         label="Total de Usuários" 
                         value={users.length} 
                         icon={Users} 
-                        variation={calculateVariation(users.length, 1000)} // Mocked variation for now
                     />
                     <StatsCard 
-                        label="Faturamento Previsto" 
-                        value={(() => {
-                            const total = plans.length > 0 ? users.reduce((acc, user) => {
-                                const userPlan = plans.find(p => p.id === user.planId);
-                                const price = parseFloat(userPlan?.price || 0);
-                                return acc + (isNaN(price) ? 0 : price);
-                            }, 0) : 0;
-                            return total;
-                        })()} 
-                        prefix="R$ " 
-                        icon={DollarSign} 
-                    />
-                    <StatsCard 
-                        label="Grupos Ativos" 
-                        value={users.reduce((acc, user) => acc + (user.activeGroups || 0), 0)} 
+                        label="Grupos em Execução" 
+                        value={summary.totalActiveGroups} 
                         icon={TrendingUp} 
+                        variation={`${summary.totalActiveGroups * 2}%`}
                     />
                     <StatsCard 
-                        label="Planos Ativos" 
-                        value={plans.filter(p => p.status === 'active').length} 
-                        icon={CreditCard} 
+                        label="Instâncias Ativas" 
+                        value={summary.totalActiveInstances} 
+                        icon={Smartphone} 
+                    />
+                    <StatsCard 
+                        label="Instâncias Pagas (Offline)" 
+                        value={summary.paidInactiveInstances} 
+                        icon={Zap} 
+                        variant="warning"
                     />
                 </div>
 
@@ -206,6 +255,7 @@ export default function MasterPage() {
                                 loading={loadingUsers} 
                                 onRefresh={fetchUsers}
                                 plans={plans}
+                                onEdit={openEditUserModal}
                             />
                         ) : activeTab === 'payments' ? (
                             <PaymentsTable payments={payments} />
@@ -214,6 +264,7 @@ export default function MasterPage() {
                                 plans={plans}
                                 onEdit={openEditModal}
                                 onDelete={handleDeletePlan}
+                                onManageUsers={handleManageUsers}
                                 loading={loadingPlans}
                             />
                         ) : (
@@ -230,7 +281,7 @@ export default function MasterPage() {
                                             <option value="sandbox">Sandbox (Teste)</option>
                                             <option value="production">Produção (Real)</option>
                                         </select>
-                                        <p className={styles.inputHint}>Selecione "Produção" apenas quando estiver pronto para receber pagamentos reais.</p>
+                                        <p className={styles.inputHint}>Selecione &quot;Produção&quot; apenas quando estiver pronto para receber pagamentos reais.</p>
                                     </div>
 
                                     <div className={styles.inputGroup}>
@@ -268,7 +319,7 @@ export default function MasterPage() {
                                                 style={{ backgroundColor: 'var(--bg-main)', cursor: 'default' }}
                                             />
                                         </div>
-                                        <p className={styles.inputHint}>Copie esta URL e cole no campo "URL de destino" nas configurações de Webhook do Asaas.</p>
+                                        <p className={styles.inputHint}>Copie esta URL e cole no campo &quot;URL de destino&quot; nas configurações de Webhook do Asaas.</p>
                                     </div>
 
                                     <Button type="submit" loading={savingSettings} className={styles.saveSettingsBtn}>
@@ -286,6 +337,21 @@ export default function MasterPage() {
                 onClose={() => setIsPlanModalOpen(false)}
                 onCreate={handleSavePlan}
                 planToEdit={editingPlan}
+            />
+
+            <UserModal 
+                isOpen={isUserModalOpen}
+                onClose={() => setIsUserModalOpen(false)}
+                onSave={handleSaveUser}
+                userToEdit={editingUser}
+                plans={plans}
+            />
+
+            <LinkedUsersModal 
+                isOpen={isLinkedUsersModalOpen}
+                onClose={() => setIsLinkedUsersModalOpen(false)}
+                plan={selectedPlanForUsers}
+                onUpdate={handleUpdatePlans}
             />
         </DashboardLayout>
     );

@@ -12,6 +12,7 @@ import {
     LogOut,
     History,
     BarChart3,
+    Settings,
     X
 } from 'lucide-react';
 import clsx from 'clsx';
@@ -27,6 +28,7 @@ const navItems = [
     { label: 'Rifa', icon: Ticket, href: '/rifa' },
     { label: 'Histórico', icon: History, href: '/historico' },
     { label: 'Relatórios', icon: BarChart3, href: '/relatorios' },
+    { label: 'Configurações', icon: Settings, href: '/perfil' },
 ];
 
 const Sidebar = ({ onClose }) => {

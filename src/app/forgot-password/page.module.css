@@ -1,0 +1,199 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--bg-surface);
+}
+
+.themeToggleWrapper {
+    position: absolute;
+    top: var(--space-6);
+    right: var(--space-6);
+    z-index: 100;
+}
+
+/* Reuse branding styles from login for consistency */
+.brandingSection {
+    width: 40%;
+    position: relative;
+    background-color: #0A0F14;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.gradientBg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(31, 201, 142, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(31, 201, 142, 0.1) 0%, transparent 50%);
+}
+
+.brandingContent {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    color: white;
+}
+
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+}
+
+.logoImgLarge {
+    object-fit: contain;
+    width: auto;
+    height: auto;
+    max-width: 280px;
+}
+
+.tagline {
+    font-size: var(--font-h3);
+    font-weight: 400;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Content Section */
+.formSection {
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8);
+    background-color: var(--bg-base);
+}
+
+.formCard {
+    width: 100%;
+    max-width: 440px;
+    padding: var(--space-12);
+    background-color: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--border-color);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cardHeader {
+    margin-bottom: var(--space-10);
+}
+
+.iconCircle {
+    width: 80px;
+    height: 80px;
+    background-color: rgba(31, 201, 142, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-6);
+    border: 1px solid rgba(31, 201, 142, 0.2);
+}
+
+.headerIcon {
+    color: var(--primary);
+}
+
+.cardHeader h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: var(--space-4);
+    letter-spacing: -0.5px;
+}
+
+.cardHeader p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: var(--font-body-sm);
+}
+
+.supportInfo {
+    width: 100%;
+    margin-bottom: var(--space-8);
+}
+
+.supportDetails {
+    background-color: var(--bg-surface-saturate);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-6);
+    border: 1px dashed var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.supportLabel {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.supportNumber {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.whatsappBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-weight: 700 !important;
+}
+
+.btnIcon {
+    margin-top: -1px;
+}
+
+.backLink {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s;
+    font-size: var(--font-body-sm);
+}
+
+.backLink:hover {
+    color: var(--primary);
+}
+
+@media (max-width: 1024px) {
+    .brandingSection {
+        display: none;
+    }
+
+    .formSection {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .formCard {
+        padding: var(--space-6);
+        box-shadow: none;
+        background: transparent;
+        border: none;
+    }
+    
+    .cardHeader h2 {
+        font-size: 1.5rem;
+    }
+}

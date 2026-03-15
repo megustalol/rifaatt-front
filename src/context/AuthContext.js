@@ -79,8 +79,20 @@ export const AuthProvider = ({ children }) => {
         }, 1500);
     };
 
+    const refreshUser = async () => {
+        try {
+            const response = await api.get('/users/me');
+            setUser(response.data);
+            localStorage.setItem('@RifaBot:user', JSON.stringify(response.data));
+            return response.data;
+        } catch (error) {
+            console.error('Error refreshing user:', error);
+            return null;
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, isAuthenticated: !!user, loading, loggingOut }}>
+        <AuthContext.Provider value={{ user, login, register, logout, refreshUser, isAuthenticated: !!user, loading, loggingOut, setUser }}>
             {children}
         </AuthContext.Provider>
     );

@@ -11,14 +11,15 @@ import {
     LogOut
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import styles from './Header.module.css';
 import clsx from 'clsx';
 
 const Header = ({ onMenuClick }) => {
     const { user, logout } = useAuth();
     const pathname = usePathname();
-    const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+    const router = useRouter();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     // Get current page title from path
@@ -38,21 +39,6 @@ const Header = ({ onMenuClick }) => {
             </div>
 
             <div className={styles.right}>
-                <div className={clsx(styles.searchBox, isSearchExpanded && styles.expanded)}>
-                    <button
-                        className={styles.iconButton}
-                        onClick={() => setIsSearchExpanded(!isSearchExpanded)}
-                    >
-                        <Search size={20} />
-                    </button>
-                    <input
-                        type="text"
-                        placeholder="Buscar..."
-                        className={styles.searchInput}
-                        onBlur={() => setIsSearchExpanded(false)}
-                    />
-                </div>
-
                 <div className={styles.divider} />
 
                 <div className={styles.profileContainer}>
@@ -71,14 +57,14 @@ const Header = ({ onMenuClick }) => {
                         <>
                             <div className={styles.dropdownOverlay} onClick={() => setIsProfileOpen(false)} />
                             <div className={styles.dropdown}>
-                                <button className={styles.dropdownItem}>
+                                <Link href="/perfil" className={styles.dropdownItem} onClick={() => setIsProfileOpen(false)}>
                                     <UserIcon size={18} />
                                     <span>Meu Perfil</span>
-                                </button>
-                                <button className={styles.dropdownItem}>
+                                </Link>
+                                <Link href="/perfil" className={styles.dropdownItem} onClick={() => setIsProfileOpen(false)}>
                                     <Settings size={18} />
                                     <span>Configurações</span>
-                                </button>
+                                </Link>
                                 <div className={styles.dropdownDivider} />
                                 <button className={styles.logoutItem} onClick={logout}>
                                     <LogOut size={18} />

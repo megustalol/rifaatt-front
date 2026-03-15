@@ -13,7 +13,8 @@ import {
     ShoppingBag,
     BarChart3,
     Calendar,
-    Filter
+    Filter,
+    Inbox
 } from 'lucide-react';
 import {
     BarChart,
@@ -108,17 +109,11 @@ export default function ReportsPage() {
 
                 <div className={styles.statsOverview}>
                     <Card className={styles.statCard}>
-                        <div className={styles.chartWrapper}>
-                            {loading ? (
-                                <Skeleton height="100px" width="100%" />
-                            ) : (
-                                <ResponsiveContainer width="100%" height={100}>
-                                    <BarChart data={stats.chartData}>
-                                        <Bar dataKey="v" fill="var(--primary)" radius={[4, 4, 0, 0]} />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            )}
-                        </div>
+                        <StatChart 
+                            loading={loading} 
+                            data={stats.chartData} 
+                            color="var(--primary)" 
+                        />
                         <div className={styles.statInfo}>
                             <span className={styles.statLabel}>Total Arrecadado</span>
                             {loading ? (
@@ -132,6 +127,11 @@ export default function ReportsPage() {
                         </div>
                     </Card>
                     <Card className={styles.statCard}>
+                        <StatChart 
+                            loading={loading} 
+                            data={stats.chartData} 
+                            color="#3b82f6" 
+                        />
                         <div className={styles.statInfo}>
                             <span className={styles.statLabel}>Total de Reservas</span>
                             {loading ? (
@@ -211,47 +211,121 @@ export default function ReportsPage() {
 }
 
 function RankingTable({ data, cols, keys, onViewProfile }) {
+    if (!data || data.length === 0) {
+        return (
+            <Card className={styles.emptyCard}>
+                <div className={styles.emptyContent}>
+                    <Inbox size={48} className={styles.emptyIcon} />
+                    <h3>Sem dados para exibir</h3>
+                    <p>Ainda não há participações suficientes para gerar este ranking.</p>
+                </div>
+            </Card>
+        );
+    }
+
     return (
-        <Card className={styles.rankingCard}>
-            <table className={styles.table}>
-                <thead>
-                    <tr>
-                        <th style={{ width: '50px' }}>Rank</th>
-                        <th>Usuário</th>
-                        {cols.map(c => <th key={c}>{c}</th>)}
-                        <th style={{ textAlign: 'right' }}>Ação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map((item, index) => (
-                        <tr key={index}>
-                            <td>
-                                <div className={clsx(styles.rankIdx, index === 0 && styles.rankFirst)}>
-                                    {index + 1}
-                                </div>
-                            </td>
-                            <td className={styles.userName}>
+        <div className={styles.rankingWrapper}>
+            <Card className={styles.rankingCard}>
+                <table className={styles.table}>
+                    <thead>
+                        <tr>
+                            <th style={{ width: '50px' }}>Rank</th>
+                            <th>Usuário</th>
+                            {cols.map(c => <th key={c}>{c}</th>)}
+                            <th style={{ textAlign: 'right' }}>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {data.map((item, index) => (
+                            <tr key={index}>
+                                <td>
+                                    <div className={clsx(styles.rankIdx, index === 0 && styles.rankFirst)}>
+                                        {index + 1}
+                                    </div>
+                                </td>
+                                <td className={styles.userName}>
+                                    <div className={styles.avatar}>
+                                        {item.name.charAt(0)}
+                                    </div>
+                                    {item.name}
+                                </td>
+                                {keys.map(k => (
+                                    <td key={k} className={styles.valCell}>{item[k]}</td>
+                                ))}
+                                <td style={{ textAlign: 'right' }}>
+                                    <Button
+                                        variant="ghost"
+                                        size="xs"
+                                        onClick={() => onViewProfile(item)}
+                                    >
+                                        Ver Perfil
+                                    </Button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </Card>
+
+            <div className={styles.mobileCards}>
+                {data.map((item, index) => (
+                    <Card key={index} className={styles.mobileCard}>
+                        <div className={styles.mobileCardHeader}>
+                            <div className={clsx(styles.rankIdx, index === 0 && styles.rankFirst)}>
+                                {index + 1}
+                            </div>
+                            <div className={styles.userName}>
                                 <div className={styles.avatar}>
                                     {item.name.charAt(0)}
                                 </div>
                                 {item.name}
-                            </td>
-                            {keys.map(k => (
-                                <td key={k} className={styles.valCell}>{item[k]}</td>
+                            </div>
+                        </div>
+                        <div className={styles.mobileCardBody}>
+                            {cols.map((col, i) => (
+                                <div key={i} className={styles.mobileDetail}>
+                                    <span className={styles.mobileLabel}>{col}</span>
+                                    <span className={styles.mobileValue}>{item[keys[i]]}</span>
+                                </div>
                             ))}
-                            <td style={{ textAlign: 'right' }}>
-                                <Button
-                                    variant="ghost"
-                                    size="xs"
-                                    onClick={() => onViewProfile(item)}
-                                >
-                                    Ver Perfil
-                                </Button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </Card>
+                        </div>
+                        <div className={styles.mobileCardFooter}>
+                            <Button
+                                variant="outline"
+                                fullWidth
+                                onClick={() => onViewProfile(item)}
+                            >
+                                Ver Perfil Completo
+                            </Button>
+                        </div>
+                    </Card>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function StatChart({ loading, data, color }) {
+    const isEmpty = !data || data.length === 0 || data.every(d => d.v === 0);
+
+    return (
+        <div className={styles.chartWrapper}>
+            {loading ? (
+                <Skeleton height="100px" width="100%" />
+            ) : isEmpty ? (
+                <div className={styles.emptyChartPlaceholder}>
+                    <div className={styles.emptyBar} />
+                    <div className={styles.emptyBar} style={{ width: '60%' }} />
+                    <div className={styles.emptyBar} style={{ width: '80%' }} />
+                    <span>Sem dados</span>
+                </div>
+            ) : (
+                <ResponsiveContainer width="100%" height={100}>
+                    <BarChart data={data}>
+                        <Bar dataKey="v" fill={color} radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                </ResponsiveContainer>
+            )}
+        </div>
     );
 }

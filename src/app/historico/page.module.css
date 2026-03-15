@@ -92,130 +92,321 @@
     background-color: var(--bg-surface);
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: var(--space-6);
+.filterRow {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    animation: fadeIn 0.2s ease-out;
 }
 
-.historyCard {
+.filterGroup {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: var(--space-6);
+    align-items: center;
 }
 
-.cardHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.raffleInfo h4 {
-    font-size: 1.125rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-.groupName {
+.dateField {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+.dateField svg {
+    color: var(--text-muted);
+}
+
+.filterLabel {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.dateInput {
+    background-color: var(--bg-surface-saturate);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    color: var(--text-main);
+    font-size: 13px;
+    outline: none;
+    min-width: 130px;
+}
+
+.dateInput:focus {
+    border-color: var(--primary);
+}
+
+.dateSeparator {
     font-size: 12px;
     color: var(--text-muted);
 }
 
-.dateBadge {
+@media (max-width: 600px) {
+    .dateField {
+        gap: var(--space-2);
+    }
+
+    .dateInput {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .filterLabel {
+        width: 100%;
+        margin-bottom: 4px;
+    }
+
+    .dateSeparator {
+        display: none;
+    }
+}
+
+.resetBtn {
+    height: 32px !important;
+    font-size: 12px !important;
+    padding: 0 12px !important;
+}
+
+.contentArea {
+    width: 100%;
+}
+
+/* Desktop Table Styles */
+.desktopTable {
+    display: block;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    background-color: var(--bg-surface-saturate);
+    padding: var(--space-4) var(--space-6);
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table td {
+    padding: var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.raffleNameCell {
+    display: flex;
+    flex-direction: column;
+}
+
+.raffleTitle {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 14px;
+}
+
+.raffleId {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: monospace;
+}
+
+.groupCell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.dateCell {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.winnerBadge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(var(--primary-rgb), 0.05);
+    padding: 6px 12px;
+    border-radius: 100px;
+    width: fit-content;
+    border: 1px solid rgba(var(--primary-rgb), 0.1);
+}
+
+.winnerEmoji {
+    font-size: 14px;
+}
+
+.winnerNum {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.salesInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.salesInfo strong {
+    font-size: 14px;
+    color: var(--text-main);
+}
+
+.salesInfo span {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+/* Mobile Cards Styles */
+.mobileCards {
+    display: none;
+}
+
+.mobileHistoryCard {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.mobileHistoryCard:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.raffleMain h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.groupSub {
     display: flex;
     align-items: center;
     gap: 6px;
     font-size: 11px;
-    background-color: var(--bg-surface-saturate);
-    padding: 4px 10px;
+    color: var(--text-muted);
+}
+
+.mobileDate {
+    font-size: 11px;
+    background: var(--bg-surface-saturate);
+    padding: 2px 8px;
     border-radius: 100px;
     color: var(--text-secondary);
     font-weight: 600;
 }
 
-.winnerSection {
-    background-color: rgba(31, 201, 142, 0.03);
-    border: 1px dashed var(--primary);
-    border-radius: var(--radius-sm);
-    padding: var(--space-4);
+.cardBody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-color);
 }
 
-.winnerHeader {
+.cardWinner {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: 8px;
+    color: var(--primary);
+}
+
+.winnerLabel {
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-    color: var(--primary);
-    margin-bottom: var(--space-3);
 }
 
-.winnerList {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-}
-
-.winnerItem {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
+.winnerResult {
     font-size: 13px;
     font-weight: 600;
 }
 
-.winnerAvatar {
-    width: 24px;
-    height: 24px;
-    background-color: var(--primary);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-}
-
-.salesRow {
+.cardMeta {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-4);
-    padding-top: var(--space-2);
 }
 
-.salesStat {
+.metaItem {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.salesLabel {
+.metaLabel {
     font-size: 10px;
-    text-transform: uppercase;
     color: var(--text-muted);
-}
-
-.salesValue {
-    font-size: 1rem;
+    text-transform: uppercase;
     font-weight: 700;
 }
 
-.detailsLink {
-    display: block;
-    text-decoration: none;
-    margin-top: auto;
+.metaValue {
+    font-size: 13px;
+    color: var(--text-main);
+    font-weight: 600;
 }
 
-.detailsBtn {
-    width: 100%;
+.metaValueHighlight {
+    font-size: 13px;
+    color: var(--primary);
+    font-weight: 700;
 }
 
-@media (max-width: 768px) {
-    .grid {
-        grid-template-columns: 1fr;
+@media (max-width: 900px) {
+    .desktopTable {
+        display: none !important;
     }
+
+    .mobileCards {
+        display: flex !important;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+}
+
+.emptyState {
+    text-align: center;
+    padding: var(--space-16) var(--space-8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    background-color: var(--bg-surface);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    color: var(--text-muted);
+}
+
+.emptyState h3 {
+    color: var(--text-main);
 }

@@ -39,30 +39,6 @@
     gap: var(--space-4);
 }
 
-.searchBox {
-    display: flex;
-    align-items: center;
-    background-color: var(--bg-surface-saturate);
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-base);
-    width: 40px;
-    overflow: hidden;
-}
-
-.searchBox.expanded {
-    width: 240px;
-    box-shadow: 0 0 0 3px var(--primary-glow);
-}
-
-.searchInput {
-    background: none;
-    border: none;
-    outline: none;
-    padding: var(--space-2);
-    color: var(--text-main);
-    font-size: var(--font-body-sm);
-    width: 100%;
-}
 
 .iconButton {
     background: none;
