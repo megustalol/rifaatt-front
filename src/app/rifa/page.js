@@ -90,7 +90,7 @@ export default function RifaPage() {
     const stats = {
         paid: dezenas.filter(d => d.status === 'pago').length,
         reserved: dezenas.filter(d => d.status === 'reservado').length,
-        free: 100 - dezenas.length
+        free: (raffle?.numbersCount || 100) - dezenas.length
     };
 
     const renderListing = () => (

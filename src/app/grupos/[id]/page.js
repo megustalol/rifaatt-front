@@ -138,7 +138,7 @@ export default function GroupDetailsPage() {
     );
 
     const reservations = raffle?.Reservations || [];
-    const total = 100;
+    const total = raffle?.numbersCount || 100;
     const paid = reservations.filter(r => r.status === 'PAID').length;
     const pending = reservations.filter(r => r.status === 'PENDING').length;
     const free = total - paid - pending;
