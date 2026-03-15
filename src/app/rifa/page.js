@@ -27,9 +27,19 @@ export default function RifaPage() {
 
     const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
     const [isDrawOptionsModalOpen, setIsDrawOptionsModalOpen] = useState(false);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [winner, setWinner] = useState(null);
     const [isDrawing, setIsDrawing] = useState(false);
     const [manualNumber, setManualNumber] = useState('');
+
+    const [newRifaConfig, setNewRifaConfig] = useState({
+        title: '',
+        prize: '',
+        price: 10,
+        pixKey: '',
+        numbersCount: 100,
+        welcomeMsg: ''
+    });
 
     const fetchDashboard = async () => {
         setDashboardLoading(true);
@@ -53,11 +63,50 @@ export default function RifaPage() {
         setLoading(true);
         try {
             // Re-fetch full raffle data for management - ALWAYS USE THE RECORD ID (group.id)
-            const response = await api.get(`/raffles/active/${group.id}`);
+            const response = await api.get(`/raffles/active/${group.groupJid}`);
             setRaffle(response.data.raffle);
         } catch (error) {
             console.error('Error fetching raffle:', error);
             setRaffle(null);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleOpenCreateModal = (group) => {
+        setSelectedGroup(group);
+        setNewRifaConfig({
+            title: '',
+            prize: '',
+            price: 10,
+            pixKey: '',
+            numbersCount: 100,
+            welcomeMsg: ''
+        });
+        setIsCreateModalOpen(true);
+    };
+
+    const handleCreateRifa = async () => {
+        if (!newRifaConfig.title || !newRifaConfig.prize || !newRifaConfig.pixKey) {
+            alert('Por favor, preencha todos os campos obrigatórios.');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await api.post('/raffles', {
+                ...newRifaConfig,
+                groupJid: selectedGroup.groupJid,
+                instanceId: selectedGroup.instanceId,
+                ticketValue: parseFloat(newRifaConfig.price)
+            });
+            setIsCreateModalOpen(false);
+            fetchDashboard();
+            if (viewMode === 'MANAGE') {
+                handleSelectGroup(selectedGroup);
+            }
+        } catch (error) {
+            alert(error.response?.data?.error || 'Erro ao criar rifa');
         } finally {
             setLoading(false);
         }
@@ -233,7 +282,7 @@ export default function RifaPage() {
                                             variant="primary" 
                                             icon={Plus}
                                             className={styles.flex1}
-                                            onClick={(e) => { e.stopPropagation(); handleSelectGroup(item); /* Open create modal logic or redirect */ }}
+                                            onClick={(e) => { e.stopPropagation(); handleOpenCreateModal(item); }}
                                         >
                                             Nova Rifa
                                         </Button>
@@ -292,7 +341,13 @@ export default function RifaPage() {
                             <div className={styles.noRaffleContent}>
                                 <Trophy size={48} />
                                 <p>Nenhuma rifa ativa para este grupo.</p>
-                                <Button variant="primary" className={styles.mt4}>Criar Primeira Rifa</Button>
+                                <Button 
+                                    variant="primary" 
+                                    className={styles.mt4}
+                                    onClick={() => handleOpenCreateModal(selectedGroup)}
+                                >
+                                    Criar Primeira Rifa
+                                </Button>
                             </div>
                         </Card>
                     )}
@@ -415,6 +470,19 @@ export default function RifaPage() {
                     </motion.div>
                 )}
             </AnimatePresence>
+            {/* Create Raffle Modal */}
+            <Modal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                title={`Criar Nova Rifa - ${selectedGroup?.groupName}`}
+                size="md"
+            >
+                <RifaConfigForm
+                    config={newRifaConfig}
+                    onChange={(field, value) => setNewRifaConfig(prev => ({ ...prev, [field]: value }))}
+                    onSave={handleCreateRifa}
+                />
+            </Modal>
         </DashboardLayout>
     );
 }
