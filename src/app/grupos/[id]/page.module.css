@@ -172,6 +172,36 @@
     background-color: var(--border-color);
 }
 
+.legendMinimal {
+    display: flex;
+    gap: var(--space-4);
+    margin-left: auto;
+}
+
+.legendMinimal .legendItem {
+    flex-direction: row;
+    font-size: 11px;
+}
+
+.gridContainer {
+    padding: var(--space-6);
+    background-color: var(--bg-surface-saturate);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    margin-bottom: var(--space-8);
+}
+
+.membersSection {
+    margin-top: var(--space-4);
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--space-8);
+}
+
+.nameInfo {
+    display: flex;
+    flex-direction: column;
+}
+
 .manageRifaBtn {
     margin-top: var(--space-4);
 }

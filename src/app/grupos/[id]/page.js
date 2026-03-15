@@ -14,7 +14,7 @@ import {
     DollarSign,
     UserCircle,
     Copy,
-    MessageCircle,
+    ExternalLink,
     Plus,
     Trash2
 } from 'lucide-react';
@@ -105,19 +105,8 @@ export default function GroupDetailsPage() {
         }
     };
 
-    const handleCopyInviteLink = async () => {
-        try {
-            const response = await api.get(`/raffles/invite-link/${groupJid}`);
-            if (response.data.inviteLink) {
-                navigator.clipboard.writeText(response.data.inviteLink);
-                addToast('Link de convite copiado!', 'success');
-            } else {
-                addToast('Não foi possível obter o link de convite.', 'error');
-            }
-        } catch (error) {
-            console.error('Error fetching invite link:', error);
-            addToast('Erro ao buscar link do grupo.', 'error');
-        }
+    const handleManageFullRaffle = () => {
+        window.location.href = '/rifa';
     };
 
     useEffect(() => {
@@ -208,10 +197,10 @@ export default function GroupDetailsPage() {
                         <div className={styles.actions}>
                             <Button 
                                 variant="secondary" 
-                                icon={MessageCircle}
-                                onClick={handleCopyInviteLink}
+                                icon={ExternalLink}
+                                onClick={handleManageFullRaffle}
                             >
-                                Link de Convite
+                                Gerenciar Rifa Completa
                             </Button>
                             <Button 
                                 variant="danger" 
@@ -300,35 +289,47 @@ export default function GroupDetailsPage() {
                             >
                                 Finalizar Rifa
                             </Button>
-
-                            <div className={styles.gridPreviewSection}>
-                                <div className={styles.gridHeader}>
-                                    <h4>Visualização do Grid</h4>
-                                </div>
-                                <DezenasGrid 
-                                    dezenas={reservations.map(r => ({
-                                        number: r.number,
-                                        status: r.status?.toLowerCase() === 'paid' ? 'pago' : 'reservado',
-                                        user: r.buyerName
-                                    }))} 
-                                    totalNumbers={raffle.numbersCount || 100}
-                                />
-                            </div>
                         </Card>
 
                         <Card className={styles.membersCard}>
                             <div className={styles.cardHeader}>
-                                <Users className={styles.cardIcon} />
-                                <h3>Participantes ({participants.length})</h3>
+                                <Ticket className={styles.cardIcon} />
+                                <h3>Visualização do Grid (00-99)</h3>
+                                <div className={styles.legendMinimal}>
+                                    <div className={styles.legendItem}><div className={clsx(styles.dot, styles.bgPaga)} /> Pago</div>
+                                    <div className={styles.legendItem}><div className={clsx(styles.dot, styles.bgReservada)} /> Reservado</div>
+                                    <div className={styles.legendItem}><div className={clsx(styles.dot, styles.bgLivre)} /> Livre</div>
+                                </div>
                             </div>
 
-                            <div className={styles.membersList}>
+                            {raffle ? (
+                                <div className={styles.gridContainer}>
+                                    <DezenasGrid 
+                                        dezenas={reservations.map(r => ({
+                                            number: r.number,
+                                            status: r.status?.toLowerCase() === 'paid' ? 'pago' : 'reservado',
+                                            user: r.buyerName
+                                        }))} 
+                                        totalNumbers={raffle.numbersCount || 100}
+                                    />
+                                </div>
+                            ) : (
+                                <div className={styles.emptyMembers}>
+                                    <p>Nenhuma rifa ativa detectada ainda.</p>
+                                </div>
+                            )}
+
+                            <div className={styles.membersSection}>
+                                <div className={styles.cardHeader}>
+                                    <Users className={styles.cardIcon} />
+                                    <h3>Participantes ({participants.length})</h3>
+                                </div>
                                 {participants.length === 0 ? (
                                     <div className={styles.emptyMembers}>
                                         <p>Nenhuma reserva detectada ainda.</p>
                                     </div>
                                 ) : (
-                                    <>
+                                    <div className={styles.membersList}>
                                         {/* Desktop Table */}
                                         <table className={clsx(styles.table, styles.desktopOnly)}>
                                             <thead>
@@ -344,11 +345,11 @@ export default function GroupDetailsPage() {
                                                     <tr key={p.phone}>
                                                         <td className={styles.userName}>
                                                             <div className={styles.avatar}>
-                                                                {p.name.charAt(0)}
+                                                                {p.name?.charAt(0) || '?'}
                                                             </div>
-                                                            <div>
-                                                                <div>{p.name}</div>
-                                                                <div className={styles.phoneSub}>{p.phone.split('@')[0]}</div>
+                                                            <div className={styles.nameInfo}>
+                                                                <div>{p.name || 'Sem Nome'}</div>
+                                                                <div className={styles.phoneSub}>{p.phone?.split('@')[0] || ''}</div>
                                                             </div>
                                                         </td>
                                                         <td className={styles.phoneCell}>
@@ -380,10 +381,10 @@ export default function GroupDetailsPage() {
                                                     <div key={p.phone} className={styles.participantCard}>
                                                         <div className={styles.participantHeader}>
                                                             <div className={styles.participantMeta}>
-                                                                <div className={styles.avatar}>{p.name.charAt(0)}</div>
+                                                                <div className={styles.avatar}>{p.name?.charAt(0) || '?'}</div>
                                                                 <div className={styles.participantNameInfo}>
-                                                                    <span className={styles.pName}>{p.name}</span>
-                                                                    <span className={styles.pPhone}>{p.phone.split('@')[0]}</span>
+                                                                    <span className={styles.pName}>{p.name || 'Sem Nome'}</span>
+                                                                    <span className={styles.pPhone}>{p.phone?.split('@')[0] || ''}</span>
                                                                 </div>
                                                             </div>
                                                             <div className={clsx(styles.statusBadge, p.pendingCount === 0 ? styles.online : styles.away)}>
@@ -410,7 +411,7 @@ export default function GroupDetailsPage() {
                                                 ))}
                                             </div>
                                         </div>
-                                    </>
+                                    </div>
                                 )}
                             </div>
                         </Card>
