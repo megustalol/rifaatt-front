@@ -66,8 +66,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--space-4) var(--space-5);
-    border-bottom: 1px solid var(--border-subtle);
+    padding: var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--border-color);
     transition: background-color 0.15s ease;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .activityRow:hover {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: var(--bg-surface-saturate);
 }
 
 .activityInfo {
@@ -108,8 +108,8 @@
     border-radius: 20px;
     font-size: var(--font-caption);
     font-weight: 600;
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
+    background: rgba(31, 201, 142, 0.15);
+    color: var(--success);
 }
 
 .badgeReserved {
@@ -119,7 +119,7 @@
     font-size: var(--font-caption);
     font-weight: 600;
     background: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
+    color: var(--warning);
 }
 
 .badgePending {
@@ -128,8 +128,8 @@
     border-radius: 20px;
     font-size: var(--font-caption);
     font-weight: 600;
-    background: rgba(99, 102, 241, 0.15);
-    color: #6366f1;
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--info);
 }
 
 .badgeDefault {
@@ -138,8 +138,8 @@
     border-radius: 20px;
     font-size: var(--font-caption);
     font-weight: 600;
-    background: rgba(148, 163, 184, 0.15);
-    color: #94a3b8;
+    background: rgba(156, 163, 175, 0.15);
+    color: var(--text-muted);
 }
 
 .pagination {
@@ -154,8 +154,8 @@
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-2) var(--space-4);
-    background: var(--surface-card);
-    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     color: var(--text-main);
     font-size: var(--font-body-sm);
