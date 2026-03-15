@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -38,7 +38,7 @@ function CheckoutContent() {
 
     useEffect(() => {
         fetchPlans();
-    }, []);
+    }, [fetchPlans]);
 
     useEffect(() => {
         let interval;
@@ -61,7 +61,7 @@ function CheckoutContent() {
         return () => clearInterval(interval);
     }, [paymentData, paymentStatus, router]);
 
-    const fetchPlans = async () => {
+    const fetchPlans = useCallback(async () => {
         try {
             const res = await api.get('/plans');
             // Filter: Active plans AND (NOT the user's current plan OR user is on trial/temporary)
@@ -85,7 +85,7 @@ function CheckoutContent() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [user?.planId, user?.planExpiresAt, selectedPlanId]);
 
     const handleGeneratePayment = async () => {
         if (!document || document.length < 11) {
@@ -259,7 +259,7 @@ function CheckoutContent() {
                                                 <img
                                                     src={`data:image/png;base64,${paymentData.qrCode}`}
                                                     alt="QR Code PIX"
-                                                    style={{ width: '200px', height: '200px' }}
+                                                    style={{ width: '180px', height: '180px' }}
                                                 />
                                             </div>
 

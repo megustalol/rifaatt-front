@@ -266,11 +266,15 @@
 }
 
 .qrPlaceholder {
-    background: white;
-    padding: var(--space-6);
-    border-radius: 16px;
+    background: #fff;
+    padding: var(--space-4);
+    border-radius: 12px;
     display: flex;
     justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    width: fit-content;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .mockQr {
@@ -295,12 +299,15 @@
 }
 
 .pixKey {
-    font-family: monospace;
-    font-size: 10px;
-    color: var(--text-muted);
+    font-family: inherit;
+    font-size: var(--font-body-xs);
+    color: var(--text-secondary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-weight: 500;
+    min-width: 0; /* Crucial for ellipsis in flex */
+    flex: 1;
 }
 
 .copyBtn {
@@ -340,9 +347,59 @@
     margin-bottom: var(--space-6);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
+    .main {
+        padding: var(--space-6) 4%;
+    }
+
     .checkoutGrid {
         grid-template-columns: 1fr;
+        gap: var(--space-6);
+    }
+
+    .title {
+        font-size: var(--font-h3);
+        text-align: center;
+    }
+
+    .subtitle {
+        text-align: center;
+        margin-bottom: var(--space-8);
+    }
+
+    .paymentCard {
+        position: static;
+        order: -1;
+        padding: var(--space-6) var(--space-4); /* Reduced padding for mobile */
+        border-radius: 16px;
+    }
+
+    .pixCopyArea {
+        padding: var(--space-3);
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .qrPlaceholder {
+        padding: var(--space-3);
+        margin-bottom: var(--space-2);
+    }
+
+    .qrPlaceholder img {
+        max-width: 100%;
+        height: auto !important;
+    }
+
+    .planOptions {
+        order: 1;
+    }
+
+    .documentInputSection {
+        order: 2;
+    }
+
+    .featureList {
+        order: 3;
     }
 }
 
