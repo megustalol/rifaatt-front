@@ -369,6 +369,12 @@
     display: none;
 }
 
+.actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
 @media (max-width: 768px) {
     .headerContent {
         flex-direction: column;
