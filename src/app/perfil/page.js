@@ -84,6 +84,17 @@ export default function ProfilePage() {
         }
     };
 
+    const getPlanStatus = () => {
+        if (user?.role === 'ADMIN') return { label: 'Administrador', class: styles.planBadgeAdmin };
+        if (user?.onboardingType === 'PAID') return { label: 'Ativo', class: styles.planBadgeActive };
+        if (user?.onboardingType === 'TRIAL_ACTIVATED') return { label: 'Teste', class: styles.planBadgeTrial };
+        if (user?.onboardingType === 'PAYMENT_REQUIRED') return { label: 'Aguardando Pagamento', class: styles.planBadgePending };
+        if (user?.planExpiresAt && new Date(user.planExpiresAt) < new Date()) return { label: 'Expirado', class: styles.planBadgeExpired };
+        return { label: 'Pendente', class: styles.planBadgePending };
+    };
+
+    const planStatus = getPlanStatus();
+
     return (
         <DashboardLayout>
             <div className={styles.container}>
@@ -100,12 +111,14 @@ export default function ProfilePage() {
                                 <div className={styles.planName}>
                                     <Zap size={24} className={styles.icon} />
                                     {user?.Plan?.name || 'Plano Gratuito'}
-                                    <span className={styles.planBadge}>Ativo</span>
+                                    <span className={clsx(styles.planBadge, planStatus.class)}>
+                                        {planStatus.label}
+                                    </span>
                                 </div>
                                 <div className={styles.planMeta}>
                                     <div className={styles.metaItem}>
                                         <Calendar size={16} />
-                                        Expira em: {formatDate(user?.planExpiresAt)}
+                                        Expira em: {user?.role === 'ADMIN' ? 'Vitalício' : formatDate(user?.planExpiresAt)}
                                     </div>
                                     <div className={styles.metaItem}>
                                         <ShieldCheck size={16} />
