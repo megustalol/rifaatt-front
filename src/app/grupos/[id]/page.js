@@ -23,7 +23,7 @@ import Link from 'next/link';
 import clsx from 'clsx';
 import { getAnimalForNumber } from '@/utils/animalDictionary';
 import DezenasGrid from '@/components/rifa/DezenasGrid/DezenasGrid';
-import { toast } from 'react-hot-toast';
+import { useToast } from '@/hooks/useToast';
 
 const mockGroupDetails = {
     id: '1',
@@ -63,6 +63,7 @@ export default function GroupDetailsPage() {
     const [raffle, setRaffle] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isFinalizeModalOpen, setIsFinalizeModalOpen] = useState(false);
+    const { addToast } = useToast();
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -109,13 +110,13 @@ export default function GroupDetailsPage() {
             const response = await api.get(`/raffles/invite-link/${groupJid}`);
             if (response.data.inviteLink) {
                 navigator.clipboard.writeText(response.data.inviteLink);
-                toast.success('Link de convite copiado!');
+                addToast('Link de convite copiado!', 'success');
             } else {
-                toast.error('Não foi possível obter o link de convite.');
+                addToast('Não foi possível obter o link de convite.', 'error');
             }
         } catch (error) {
             console.error('Error fetching invite link:', error);
-            toast.error('Erro ao buscar link do grupo.');
+            addToast('Erro ao buscar link do grupo.', 'error');
         }
     };
 
