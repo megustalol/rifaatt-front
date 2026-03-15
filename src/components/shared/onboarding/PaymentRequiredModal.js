@@ -29,11 +29,11 @@ const PaymentRequiredModal = ({ isOpen, onClose, userName }) => {
                 </div>
                 <h2>Olá, {userName}!</h2>
                 <p>
-                    Seu plano foi selecionado pela administração. Para que você possa começar a utilizar todas as funcionalidades, é necessário concluir o pagamento da primeira mensalidade.
+                    A administração selecionou o melhor plano para o seu perfil. Para liberar o acesso completo a todas as ferramentas, basta concluir a ativação abaixo.
                 </p>
                 <div className={styles.infoBox}>
                     <AlertCircle size={20} />
-                    <span>Ao clicar no botão abaixo, você será redirecionado para a nossa página de checkout seguro.</span>
+                    <span>Seu acesso será liberado instantaneamente após a confirmação do pagamento.</span>
                 </div>
                 <div className={styles.actions}>
                     <Button onClick={handleCheckout} icon={CreditCard} size="lg" fullWidth>
