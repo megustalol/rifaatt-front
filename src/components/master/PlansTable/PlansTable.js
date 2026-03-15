@@ -3,7 +3,7 @@
 import React from 'react';
 import styles from './PlansTable.module.css';
 import Button from '../../ui/Button/Button';
-import { Edit2, Trash2, Globe, Lock, CheckCircle, XCircle, Users, Clock, Maximize2, Smartphone } from 'lucide-react';
+import { Edit2, Trash2, Globe, Lock, CheckCircle, XCircle, Users, Clock, Maximize2, Smartphone, Search } from 'lucide-react';
 import clsx from 'clsx';
 
 const PlansTable = ({ plans, onEdit, onDelete, onManageUsers, loading }) => {
