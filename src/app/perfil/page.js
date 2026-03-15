@@ -85,7 +85,7 @@ export default function ProfilePage() {
     };
 
     const getPlanStatus = () => {
-        if (user?.role === 'ADMIN') return { label: 'Administrador', class: styles.planBadgeAdmin };
+        if (user?.role === 'ADMIN') return { label: 'Administrador Safira', class: styles.planBadgeSafira };
         if (user?.onboardingType === 'PAID') return { label: 'Ativo', class: styles.planBadgeActive };
         if (user?.onboardingType === 'TRIAL_ACTIVATED') return { label: 'Teste', class: styles.planBadgeTrial };
         if (user?.onboardingType === 'PAYMENT_REQUIRED') return { label: 'Aguardando Pagamento', class: styles.planBadgePending };
@@ -105,12 +105,12 @@ export default function ProfilePage() {
 
                 <div className={styles.grid}>
                     {/* Plan Section */}
-                    <div className={clsx(styles.card, styles.planCard)}>
+                    <div className={clsx(styles.card, styles.planCard, user?.role === 'ADMIN' && styles.planCardSafira)}>
                         <div className={styles.planContent}>
                             <div className={styles.planInfo}>
                                 <div className={styles.planName}>
                                     <Zap size={24} className={styles.icon} />
-                                    {user?.Plan?.name || 'Plano Gratuito'}
+                                    {user?.role === 'ADMIN' ? 'Plano Safira' : (user?.Plan?.name || 'Plano Gratuito')}
                                     <span className={clsx(styles.planBadge, planStatus.class)}>
                                         {planStatus.label}
                                     </span>
@@ -122,7 +122,7 @@ export default function ProfilePage() {
                                     </div>
                                     <div className={styles.metaItem}>
                                         <ShieldCheck size={16} />
-                                        Status: {user?.status === 'ACTIVE' ? 'Conta Verificada' : 'Aguardando'}
+                                        Status: {user?.role === 'ADMIN' ? 'Conta Vitalícia' : (user?.status === 'ACTIVE' ? 'Conta Verificada' : 'Aguardando')}
                                     </div>
                                 </div>
                             </div>

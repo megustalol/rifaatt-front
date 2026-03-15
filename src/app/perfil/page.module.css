@@ -131,10 +131,19 @@
     color: var(--text-main);
 }
 
-.planBadgeAdmin {
-    background: linear-gradient(135deg, #7c4dff 0%, #448aff 100%);
+.planBadgeSafira {
+    background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
     color: #fff;
-    box-shadow: 0 4px 12px rgba(124, 77, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
+}
+
+.planCardSafira {
+    border-left: 4px solid #00d2ff !important;
+    background: linear-gradient(135deg, rgba(58, 123, 213, 0.1) 0%, rgba(var(--bg-surface-rgb), 1) 100%) !important;
+}
+
+.planCardSafira svg {
+    color: #00d2ff !important;
 }
 
 .planBadgeActive {
