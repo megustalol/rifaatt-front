@@ -210,7 +210,7 @@ const ConexaoModal = ({ isOpen, onClose, instance, onSuccess }) => {
                                         <p>Se preferir, conecte usando o código de emparelhamento de 8 dígitos.</p>
                                     </div>
 
-                                    {pairingCode ? (
+                                    {pairingCode && pairingCode.length > 0 ? (
                                         <div className={styles.pairingDisplay}>
                                             <div className={styles.codeContainer}>
                                                 {pairingCode.split('').map((char, i) => (
@@ -218,6 +218,11 @@ const ConexaoModal = ({ isOpen, onClose, instance, onSuccess }) => {
                                                 ))}
                                             </div>
                                             <p className={styles.pairingTip}>Insira este código no seu WhatsApp.</p>
+                                        </div>
+                                    ) : loading ? (
+                                        <div className={styles.qrLoading}>
+                                            <Loader2 size={40} className={styles.spin} />
+                                            <span>Gerando código de pareamento...</span>
                                         </div>
                                     ) : (
                                         <div className={styles.pairingForm}>
