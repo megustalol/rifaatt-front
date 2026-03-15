@@ -93,6 +93,100 @@
     padding: var(--space-3) var(--space-8) !important;
 }
 
+.planCard {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-surface-saturate) 100%);
+    border-left: 4px solid var(--primary);
+}
+
+.planContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+.planInfo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.planName {
+    font-size: var(--font-h3);
+    font-weight: 800;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.planBadge {
+    background: var(--primary);
+    color: #000;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+.planMeta {
+    display: flex;
+    gap: var(--space-6);
+    color: var(--text-secondary);
+    font-size: var(--font-body-sm);
+}
+
+.metaItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.planAction {
+    flex-shrink: 0;
+}
+
+.extraCard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.infoRow {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.infoLabel {
+    color: var(--text-secondary);
+    font-size: var(--font-body-sm);
+}
+
+.infoValue {
+    color: var(--text-main);
+    font-weight: 500;
+    font-size: var(--font-body-sm);
+}
+
+@media (max-width: 900px) {
+    .planContent {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .planAction {
+        width: 100%;
+    }
+    
+    .planAction button {
+        width: 100%;
+    }
+}
+
 @media (max-width: 900px) {
     .grid {
         grid-template-columns: 1fr;
