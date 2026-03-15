@@ -136,8 +136,8 @@ export default function GroupDetailsPage() {
         </DashboardLayout>
     );
 
+    const reservations = raffle?.Reservations || [];
     const total = 100;
-    const reservations = raffle.Reservations || [];
     const paid = reservations.filter(r => r.status === 'PAID').length;
     const pending = reservations.filter(r => r.status === 'PENDING').length;
     const free = total - paid - pending;
@@ -322,7 +322,7 @@ export default function GroupDetailsPage() {
                                                             </div>
                                                         </td>
                                                         <td className={styles.purchasesCell}>
-                                                            R$ {(p.numbers.length * raffle.ticketValue).toFixed(2)}
+                                                            R$ {(p.numbers.length * (raffle?.ticketValue || 0)).toFixed(2)}
                                                         </td>
                                                         <td>
                                                             <div className={clsx(styles.statusBadge, p.pendingCount === 0 ? styles.online : styles.away)}>
@@ -364,7 +364,7 @@ export default function GroupDetailsPage() {
                                                             </div>
                                                             <div className={styles.pFooter}>
                                                                 <span className={styles.pLabel}>Valor Total:</span>
-                                                                <span className={styles.pPrice}>R$ {(p.numbers.length * raffle.ticketValue).toFixed(2)}</span>
+                                                                <span className={styles.pPrice}>R$ {(p.numbers.length * (raffle?.ticketValue || 0)).toFixed(2)}</span>
                                                             </div>
                                                         </div>
                                                     </div>
