@@ -213,9 +213,16 @@ const ConexaoModal = ({ isOpen, onClose, instance, onSuccess }) => {
                                     {pairingCode && pairingCode.length > 0 ? (
                                         <div className={styles.pairingDisplay}>
                                             <div className={styles.codeContainer}>
-                                                {pairingCode.split('').map((char, i) => (
-                                                    <span key={i} className={styles.codeChar}>{char}</span>
-                                                ))}
+                                                {pairingCode.split('').map((char, i) => {
+                                                    if (char === '-') {
+                                                        return <span key={i} className={styles.codeSeparator} />;
+                                                    }
+                                                    return (
+                                                        <span key={i} className={styles.codeChar}>
+                                                            {char}
+                                                        </span>
+                                                    );
+                                                })}
                                             </div>
                                             <p className={styles.pairingTip}>Insira este código no seu WhatsApp.</p>
                                         </div>
