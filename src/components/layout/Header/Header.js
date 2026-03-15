@@ -24,9 +24,19 @@ const Header = ({ onMenuClick }) => {
 
     // Get current page title from path
     const getPageTitle = () => {
-        const segment = pathname.split('/').pop();
-        if (!segment || segment === '') return 'Dashboard';
-        return segment.charAt(0).toUpperCase() + segment.slice(1);
+        const segments = pathname.split('/').filter(Boolean);
+        if (segments.length === 0) return 'Dashboard';
+        
+        const lastSegment = segments[segments.length - 1];
+        
+        // If the last segment is a UUID (common for detail pages), use the previous segment
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (uuidRegex.test(lastSegment) && segments.length > 1) {
+            const parentSegment = segments[segments.length - 2];
+            return parentSegment.charAt(0).toUpperCase() + parentSegment.slice(1);
+        }
+
+        return lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1);
     };
 
     return (

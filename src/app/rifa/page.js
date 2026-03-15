@@ -7,7 +7,7 @@ import RifaConfigForm from '@/components/rifa/RifaConfigForm/RifaConfigForm';
 import Button from '@/components/ui/Button/Button';
 import Modal from '@/components/ui/Modal/Modal';
 import Card from '@/components/ui/Card/Card';
-import { Trophy, Share2, RefreshCcw, Search, Loader2 } from 'lucide-react';
+import { Trophy, Share2, RefreshCcw, Search, Loader2, Plus, Smartphone } from 'lucide-react';
 import styles from './page.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAnimalForNumber } from '@/utils/animalDictionary';
@@ -167,15 +167,32 @@ export default function RifaPage() {
                             )}
 
                             <div className={styles.cardFooter}>
-                                <Button 
-                                    fullWidth 
-                                    variant={item.latestRaffle?.status === 'ACTIVE' ? "primary" : "secondary"}
-                                    onClick={(e) => { e.stopPropagation(); handleSelectGroup(item); }}
-                                >
-                                    {item.latestRaffle?.status === 'ACTIVE' ? 'Gerenciar Rifa' : 'Ver Detalhes'}
-                                </Button>
-                                {!item.latestRaffle && (
-                                    <Button variant="ghost" icon={Trophy}>Nova Rifa</Button>
+                                {item.latestRaffle ? (
+                                    <Button 
+                                        fullWidth 
+                                        variant="primary"
+                                        onClick={(e) => { e.stopPropagation(); handleSelectGroup(item); }}
+                                    >
+                                        Gerenciar Rifa
+                                    </Button>
+                                ) : (
+                                    <div className={styles.emptyActions}>
+                                        <Button 
+                                            variant="secondary"
+                                            className={styles.flex1}
+                                            onClick={(e) => { e.stopPropagation(); handleSelectGroup(item); }}
+                                        >
+                                            Ver Grupo
+                                        </Button>
+                                        <Button 
+                                            variant="primary" 
+                                            icon={Plus}
+                                            className={styles.flex1}
+                                            onClick={(e) => { e.stopPropagation(); handleSelectGroup(item); /* Open create modal logic or redirect */ }}
+                                        >
+                                            Nova Rifa
+                                        </Button>
+                                    </div>
                                 )}
                             </div>
                         </Card>
