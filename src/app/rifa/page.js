@@ -63,7 +63,7 @@ export default function RifaPage() {
         setLoading(true);
         try {
             // Re-fetch full raffle data for management - ALWAYS USE THE RECORD ID (group.id)
-            const response = await api.get(`/raffles/active/${group.groupJid}`);
+            const response = await api.get(`/raffles/active/${group.id}`);
             setRaffle(response.data.raffle);
         } catch (error) {
             console.error('Error fetching raffle:', error);

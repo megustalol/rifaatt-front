@@ -19,8 +19,10 @@ const DezenasGrid = ({ dezenas = [], totalNumbers = 100 }) => {
 
     // Sort to follow 01 to 00 order
     const sortedDezenas = [...fullDezenas].sort((a, b) => {
-        const nA = a.number === '00' ? 100 : parseInt(a.number);
-        const nB = b.number === '00' ? 100 : parseInt(b.number);
+        const valA = parseInt(a.number);
+        const valB = parseInt(b.number);
+        const nA = valA === 0 ? 1000 : valA;
+        const nB = valB === 0 ? 1000 : valB;
         return nA - nB;
     });
 
