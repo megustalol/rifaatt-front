@@ -126,11 +126,13 @@ export default function ProfilePage() {
                                     </div>
                                 </div>
                             </div>
-                            <div className={styles.planAction}>
-                                <Button variant="secondary" onClick={() => window.location.href='/checkout'}>
-                                    Alterar Plano
-                                </Button>
-                            </div>
+                            {user?.role !== 'ADMIN' && (
+                                <div className={styles.planAction}>
+                                    <Button variant="secondary" onClick={() => window.location.href='/checkout'}>
+                                        Alterar Plano
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
 
