@@ -87,10 +87,10 @@ const ConexaoModal = ({ isOpen, onClose, instance, onSuccess }) => {
             try {
                 const response = await api.get(`/instances/status/${id}`);
                 const data = response.data;
-                console.log('[POLL] Status check:', data.instance?.status, 'Code:', data.instance?.paircode || data.paircode);
+                const pCode = data.instance?.paircode ?? data.paircode ?? data.pairingCode ?? data.instance?.pairCode;
+                console.log('[POLL] Status check:', data.instance?.status, 'PairCode:', pCode === "" ? "(empty)" : pCode);
 
                 // Update pairing code if it arrived later
-                const pCode = data.instance?.paircode || data.paircode || data.pairingCode || data.instance?.pairCode;
                 if (pCode && pCode.length > 0) {
                     setPairingCode(pCode);
                 }
