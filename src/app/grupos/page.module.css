@@ -426,11 +426,59 @@
         width: 100%;
     }
 
-    /* Hide less important columns on mobile */
-    .table th:nth-child(3),
-    .table td:nth-child(3),
-    .table th:nth-child(5),
-    .table td:nth-child(5) {
+    /* Table adjustments */
+    .table thead {
+        display: none;
+    }
+
+    .desktopRow {
+        display: none;
+    }
+
+    .mobileCard {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        padding: var(--space-4);
+        background-color: var(--bg-surface-saturate);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        margin: var(--space-2) var(--space-4);
+    }
+
+    .cardHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .cardBody {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .cardItem {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--text-secondary);
+        font-size: 13px;
+    }
+
+    .cardItem svg {
+        color: var(--primary);
+    }
+
+    .cardActions {
+        display: flex;
+        gap: var(--space-2);
+        margin-top: var(--space-2);
+    }
+}
+
+@media (min-width: 769px) {
+    .mobileCard {
         display: none;
     }
 }

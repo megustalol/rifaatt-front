@@ -50,7 +50,7 @@ export default function RifaPage() {
         try {
             // Re-fetch full raffle data for management
             const response = await api.get(`/raffles/active/${group.groupJid}`);
-            setRaffle(response.data);
+            setRaffle(response.data.raffle);
         } catch (error) {
             console.error('Error fetching raffle:', error);
             setRaffle(null);
@@ -106,13 +106,17 @@ export default function RifaPage() {
                     {[1, 2, 3].map(i => <Skeleton key={i} height="280px" />)}
                 </div>
             ) : dashboardData.length === 0 ? (
-                <div className={styles.emptyState}>
-                    <Trophy size={64} />
-                    <h3>Nenhum grupo ativado</h3>
-                    <p>Ative um grupo de WhatsApp para começar a criar rifas.</p>
-                    <Link href="/grupos">
-                        <Button variant="primary">Ativar Grupos</Button>
-                    </Link>
+                <div className={styles.emptyStateFull}>
+                    <div className={styles.emptyStateContainer}>
+                        <div className={styles.emptyIconWrapper}>
+                            <Trophy size={48} />
+                        </div>
+                        <h3>Ops! Nenhuma rifa por aqui</h3>
+                        <p>Para criar suas rifas e automatizar suas vendas, você primeiro precisa configurar um grupo de WhatsApp.</p>
+                        <Link href="/grupos" className={styles.emptyStateAction}>
+                            <Button variant="primary" icon={Plus}>Ativar Novo Grupo</Button>
+                        </Link>
+                    </div>
                 </div>
             ) : (
                 <div className={styles.dashboardGrid}>

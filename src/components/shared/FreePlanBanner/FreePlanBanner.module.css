@@ -57,6 +57,25 @@
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 255, 157, 0.2);
 }
+.warningBanner {
+    background: linear-gradient(90deg, #F59E0B 0%, #D97706 100%);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+}
+
+.warningIcon {
+    background: rgba(255, 255, 255, 0.2);
+    color: #FFF;
+}
+
+.warningButton {
+    background-color: #FFF;
+    color: #D97706;
+}
+
+.warningButton:hover {
+    background-color: #F3F4F6;
+    transform: translateX(4px);
+}
 
 @media (max-width: 768px) {
     .banner {

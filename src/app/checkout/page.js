@@ -64,8 +64,18 @@ function CheckoutContent() {
     const fetchPlans = async () => {
         try {
             const res = await api.get('/plans');
-            // Filter: Active plans AND NOT the user's current plan
-            const activePlans = res.data.filter(p => p.status === 'active' && p.id !== user?.planId);
+            // Filter: Active plans AND (NOT the user's current plan OR user is on trial/temporary)
+            const activePlans = res.data.filter(p => {
+                if (p.status !== 'active') return false;
+                
+                // If user is on trial (has expiry but no onboardingType yet or explicit trial check)
+                // We should allow them to buy the plan they are testing.
+                const isTrial = !!user?.planExpiresAt;
+                
+                if (isTrial) return true; // Allow all active plans for trial users
+                
+                return p.id !== user?.planId;
+            });
             setPlans(activePlans);
             if (!selectedPlanId && activePlans.length > 0) {
                 setSelectedPlanId(activePlans[0].id);

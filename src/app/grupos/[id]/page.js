@@ -14,7 +14,8 @@ import {
     DollarSign,
     UserCircle,
     Copy,
-    MessageCircle
+    MessageCircle,
+    Plus
 } from 'lucide-react';
 import styles from './page.module.css';
 import Link from 'next/link';
@@ -62,16 +63,20 @@ export default function GroupDetailsPage() {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const groupRes = await api.get(`/raffles/active/${groupJid}`);
-            setRaffle(groupRes.data);
-            setGroup({
-                name: groupRes.data?.groupName || 'Grupo',
-                instanceName: groupRes.data?.WhatsAppInstance?.name || 'Sistema',
-                phone: groupRes.data?.WhatsAppInstance?.phone || '',
-                startDate: new Date(groupRes.data?.createdAt).toLocaleDateString(),
-                membersCount: groupRes.data?.membersCount || 0,
-                members: groupRes.data?.Members || []
-            });
+            const response = await api.get(`/raffles/active/${groupJid}`);
+            const { group: groupData, raffle: raffleData } = response.data;
+            
+            setRaffle(raffleData);
+            if (groupData) {
+                setGroup({
+                    name: groupData.groupName || 'Grupo',
+                    instanceName: groupData.WhatsAppInstance?.name || 'Sistema',
+                    phone: groupData.WhatsAppInstance?.phone || '',
+                    startDate: new Date(groupData.createdAt).toLocaleDateString(),
+                    membersCount: groupData.membersCount || 0,
+                    members: groupData.Members || []
+                });
+            }
         } catch (error) {
             console.error('Error fetching group details:', error);
         } finally {
@@ -95,14 +100,20 @@ export default function GroupDetailsPage() {
         </DashboardLayout>
     );
 
-    if (!raffle) return (
+    if (!group) return (
         <DashboardLayout>
             <div className={styles.container}>
-                <div className={styles.emptyState}>
-                    <h3>Nenhuma rifa ativa encontrada</h3>
-                    <Link href="/grupos">
-                        <Button variant="secondary">Voltar para Grupos</Button>
-                    </Link>
+                <div className={styles.emptyStateFull}>
+                    <div className={styles.emptyStateContainer}>
+                        <div className={styles.emptyIconWrapper}>
+                            <Users size={48} />
+                        </div>
+                        <h3>Grupo não encontrado</h3>
+                        <p>Não conseguimos localizar as informações deste grupo em sua conta.</p>
+                        <Link href="/grupos" className={styles.emptyStateAction}>
+                            <Button variant="primary">Voltar para a Lista</Button>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </DashboardLayout>
@@ -164,123 +175,143 @@ export default function GroupDetailsPage() {
                     </div>
                 </div>
 
-                <div className={styles.grid}>
-                    <Card className={styles.raffleCard}>
-                        <div className={styles.cardHeader}>
-                            <Ticket className={styles.cardIcon} />
-                            <h3>Rifa Ativa: {raffle.title}</h3>
-                        </div>
-
-                        <div className={styles.raffleStats}>
-                            <div className={styles.statBox}>
-                                <span className={styles.statLabel}>Preço p/ Dezena</span>
-                                <span className={styles.statValue}>R$ {raffle.ticketValue}</span>
+                {!raffle ? (
+                    <div className={styles.emptyStateFull}>
+                        <div className={styles.emptyStateContainer}>
+                            <div className={styles.emptyIconWrapper}>
+                                <Trophy size={48} />
                             </div>
-                            <div className={styles.statBox}>
-                                <span className={styles.statLabel}>Prêmio</span>
-                                <span className={styles.statValue}>{raffle.prize || 'A definir'}</span>
-                            </div>
-                        </div>
-
-                        <div className={styles.progressSection}>
-                            <div className={styles.progressInfo}>
-                                <span>Progresso de Venda</span>
-                                <span>{Math.round(paidPercent + pendingPercent)}%</span>
-                            </div>
-                            <div className={styles.progressBar}>
-                                <div
-                                    className={styles.paga}
-                                    style={{ width: `${paidPercent}%` }}
-                                />
-                                <div
-                                    className={styles.reservada}
-                                    style={{ width: `${pendingPercent}%` }}
-                                />
-                            </div>
-                            <div className={styles.legend}>
-                                <div className={styles.legendItem}>
-                                    <div className={clsx(styles.dot, styles.bgPaga)} />
-                                    <span>Pagos ({paid})</span>
-                                </div>
-                                <div className={styles.legendItem}>
-                                    <div className={clsx(styles.dot, styles.bgReservada)} />
-                                    <span>Pendentes ({pending})</span>
-                                </div>
-                                <div className={styles.legendItem}>
-                                    <div className={clsx(styles.dot, styles.bgLivre)} />
-                                    <span>Livres ({free})</span>
-                                </div>
+                            <h3>Nenhuma rifa ativa no momento</h3>
+                            <p>O robô está conectado a este grupo, mas não há nenhuma rifa em andamento no momento.</p>
+                            <div className={styles.emptyStateActions}>
+                                <Link href="/rifas">
+                                    <Button variant="primary" icon={Plus}>Criar Nova Rifa</Button>
+                                </Link>
+                                <Link href="/grupos">
+                                    <Button variant="ghost">Voltar para Listagem</Button>
+                                </Link>
                             </div>
                         </div>
+                    </div>
+                ) : (
+                    <div className={styles.grid}>
+                        <Card className={styles.raffleCard}>
+                            <div className={styles.cardHeader}>
+                                <Ticket className={styles.cardIcon} />
+                                <h3>Rifa Ativa: {raffle.title}</h3>
+                            </div>
 
-                        <Button
-                            fullWidth
-                            variant="primary"
-                            className={styles.manageRifaBtn}
-                            onClick={() => setIsFinalizeModalOpen(true)}
-                        >
-                            Finalizar Rifa
-                        </Button>
-                    </Card>
-
-                    <Card className={styles.membersCard}>
-                        <div className={styles.cardHeader}>
-                            <Users className={styles.cardIcon} />
-                            <h3>Participantes ({participants.length})</h3>
-                        </div>
-
-                        <div className={styles.membersList}>
-                            {participants.length === 0 ? (
-                                <div className={styles.emptyMembers}>
-                                    <p>Nenhuma reserva detectada ainda.</p>
+                            <div className={styles.raffleStats}>
+                                <div className={styles.statBox}>
+                                    <span className={styles.statLabel}>Preço p/ Dezena</span>
+                                    <span className={styles.statValue}>R$ {raffle.ticketValue}</span>
                                 </div>
-                            ) : (
-                                <table className={styles.table}>
-                                    <thead>
-                                        <tr>
-                                            <th>Usuário</th>
-                                            <th>Dezenas</th>
-                                            <th>Valor</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {participants.map((p) => (
-                                            <tr key={p.phone}>
-                                                <td className={styles.userName}>
-                                                    <div className={styles.avatar}>
-                                                        {p.name.charAt(0)}
-                                                    </div>
-                                                    <div>
-                                                        <div>{p.name}</div>
-                                                        <div className={styles.phoneSub}>{p.phone.split('@')[0]}</div>
-                                                    </div>
-                                                </td>
-                                                <td className={styles.phoneCell}>
-                                                    <div className={styles.numberList}>
-                                                        {p.numbers.map(num => (
-                                                            <span key={num} className={styles.numberTag}>
-                                                                {getAnimalForNumber(num).emoji} {num}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </td>
-                                                <td className={styles.purchasesCell}>
-                                                    R$ {(p.numbers.length * raffle.ticketValue).toFixed(2)}
-                                                </td>
-                                                <td>
-                                                    <div className={clsx(styles.statusBadge, p.pendingCount === 0 ? styles.online : styles.away)}>
-                                                        {p.pendingCount === 0 ? 'Pago' : 'Pendente'}
-                                                    </div>
-                                                </td>
+                                <div className={styles.statBox}>
+                                    <span className={styles.statLabel}>Prêmio</span>
+                                    <span className={styles.statValue}>{raffle.prize || 'A definir'}</span>
+                                </div>
+                            </div>
+
+                            <div className={styles.progressSection}>
+                                <div className={styles.progressInfo}>
+                                    <span>Progresso de Venda</span>
+                                    <span>{Math.round(paidPercent + pendingPercent)}%</span>
+                                </div>
+                                <div className={styles.progressBar}>
+                                    <div
+                                        className={styles.paga}
+                                        style={{ width: `${paidPercent}%` }}
+                                    />
+                                    <div
+                                        className={styles.reservada}
+                                        style={{ width: `${pendingPercent}%` }}
+                                    />
+                                </div>
+                                <div className={styles.legend}>
+                                    <div className={styles.legendItem}>
+                                        <div className={clsx(styles.dot, styles.bgPaga)} />
+                                        <span>Pagos ({paid})</span>
+                                    </div>
+                                    <div className={styles.legendItem}>
+                                        <div className={clsx(styles.dot, styles.bgReservada)} />
+                                        <span>Pendentes ({pending})</span>
+                                    </div>
+                                    <div className={styles.legendItem}>
+                                        <div className={clsx(styles.dot, styles.bgLivre)} />
+                                        <span>Livres ({free})</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <Button
+                                fullWidth
+                                variant="primary"
+                                className={styles.manageRifaBtn}
+                                onClick={() => setIsFinalizeModalOpen(true)}
+                            >
+                                Finalizar Rifa
+                            </Button>
+                        </Card>
+
+                        <Card className={styles.membersCard}>
+                            <div className={styles.cardHeader}>
+                                <Users className={styles.cardIcon} />
+                                <h3>Participantes ({participants.length})</h3>
+                            </div>
+
+                            <div className={styles.membersList}>
+                                {participants.length === 0 ? (
+                                    <div className={styles.emptyMembers}>
+                                        <p>Nenhuma reserva detectada ainda.</p>
+                                    </div>
+                                ) : (
+                                    <table className={styles.table}>
+                                        <thead>
+                                            <tr>
+                                                <th>Usuário</th>
+                                                <th>Dezenas</th>
+                                                <th>Valor</th>
+                                                <th>Status</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            )}
-                        </div>
-                    </Card>
-                </div>
+                                        </thead>
+                                        <tbody>
+                                            {participants.map((p) => (
+                                                <tr key={p.phone}>
+                                                    <td className={styles.userName}>
+                                                        <div className={styles.avatar}>
+                                                            {p.name.charAt(0)}
+                                                        </div>
+                                                        <div>
+                                                            <div>{p.name}</div>
+                                                            <div className={styles.phoneSub}>{p.phone.split('@')[0]}</div>
+                                                        </div>
+                                                    </td>
+                                                    <td className={styles.phoneCell}>
+                                                        <div className={styles.numberList}>
+                                                            {p.numbers.map(num => (
+                                                                <span key={num} className={styles.numberTag}>
+                                                                    {getAnimalForNumber(num).emoji} {num}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </td>
+                                                    <td className={styles.purchasesCell}>
+                                                        R$ {(p.numbers.length * raffle.ticketValue).toFixed(2)}
+                                                    </td>
+                                                    <td>
+                                                        <div className={clsx(styles.statusBadge, p.pendingCount === 0 ? styles.online : styles.away)}>
+                                                            {p.pendingCount === 0 ? 'Pago' : 'Pendente'}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                )}
+                            </div>
+                        </Card>
+                    </div>
+                )}
 
                 <RaffleFinalizeModal
                     isOpen={isFinalizeModalOpen}

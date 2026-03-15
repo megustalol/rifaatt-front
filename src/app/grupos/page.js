@@ -192,40 +192,90 @@ export default function GruposPage() {
                                         const StatusIcon = status.icon;
 
                                         return (
-                                            <tr key={group.id}>
-                                                <td className={styles.groupName}>
-                                                    <div className={styles.groupIcon}>
-                                                        <Users size={16} />
-                                                    </div>
-                                                    <span>{group.groupName || group.name}</span>
-                                                </td>
-                                                <td className={styles.phoneCell}>
-                                                    <div className={styles.phoneBadge}>
-                                                        <Smartphone size={14} />
-                                                        {group.phone}
-                                                    </div>
-                                                </td>
-                                                <td className={styles.dateCell}>{group.startDate || group.createdAt}</td>
-                                                <td className={styles.activityCell}>{group.lastUpdate || 'N/A'}</td>
-                                                <td>
-                                                    <div className={clsx(styles.badge, styles[status.color])}>
-                                                        <StatusIcon size={12} />
-                                                        <span>{status.label}</span>
-                                                    </div>
-                                                </td>
-                                                <td className={styles.actionsCell}>
-                                                    <Link href={`/grupos/${group.id}`} passHref>
-                                                        <Button variant="ghost" size="sm" icon={ExternalLink}>Entrar</Button>
-                                                    </Link>
-                                                    <Button
-                                                        variant={group.status === 'active' ? 'secondary' : 'primary'}
-                                                        size="sm"
-                                                        onClick={() => handleActivate(group)}
-                                                    >
-                                                        {group.status === 'active' ? 'Assinatura' : 'Ativar'}
-                                                    </Button>
-                                                </td>
-                                            </tr>
+                                            <React.Fragment key={group.id}>
+                                                {/* Desktop Row */}
+                                                <tr className={styles.desktopRow}>
+                                                    <td className={styles.groupName}>
+                                                        <div className={styles.groupIcon}>
+                                                            <Users size={16} />
+                                                        </div>
+                                                        <span>{group.groupName || group.name}</span>
+                                                    </td>
+                                                    <td className={styles.phoneCell}>
+                                                        <div className={styles.phoneBadge}>
+                                                            <Smartphone size={14} />
+                                                            {group.phone}
+                                                        </div>
+                                                    </td>
+                                                    <td className={styles.dateCell}>{group.startDate || group.createdAt}</td>
+                                                    <td className={styles.activityCell}>{group.lastUpdate || 'N/A'}</td>
+                                                    <td>
+                                                        <div className={clsx(styles.badge, styles[status.color])}>
+                                                            <StatusIcon size={12} />
+                                                            <span>{status.label}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className={styles.actionsCell}>
+                                                        <Link href={`/grupos/${group.id}`} passHref>
+                                                            <Button variant="ghost" size="sm" icon={ExternalLink}>Entrar</Button>
+                                                        </Link>
+                                                        {group.status !== 'active' && (
+                                                            <Button
+                                                                variant="primary"
+                                                                size="sm"
+                                                                onClick={() => handleActivate(group)}
+                                                            >
+                                                                Ativar
+                                                            </Button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+
+                                                {/* Mobile Card */}
+                                                <tr className={styles.mobileRow}>
+                                                    <td colSpan={6}>
+                                                        <div className={styles.mobileCard}>
+                                                            <div className={styles.cardHeader}>
+                                                                <div className={styles.groupName}>
+                                                                    <div className={styles.groupIcon}>
+                                                                        <Users size={16} />
+                                                                    </div>
+                                                                    <span>{group.groupName || group.name}</span>
+                                                                </div>
+                                                                <div className={clsx(styles.badge, styles[status.color])}>
+                                                                    <StatusIcon size={12} />
+                                                                    <span>{status.label}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className={styles.cardBody}>
+                                                                <div className={styles.cardItem}>
+                                                                    <Smartphone size={14} />
+                                                                    <span>{group.phone}</span>
+                                                                </div>
+                                                                <div className={styles.cardItem}>
+                                                                    <Calendar size={14} />
+                                                                    <span>{group.startDate || group.createdAt}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className={styles.cardActions}>
+                                                                <Link href={`/grupos/${group.id}`} passHref style={{ flex: 1 }}>
+                                                                    <Button variant="ghost" size="sm" icon={ExternalLink} fullWidth>Entrar</Button>
+                                                                </Link>
+                                                                {group.status !== 'active' && (
+                                                                    <Button
+                                                                        variant="primary"
+                                                                        size="sm"
+                                                                        onClick={() => handleActivate(group)}
+                                                                        style={{ flex: 1 }}
+                                                                    >
+                                                                        Ativar
+                                                                    </Button>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </React.Fragment>
                                         );
                                     })
                                 )}

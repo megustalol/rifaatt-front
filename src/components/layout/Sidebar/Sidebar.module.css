@@ -126,8 +126,24 @@
 }
 
 .userRole {
-    font-size: var(--font-caption);
+    font-size: 0.75rem;
     color: var(--text-muted);
+}
+
+.userStatus {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.planBadge {
+    font-size: 0.65rem;
+    color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.1);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    width: fit-content;
 }
 
 .logoutButton {

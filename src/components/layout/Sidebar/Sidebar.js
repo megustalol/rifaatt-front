@@ -96,7 +96,12 @@ const Sidebar = ({ onClose }) => {
                     </div>
                     <div className={styles.userInfo}>
                         <span className={styles.userName}>{user?.name || 'Usuário'}</span>
-                        <span className={styles.userRole}>{user?.role === 'admin' ? 'Administrador' : 'Organizador'}</span>
+                        <div className={styles.userStatus}>
+                            <span className={styles.userRole}>{user?.role === 'ADMIN' ? 'Administrador' : 'Organizador'}</span>
+                            {user?.Plan?.name && (
+                                <span className={styles.planBadge}>{user.Plan.name}</span>
+                            )}
+                        </div>
                     </div>
                     <ThemeToggle />
                 </div>

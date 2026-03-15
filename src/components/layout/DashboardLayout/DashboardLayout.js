@@ -11,6 +11,7 @@ import FreePlanBanner from '@/components/shared/FreePlanBanner/FreePlanBanner';
 import TrialPlanBanner from '@/components/shared/TrialPlanBanner/TrialPlanBanner';
 import PaymentRequiredModal from '@/components/shared/onboarding/PaymentRequiredModal';
 import TrialActivatedModal from '@/components/shared/onboarding/TrialActivatedModal';
+import PlanExpiredModal from '@/components/shared/onboarding/PlanExpiredModal';
 import api from '@/services/api';
 
 const DashboardLayout = ({ children }) => {
@@ -29,6 +30,7 @@ const DashboardLayout = ({ children }) => {
     };
 
     const isTrial = !!user?.planExpiresAt && !user?.onboardingType;
+    const isExpired = !!user?.planExpiresAt && new Date(user.planExpiresAt) < new Date();
     const firstName = user?.name ? user.name.split(' ')[0] : 'Usuário';
 
     return (
@@ -42,7 +44,11 @@ const DashboardLayout = ({ children }) => {
             <TrialActivatedModal 
                 isOpen={user?.onboardingType === 'TRIAL_ACTIVATED'} 
                 onClose={handleClearOnboarding}
-                userName={firstName} 
+                user={user} 
+            />
+            <PlanExpiredModal 
+                isOpen={isExpired && user?.role?.toUpperCase() !== 'ADMIN'} 
+                onClose={() => refreshUser()}
             />
 
             {/* Sidebar - Desktop */}
@@ -76,7 +82,7 @@ const DashboardLayout = ({ children }) => {
 
             <div className={styles.mainContainer}>
                 {(!user?.Plan && user?.role?.toUpperCase() !== 'ADMIN' && !user?.planExpiresAt) && <FreePlanBanner />}
-                {isTrial && <TrialPlanBanner expiryDate={user.planExpiresAt} />}
+                {isTrial && !isExpired && <TrialPlanBanner expiryDate={user.planExpiresAt} user={user} />}
                 <Header onMenuClick={toggleSidebar} />
                 <main className={styles.content}>
                     {children}
