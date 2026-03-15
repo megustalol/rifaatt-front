@@ -212,7 +212,7 @@ const ConexaoModal = ({ isOpen, onClose, instance, onSuccess }) => {
 
                                     {pairingCode && pairingCode.length > 0 ? (
                                         <div className={styles.pairingDisplay}>
-                                            <p className={styles.pairingPhone}>Para o número: <strong>{phoneNumber}</strong></p>
+                                            <p className={styles.pairingPhone}>Para o número: <strong>{phone}</strong></p>
                                             <div className={styles.codeContainer}>
                                                 {pairingCode.split('').map((char, i) => {
                                                     if (char === '-') {
