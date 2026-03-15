@@ -313,7 +313,7 @@ export default function MasterPage() {
                                         <div className={styles.copyInputGroup}>
                                             <input 
                                                 type="text" 
-                                                value="https://geral-uazapiapi.r954jc.easypanel.host/api/payments/webhook"
+                                                value="https://api.rifaatt.com/api/payments/webhook"
                                                 readOnly
                                                 className={styles.input}
                                                 style={{ backgroundColor: 'var(--bg-main)', cursor: 'default' }}
