@@ -22,7 +22,7 @@ import clsx from 'clsx';
 import api from '@/services/api';
 import { useAuth } from '@/context/AuthContext';
 
-function CheckoutContent() {
+const CheckoutContent = () => {
     const { user } = useAuth();
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -35,6 +35,26 @@ function CheckoutContent() {
     const [error, setError] = useState('');
     const [copied, setCopied] = useState(false);
     const [paymentStatus, setPaymentStatus] = useState('PENDING');
+
+    const fetchPlans = useCallback(async () => {
+        try {
+            const res = await api.get('/plans');
+            const activePlans = res.data.filter(p => {
+                if (p.status !== 'active') return false;
+                const isTrial = !!user?.planExpiresAt;
+                if (isTrial) return true;
+                return p.id !== user?.planId;
+            });
+            setPlans(activePlans);
+            
+            // Stable update: only set if we don't have one and not currently updating
+            setSelectedPlanId(prev => (prev || (activePlans.length > 0 ? activePlans[0].id : null)));
+        } catch (error) {
+            console.error('Error fetching plans:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, [user?.planId, user?.planExpiresAt]);
 
     useEffect(() => {
         fetchPlans();
@@ -60,32 +80,6 @@ function CheckoutContent() {
         }
         return () => clearInterval(interval);
     }, [paymentData, paymentStatus, router]);
-
-    const fetchPlans = useCallback(async () => {
-        try {
-            const res = await api.get('/plans');
-            // Filter: Active plans AND (NOT the user's current plan OR user is on trial/temporary)
-            const activePlans = res.data.filter(p => {
-                if (p.status !== 'active') return false;
-                
-                // If user is on trial (has expiry but no onboardingType yet or explicit trial check)
-                // We should allow them to buy the plan they are testing.
-                const isTrial = !!user?.planExpiresAt;
-                
-                if (isTrial) return true; // Allow all active plans for trial users
-                
-                return p.id !== user?.planId;
-            });
-            setPlans(activePlans);
-            if (!selectedPlanId && activePlans.length > 0) {
-                setSelectedPlanId(activePlans[0].id);
-            }
-        } catch (error) {
-            console.error('Error fetching plans:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, [user?.planId, user?.planExpiresAt, selectedPlanId]);
 
     const handleGeneratePayment = async () => {
         if (!document || document.length < 11) {
@@ -251,7 +245,7 @@ function CheckoutContent() {
                                     ) : (
                                         <>
                                             <div className={styles.pixHeader}>
-                                                <QrCode size={24} />
+                                                <Zap size={24} />
                                                 <span>Pagamento via PIX</span>
                                             </div>
 
