@@ -23,7 +23,7 @@ import api from '@/services/api';
 import { useAuth } from '@/context/AuthContext';
 
 const CheckoutContent = () => {
-    const { user } = useAuth();
+    const { user, refreshUser } = useAuth();
     const searchParams = useSearchParams();
     const router = useRouter();
     const [plans, setPlans] = useState([]);
@@ -69,9 +69,13 @@ const CheckoutContent = () => {
                     if (res.data.status === 'RECEIVED' || res.data.status === 'CONFIRMED') {
                         setPaymentStatus('CONFIRMED');
                         clearInterval(interval);
+                        
+                        // Refresh user data so dashboard shows the new plan
+                        refreshUser();
+
                         setTimeout(() => {
                             router.push('/dashboard?success=plan_active');
-                        }, 3000);
+                        }, 5000);
                     }
                 } catch (error) {
                     console.error('Error polling status:', error);
@@ -79,7 +83,7 @@ const CheckoutContent = () => {
             }, 5000);
         }
         return () => clearInterval(interval);
-    }, [paymentData, paymentStatus, router]);
+    }, [paymentData, paymentStatus, router, refreshUser]);
 
     const handleGeneratePayment = async () => {
         if (!document || document.length < 11) {
@@ -238,9 +242,19 @@ const CheckoutContent = () => {
                                 <div className={styles.pixFlow}>
                                     {paymentStatus === 'CONFIRMED' ? (
                                         <div className={styles.successNotice}>
-                                            <CheckCircle2 size={48} className={styles.successIcon} />
-                                            <h3>Pagamento Confirmado!</h3>
-                                            <p>Seu plano foi ativado. Redirecionando...</p>
+                                            <CheckCircle2 size={64} className={styles.successIcon} />
+                                            <h2>Pagamento Confirmado!</h2>
+                                            <p>Seu plano <strong>{selectedPlan?.name}</strong> foi ativado com sucesso.</p>
+                                            <div className={styles.successActions}>
+                                                <Button 
+                                                    fullWidth 
+                                                    onClick={() => router.push('/dashboard')}
+                                                    icon={ArrowRight}
+                                                >
+                                                    Ir para o Dashboard
+                                                </Button>
+                                            </div>
+                                            <p className={styles.redirectNotice}>Você será redirecionado automaticamente em instantes...</p>
                                         </div>
                                     ) : (
                                         <>
