@@ -227,7 +227,7 @@ export default function HistoryPage() {
                                                 </td>
                                                 <td className={styles.salesCell}>
                                                     <div className={styles.salesInfo}>
-                                                        <strong>{raffle.Reservations?.length || 0}</strong>
+                                                        <strong>{raffle?.Reservations?.length || 0}</strong>
                                                         <span>bilhetes</span>
                                                     </div>
                                                 </td>
@@ -271,7 +271,7 @@ export default function HistoryPage() {
                                             <div className={styles.cardMeta}>
                                                 <div className={styles.metaItem}>
                                                     <span className={styles.metaLabel}>Vendidos</span>
-                                                    <span className={styles.metaValue}>{raffle.Reservations?.length || 0} n°</span>
+                                                    <span className={styles.metaValue}>{raffle?.Reservations?.length || 0} n°</span>
                                                 </div>
                                                 <div className={styles.metaItem}>
                                                     <span className={styles.metaLabel}>Valor</span>

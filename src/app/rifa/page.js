@@ -64,7 +64,7 @@ export default function RifaPage() {
         if (!raffle) return;
         setIsDrawing(true);
         setTimeout(() => {
-            const paidDezenas = raffle.Reservations?.filter(r => r.status === 'PAID') || [];
+            const paidDezenas = raffle?.Reservations?.filter(r => r.status === 'PAID') || [];
             if (paidDezenas.length === 0) {
                 alert('Nenhuma dezena paga para sortear!');
                 setIsDrawing(false);
@@ -81,11 +81,11 @@ export default function RifaPage() {
         }, 3000);
     };
 
-    const dezenas = raffle ? (raffle.Reservations || []).map(r => ({
+    const dezenas = (raffle?.Reservations || []).map(r => ({
         number: r.number,
-        status: r.status.toLowerCase() === 'paid' ? 'pago' : 'reservado',
+        status: r.status?.toLowerCase() === 'paid' ? 'pago' : 'reservado',
         user: r.buyerName
-    })) : [];
+    }));
 
     const stats = {
         paid: dezenas.filter(d => d.status === 'pago').length,
