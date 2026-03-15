@@ -83,7 +83,9 @@ export default function DashboardPage() {
                     <section className={styles.feedSection}>
                         <div className={styles.sectionHeader}>
                             <h3 className={styles.sectionTitle}>Atividades Recentes</h3>
-                            <button className={styles.viewAll}>Ver tudo</button>
+                            <Link href="/atividades">
+                                <button className={styles.viewAll}>Ver tudo</button>
+                            </Link>
                         </div>
                         <Card className={styles.feedCard}>
                             {loading ? (
