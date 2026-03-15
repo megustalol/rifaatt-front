@@ -22,6 +22,8 @@ import styles from './page.module.css';
 import Link from 'next/link';
 import clsx from 'clsx';
 import { getAnimalForNumber } from '@/utils/animalDictionary';
+import DezenasGrid from '@/components/rifa/DezenasGrid/DezenasGrid';
+import { toast } from 'react-hot-toast';
 
 const mockGroupDetails = {
     id: '1',
@@ -99,6 +101,21 @@ export default function GroupDetailsPage() {
             } catch (error) {
                 alert(error.response?.data?.error || 'Erro ao excluir grupo');
             }
+        }
+    };
+
+    const handleCopyInviteLink = async () => {
+        try {
+            const response = await api.get(`/raffles/invite-link/${groupJid}`);
+            if (response.data.inviteLink) {
+                navigator.clipboard.writeText(response.data.inviteLink);
+                toast.success('Link de convite copiado!');
+            } else {
+                toast.error('Não foi possível obter o link de convite.');
+            }
+        } catch (error) {
+            console.error('Error fetching invite link:', error);
+            toast.error('Erro ao buscar link do grupo.');
         }
     };
 
@@ -188,7 +205,13 @@ export default function GroupDetailsPage() {
                             </div>
                         </div>
                         <div className={styles.actions}>
-                            <Button variant="secondary" icon={MessageCircle}>Abrir no WhatsApp</Button>
+                            <Button 
+                                variant="secondary" 
+                                icon={MessageCircle}
+                                onClick={handleCopyInviteLink}
+                            >
+                                Link de Convite
+                            </Button>
                             <Button 
                                 variant="danger" 
                                 icon={Trash2}
@@ -276,6 +299,20 @@ export default function GroupDetailsPage() {
                             >
                                 Finalizar Rifa
                             </Button>
+
+                            <div className={styles.gridPreviewSection}>
+                                <div className={styles.gridHeader}>
+                                    <h4>Visualização do Grid</h4>
+                                </div>
+                                <DezenasGrid 
+                                    dezenas={reservations.map(r => ({
+                                        number: r.number,
+                                        status: r.status?.toLowerCase() === 'paid' ? 'pago' : 'reservado',
+                                        user: r.buyerName
+                                    }))} 
+                                    totalNumbers={raffle.numbersCount || 100}
+                                />
+                            </div>
                         </Card>
 
                         <Card className={styles.membersCard}>

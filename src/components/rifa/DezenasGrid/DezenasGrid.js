@@ -7,12 +7,12 @@ import Tooltip from '@/components/ui/Tooltip/Tooltip';
 
 import { getAnimalForNumber } from '@/utils/animalDictionary';
 
-const DezenasGrid = ({ dezenas = [] }) => {
+const DezenasGrid = ({ dezenas = [], totalNumbers = 100 }) => {
     // dezenas: [{ number: '00', status: 'pago' | 'reservado' | 'livre', user: 'Nome' }]
 
-    // Ensure we have 100 numbers if not provided
-    const fullDezenas = Array.from({ length: 100 }, (_, i) => {
-        const num = ((i + 1) % 100).toString().padStart(2, '0');
+    // Ensure we have N numbers if not provided
+    const fullDezenas = Array.from({ length: totalNumbers }, (_, i) => {
+        const num = ((i + 1) % totalNumbers).toString().padStart(2, '0');
         const existing = dezenas.find(d => d.number === num);
         return existing || { number: num, status: 'livre', user: null };
     });
