@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '@/components/ui/Modal/Modal';
 import Card from '@/components/ui/Card/Card';
+import Skeleton from '@/components/ui/Skeleton/Skeleton';
 import {
     Trophy,
     TrendingUp,
@@ -23,34 +24,41 @@ import {
 import styles from './UserProfileModal.module.css';
 import clsx from 'clsx';
 import { getAnimalForNumber } from '@/utils/animalDictionary';
+import api from '@/services/api';
 
 const COLORS = ['#1FC98E', '#3B82F6', '#F59E0B', '#EF4444'];
 
 const UserProfileModal = ({ isOpen, onClose, user }) => {
+    const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (!isOpen || !user?.id) {
+            setProfile(null);
+            return;
+        }
+
+        const fetchProfile = async () => {
+            setLoading(true);
+            try {
+                const encoded = encodeURIComponent(user.id);
+                const response = await api.get(`/reports/participant/${encoded}`);
+                setProfile(response.data);
+            } catch (error) {
+                console.error('Error fetching participant profile:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProfile();
+    }, [isOpen, user?.id]);
+
     if (!user) return null;
 
-    // Mock data for the specific user
-    const stats = {
-        totalSpent: 'R$ 1.240,00',
-        totalRaffles: 124,
-        winRate: '8%',
-        winsCount: 3,
-        bestGroup: 'Rifa do Churrasco',
-        lastSeen: '10/03/2026'
-    };
-
-    const spendingData = [
-        { name: 'Grupo Churrasco', value: 450 },
-        { name: 'VIP Amigos', value: 300 },
-        { name: 'Sorteio Mensal', value: 290 },
-        { name: 'Outros', value: 200 },
-    ];
-
-    const winHistory = [
-        { id: '1', raffle: 'Rifa de Natal', date: '24/12/2025', prize: 'R$ 500,00', group: 'Amigos do Bairro', number: '03' },
-        { id: '2', raffle: 'Sorteio Mensal', date: '15/01/2026', prize: 'R$ 1.000,00', group: 'Rifa VIP SP', number: '42' },
-        { id: '3', raffle: 'Churrasco Jan', date: '30/01/2026', prize: 'Kit Churrasco', group: 'Rifa do Churrasco', number: '57' },
-    ];
+    const stats = profile?.stats || {};
+    const spendingData = profile?.spendingData || [];
+    const winHistory = profile?.winHistory || [];
 
     return (
         <Modal
@@ -69,7 +77,7 @@ const UserProfileModal = ({ isOpen, onClose, user }) => {
                         <h3 className={styles.name}>{user.name}</h3>
                         <p className={styles.subtext}>
                             <Calendar size={12} />
-                            Visto por último em {stats.lastSeen}
+                            {loading ? 'Carregando...' : `Visto por último em ${stats.lastSeen || '-'}`}
                         </p>
                     </div>
                 </div>
@@ -78,15 +86,27 @@ const UserProfileModal = ({ isOpen, onClose, user }) => {
                 <div className={styles.statsGrid}>
                     <div className={styles.statBox}>
                         <span className={styles.statLabel}>Total Investido</span>
-                        <span className={styles.statValue}>{stats.totalSpent}</span>
+                        {loading ? (
+                            <Skeleton width="80px" height="20px" />
+                        ) : (
+                            <span className={styles.statValue}>{stats.totalSpent || 'R$ 0,00'}</span>
+                        )}
                     </div>
                     <div className={styles.statBox}>
                         <span className={styles.statLabel}>Participações</span>
-                        <span className={styles.statValue}>{stats.totalRaffles}</span>
+                        {loading ? (
+                            <Skeleton width="40px" height="20px" />
+                        ) : (
+                            <span className={styles.statValue}>{stats.totalRaffles || 0}</span>
+                        )}
                     </div>
                     <div className={styles.statBox}>
                         <span className={styles.statLabel}>Taxa de Vitória</span>
-                        <span className={styles.statValue} style={{ color: 'var(--success)' }}>{stats.winRate}</span>
+                        {loading ? (
+                            <Skeleton width="40px" height="20px" />
+                        ) : (
+                            <span className={styles.statValue} style={{ color: 'var(--success)' }}>{stats.winRate || '0%'}</span>
+                        )}
                     </div>
                 </div>
 
@@ -94,59 +114,81 @@ const UserProfileModal = ({ isOpen, onClose, user }) => {
                     {/* Insights & Chart */}
                     <div className={styles.insights}>
                         <h4 className={styles.sectionTitle}>Distribuição por Grupo</h4>
-                        <div className={styles.chartContainer}>
-                            <ResponsiveContainer width="100%" height={160}>
-                                <PieChart>
-                                    <Pie
-                                        data={spendingData}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={45}
-                                        outerRadius={65}
-                                        paddingAngle={5}
-                                        dataKey="value"
-                                    >
-                                        {spendingData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="none" />
-                                        ))}
-                                    </Pie>
-                                    <RechartsTooltip
-                                        contentStyle={{
-                                            backgroundColor: 'var(--bg-surface-saturate)',
-                                            border: '1px solid var(--border-color)',
-                                            borderRadius: '8px',
-                                            fontSize: '11px'
-                                        }}
-                                    />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </div>
-                        <div className={styles.legend}>
-                            {spendingData.map((item, index) => (
-                                <div key={item.name} className={styles.legendItem}>
-                                    <div className={styles.dot} style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                    <span>{item.name}</span>
+                        {loading ? (
+                            <Skeleton width="100%" height="160px" />
+                        ) : spendingData.length > 0 ? (
+                            <>
+                                <div className={styles.chartContainer}>
+                                    <ResponsiveContainer width="100%" height={160}>
+                                        <PieChart>
+                                            <Pie
+                                                data={spendingData}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={45}
+                                                outerRadius={65}
+                                                paddingAngle={5}
+                                                dataKey="value"
+                                            >
+                                                {spendingData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="none" />
+                                                ))}
+                                            </Pie>
+                                            <RechartsTooltip
+                                                contentStyle={{
+                                                    backgroundColor: 'var(--bg-surface-saturate)',
+                                                    border: '1px solid var(--border-color)',
+                                                    borderRadius: '8px',
+                                                    fontSize: '11px'
+                                                }}
+                                            />
+                                        </PieChart>
+                                    </ResponsiveContainer>
                                 </div>
-                            ))}
-                        </div>
+                                <div className={styles.legend}>
+                                    {spendingData.map((item, index) => (
+                                        <div key={item.name} className={styles.legendItem}>
+                                            <div className={styles.dot} style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                                            <span>{item.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <div className={styles.emptyChart}>
+                                <span>Sem dados de grupo</span>
+                            </div>
+                        )}
                     </div>
 
                     {/* Win History */}
                     <div className={styles.history}>
                         <h4 className={styles.sectionTitle}>Histórico de Prêmios</h4>
                         <div className={styles.winList}>
-                            {winHistory.map((win) => (
-                                <div key={win.id} className={styles.winItem}>
-                                    <div className={styles.winIcon}>
-                                        {win.number ? getAnimalForNumber(win.number).emoji : <Trophy size={16} />}
+                            {loading ? (
+                                <>
+                                    <Skeleton height="50px" marginBottom="8px" />
+                                    <Skeleton height="50px" marginBottom="8px" />
+                                </>
+                            ) : winHistory.length > 0 ? (
+                                winHistory.map((win) => (
+                                    <div key={win.id} className={styles.winItem}>
+                                        <div className={styles.winIcon}>
+                                            {win.number ? getAnimalForNumber(win.number).emoji : <Trophy size={16} />}
+                                        </div>
+                                        <div className={styles.winInfo}>
+                                            <span className={styles.winRaffle}>{win.raffle} {win.number && `(${getAnimalForNumber(win.number).name})`}</span>
+                                            <span className={styles.winDetails}>{win.prize} • {win.date}</span>
+                                        </div>
+                                        <ChevronRight size={14} className={styles.chevron} />
                                     </div>
-                                    <div className={styles.winInfo}>
-                                        <span className={styles.winRaffle}>{win.raffle} {win.number && `(${getAnimalForNumber(win.number).name})`}</span>
-                                        <span className={styles.winDetails}>{win.prize} • {win.date}</span>
-                                    </div>
-                                    <ChevronRight size={14} className={styles.chevron} />
+                                ))
+                            ) : (
+                                <div className={styles.emptyWins}>
+                                    <Trophy size={20} />
+                                    <span>Nenhum prêmio ainda</span>
                                 </div>
-                            ))}
+                            )}
                         </div>
                     </div>
                 </div>
