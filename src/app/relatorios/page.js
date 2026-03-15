@@ -33,35 +33,6 @@ import clsx from 'clsx';
 
 import UserProfileModal from '@/components/relatorios/UserProfileModal/UserProfileModal';
 
-const mockRecurrent = [
-    { id: '1', name: 'Patrick Assis', participations: 124, groups: 12, value: 'R$ 1.240,00' },
-    { id: '2', name: 'Maria Oliveira', participations: 98, groups: 8, value: 'R$ 980,00' },
-    { id: '3', name: 'João Silva', participations: 85, groups: 15, value: 'R$ 850,00' },
-    { id: '4', name: 'Alvaro Lima', participations: 62, groups: 5, value: 'R$ 620,00' },
-];
-
-const mockWinners = [
-    { id: '2', name: 'Maria Oliveira', wins: 5, totalWon: 'R$ 2.450,00', luck: '82%' },
-    { id: '1', name: 'Patrick Assis', wins: 3, totalWon: 'R$ 1.200,00', luck: '45%' },
-    { id: '5', name: 'Alice Souza', wins: 2, totalWon: 'R$ 500,00', luck: '15%' },
-];
-
-const mockLosers = [
-    { id: '6', name: 'Cainan Mendes', participations: 45, wins: 0, spent: 'R$ 450,00' },
-    { id: '3', name: 'João Silva', participations: 85, wins: 1, spent: 'R$ 850,00' },
-    { id: '7', name: 'Luis Carlos', participations: 32, wins: 0, spent: 'R$ 320,00' },
-];
-
-const chartData = [
-    { name: 'Seg', v: 400 },
-    { name: 'Ter', v: 300 },
-    { name: 'Qua', v: 600 },
-    { name: 'Qui', v: 800 },
-    { name: 'Sex', v: 500 },
-    { name: 'Sab', v: 900 },
-    { name: 'Dom', v: 1100 },
-];
-
 import api from '@/services/api';
 import Skeleton from '@/components/ui/Skeleton/Skeleton';
 
