@@ -53,6 +53,7 @@ import { useParams } from 'next/navigation';
 import api from '@/services/api';
 import Skeleton from '@/components/ui/Skeleton/Skeleton';
 import RaffleFinalizeModal from '@/components/raffle/RaffleFinalizeModal/RaffleFinalizeModal';
+import { useCallback } from 'react';
 
 export default function GroupDetailsPage() {
     const { id: groupJid } = useParams();
@@ -61,7 +62,7 @@ export default function GroupDetailsPage() {
     const [loading, setLoading] = useState(true);
     const [isFinalizeModalOpen, setIsFinalizeModalOpen] = useState(false);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true);
         try {
             const response = await api.get(`/raffles/active/${groupJid}`);
@@ -83,7 +84,7 @@ export default function GroupDetailsPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [groupJid]);
 
     const handleDeleteGroup = async () => {
         if (raffle && raffle.status === 'ACTIVE') {
@@ -103,7 +104,7 @@ export default function GroupDetailsPage() {
 
     useEffect(() => {
         fetchData();
-    }, [groupJid]);
+    }, [fetchData]);
 
     if (loading) return (
         <DashboardLayout>
