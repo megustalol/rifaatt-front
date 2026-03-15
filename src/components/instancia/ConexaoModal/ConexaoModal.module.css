@@ -156,6 +156,16 @@
     margin: var(--space-4) 0;
 }
 
+.pairingPhone {
+    font-size: var(--font-body-sm);
+    color: var(--text-secondary);
+    margin-bottom: -10px;
+}
+
+.pairingPhone strong {
+    color: var(--primary);
+}
+
 .codeContainer {
     display: flex;
     align-items: center;
