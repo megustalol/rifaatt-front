@@ -425,3 +425,57 @@
     color: var(--text-muted);
     padding: var(--space-8) 0;
 }
+
+/* Draw Options Modal */
+.drawOptionsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    padding: var(--space-2) 0;
+}
+
+.drawOptionCard {
+    background-color: var(--bg-surface-saturate);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-4);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.drawOptionCard:hover {
+    border-color: var(--primary);
+    background-color: rgba(67, 246, 172, 0.05); /* Usando primária direta */
+    transform: translateY(-4px);
+}
+
+.drawOptionIcon {
+    font-size: 3rem;
+    margin-bottom: var(--space-2);
+}
+
+.drawOptionCard h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.drawOptionCard p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.manualInput {
+    margin: var(--space-2) 0;
+}
+
+@media (max-width: 600px) {
+    .drawOptionsGrid {
+        grid-template-columns: 1fr;
+    }
+}

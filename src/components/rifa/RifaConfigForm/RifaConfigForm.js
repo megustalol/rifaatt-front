@@ -7,7 +7,7 @@ import Button from '@/components/ui/Button/Button';
 import { Ticket, DollarSign, Award, MessageSquare } from 'lucide-react';
 import styles from './RifaConfigForm.module.css';
 
-const RifaConfigForm = ({ config = {}, onChange, onSave }) => {
+const RifaConfigForm = ({ config = {}, onChange, onSave, lockPrice = false }) => {
     return (
         <Card className={styles.card}>
             <div className={styles.header}>
@@ -42,6 +42,7 @@ const RifaConfigForm = ({ config = {}, onChange, onSave }) => {
                         placeholder="0.00"
                         icon={DollarSign}
                         className={styles.field}
+                        disabled={lockPrice}
                     />
                     <Input
                         label="Chave PIX"

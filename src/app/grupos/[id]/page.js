@@ -16,7 +16,8 @@ import {
     Copy,
     ExternalLink,
     Plus,
-    Trash2
+    Trash2,
+    AlertTriangle
 } from 'lucide-react';
 import styles from './page.module.css';
 import Link from 'next/link';
@@ -54,6 +55,7 @@ const mockGroupDetails = {
 import { useParams } from 'next/navigation';
 import api from '@/services/api';
 import Skeleton from '@/components/ui/Skeleton/Skeleton';
+import Modal from '@/components/ui/Modal/Modal';
 import RaffleFinalizeModal from '@/components/raffle/RaffleFinalizeModal/RaffleFinalizeModal';
 import { useCallback } from 'react';
 
@@ -63,6 +65,8 @@ export default function GroupDetailsPage() {
     const [raffle, setRaffle] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isFinalizeModalOpen, setIsFinalizeModalOpen] = useState(false);
+    const [isDeleteWarningModalOpen, setIsDeleteWarningModalOpen] = useState(false);
+    const [deleteWarningMessage, setDeleteWarningMessage] = useState('');
     const { addToast } = useToast();
 
     const fetchData = useCallback(async () => {
@@ -90,17 +94,19 @@ export default function GroupDetailsPage() {
     }, [groupJid]);
 
     const handleDeleteGroup = async () => {
-        if (raffle && raffle.status === 'ACTIVE') {
-            alert('Não é possível excluir o grupo pois existe uma rifa em andamento. Finalize a rifa primeiro.');
+        if (raffle && (raffle.status === 'ACTIVE' || raffle.status === 'PENDING')) {
+            setDeleteWarningMessage('Não é possível excluir o grupo pois existe uma rifa em andamento. Finalize a rifa primeiro para poder remover este grupo.');
+            setIsDeleteWarningModalOpen(true);
             return;
         }
 
         if (confirm('Tem certeza que deseja excluir as configurações deste grupo? Todas as rifas vinculadas serão perdidas.')) {
             try {
                 await api.delete(`/raffles/groups/${groupJid}`);
+                addToast('Grupo excluído com sucesso!', 'success');
                 window.location.href = '/grupos';
             } catch (error) {
-                alert(error.response?.data?.error || 'Erro ao excluir grupo');
+                addToast(error.response?.data?.error || 'Erro ao excluir grupo', 'error');
             }
         }
     };
@@ -424,6 +430,23 @@ export default function GroupDetailsPage() {
                     raffle={raffle}
                     onRaffleFinalized={fetchData}
                 />
+
+                <Modal
+                    isOpen={isDeleteWarningModalOpen}
+                    onClose={() => setIsDeleteWarningModalOpen(false)}
+                    title="Ação Bloqueada"
+                    size="sm"
+                >
+                    <div className={styles.deleteWarningContent}>
+                        <div className={styles.warningIcon}>
+                            <AlertTriangle size={48} />
+                        </div>
+                        <p>{deleteWarningMessage}</p>
+                        <Button fullWidth variant="primary" onClick={() => setIsDeleteWarningModalOpen(false)}>
+                            Entendido
+                        </Button>
+                    </div>
+                </Modal>
             </div>
         </DashboardLayout>
     );

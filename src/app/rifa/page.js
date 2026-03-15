@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout/DashboardLayout';
 import DezenasGrid from '@/components/rifa/DezenasGrid/DezenasGrid';
 import RifaConfigForm from '@/components/rifa/RifaConfigForm/RifaConfigForm';
+import Input from '@/components/ui/Input/Input';
 import Button from '@/components/ui/Button/Button';
 import Modal from '@/components/ui/Modal/Modal';
 import Card from '@/components/ui/Card/Card';
@@ -25,8 +26,10 @@ export default function RifaPage() {
     const [dashboardLoading, setDashboardLoading] = useState(true);
 
     const [isWinnerModalOpen, setIsWinnerModalOpen] = useState(false);
+    const [isDrawOptionsModalOpen, setIsDrawOptionsModalOpen] = useState(false);
     const [winner, setWinner] = useState(null);
     const [isDrawing, setIsDrawing] = useState(false);
+    const [manualNumber, setManualNumber] = useState('');
 
     const fetchDashboard = async () => {
         setDashboardLoading(true);
@@ -60,8 +63,13 @@ export default function RifaPage() {
         }
     };
 
-    const handleDraw = () => {
+    const handleDrawOptions = () => {
         if (!raffle) return;
+        setIsDrawOptionsModalOpen(true);
+    };
+
+    const handleRandomDraw = () => {
+        setIsDrawOptionsModalOpen(false);
         setIsDrawing(true);
         setTimeout(() => {
             const paidDezenas = raffle?.Reservations?.filter(r => r.status === 'PAID') || [];
@@ -79,6 +87,42 @@ export default function RifaPage() {
             setIsDrawing(false);
             setIsWinnerModalOpen(true);
         }, 3000);
+    };
+
+    const handleManualDraw = () => {
+        if (!manualNumber) {
+            alert('Por favor, informe a dezena.');
+            return;
+        }
+
+        const res = raffle?.Reservations?.find(r => r.number === manualNumber && r.status === 'PAID');
+        if (!res) {
+            alert('Esta dezena não está paga ou não existe.');
+            return;
+        }
+
+        setWinner({
+            number: res.number,
+            name: res.buyerName,
+            phone: res.buyerPhone
+        });
+        setIsDrawOptionsModalOpen(false);
+        setIsWinnerModalOpen(true);
+    };
+
+    const handleFinalizeRaffle = async () => {
+        if (!winner) return;
+        setLoading(true);
+        try {
+            await api.post(`/raffles/finalize/${raffle.id}`, { winningNumber: winner.number });
+            setIsWinnerModalOpen(false);
+            fetchDashboard();
+            handleSelectGroup(selectedGroup);
+        } catch (error) {
+            alert(error.response?.data?.error || 'Erro ao finalizar rifa');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const dezenas = (raffle?.Reservations || []).map(r => ({
@@ -215,11 +259,10 @@ export default function RifaPage() {
                     <p className={styles.subtitle}>{selectedGroup?.groupName} — Acompanhe o grid em tempo real.</p>
                 </div>
                 <div className={styles.actions}>
-                    <Button variant="secondary" icon={Share2}>Compartilhar Grid</Button>
                     <Button
                         variant="primary"
                         icon={Trophy}
-                        onClick={handleDraw}
+                        onClick={handleDrawOptions}
                         disabled={!raffle || stats.paid === 0}
                     >
                         Realizar Sorteio
@@ -242,6 +285,7 @@ export default function RifaPage() {
                             }}
                             onChange={() => { }} // Read only in this view
                             onSave={() => { }}
+                            lockPrice={!!raffle}
                         />
                     ) : (
                         <Card className={styles.noRaffleCard}>
@@ -320,7 +364,38 @@ export default function RifaPage() {
                         <p>{winner?.phone?.split('@')[0]}</p>
                     </div>
                     <p className={styles.prizeLabel}>Ganhou: <strong>{raffle?.prize}</strong></p>
-                    <Button fullWidth icon={Share2}>Notificar no WhatsApp</Button>
+                    <Button fullWidth icon={Share2} onClick={handleFinalizeRaffle} loading={loading}>
+                        Finalizar e Notificar no WhatsApp
+                    </Button>
+                </div>
+            </Modal>
+
+            {/* Draw Options Modal */}
+            <Modal
+                isOpen={isDrawOptionsModalOpen}
+                onClose={() => setIsDrawOptionsModalOpen(false)}
+                title="Realizar Sorteio"
+                size="md"
+            >
+                <div className={styles.drawOptionsGrid}>
+                    <div className={styles.drawOptionCard} onClick={handleRandomDraw}>
+                        <div className={styles.drawOptionIcon}>🎲</div>
+                        <h4>Sorteio Aleatório</h4>
+                        <p>O sistema escolherá uma dezena paga aleatoriamente.</p>
+                        <Button variant="secondary" fullWidth>Sortear Agora</Button>
+                    </div>
+                    <div className={styles.drawOptionCard}>
+                        <div className={styles.drawOptionIcon}>🎯</div>
+                        <h4>Definir Ganhador</h4>
+                        <p>Escolha manualmente a dezena vencedora (deve estar paga).</p>
+                        <Input 
+                            placeholder="Ex: 42" 
+                            value={manualNumber} 
+                            onChange={(e) => setManualNumber(e.target.value)}
+                            className={styles.manualInput}
+                        />
+                        <Button variant="primary" fullWidth onClick={handleManualDraw}>Confirmar Ganhador</Button>
+                    </div>
                 </div>
             </Modal>
 
