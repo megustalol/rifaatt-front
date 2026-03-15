@@ -37,15 +37,15 @@ const ConexaoModal = ({ isOpen, onClose, instance, onSuccess }) => {
         }
     }, [isOpen, instance]);
 
-    const startConnection = async (id) => {
+    const startConnection = async (id, phoneInput = null) => {
         setLoading(true);
         try {
-            const response = await api.get(`/instances/connect/${id}`);
+            const response = await api.post(`/instances/connect/${id}`, { phone: phoneInput });
             const data = response.data;
             
             // Handle Uazapi nested response structure
-            const qrcodeData = data.instance?.qrcode || data.base64;
-            const pairingCodeData = data.instance?.paircode || data.pairingCode;
+            const qrcodeData = data.instance?.qrcode || data.base64 || data.qrcode;
+            const pairingCodeData = data.instance?.paircode || data.paircode || data.pairingCode;
 
             if (qrcodeData) {
                 setQrBase64(qrcodeData);
@@ -213,7 +213,7 @@ const ConexaoModal = ({ isOpen, onClose, instance, onSuccess }) => {
                                                 value={phone}
                                                 onChange={(e) => setPhone(e.target.value)}
                                             />
-                                            <Button fullWidth onClick={() => startConnection(currentInstance.id)} loading={loading}>
+                                            <Button fullWidth onClick={() => startConnection(currentInstance.id, phone)} loading={loading}>
                                                 Gerar Código
                                             </Button>
                                         </div>
