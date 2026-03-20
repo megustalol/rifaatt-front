@@ -41,9 +41,6 @@ const PlanExpiredModal = ({ isOpen, onClose }) => {
                     <Button onClick={handleRenew} size="lg" icon={CreditCard} fullWidth>
                         Renovar Agora
                     </Button>
-                    <Button onClick={() => router.push('/dashboard')} variant="ghost" fullWidth>
-                        Voltar ao Painel
-                    </Button>
                 </div>
             </div>
         </Modal>

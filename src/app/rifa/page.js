@@ -8,7 +8,7 @@ import Input from '@/components/ui/Input/Input';
 import Button from '@/components/ui/Button/Button';
 import Modal from '@/components/ui/Modal/Modal';
 import Card from '@/components/ui/Card/Card';
-import { Trophy, Share2, RefreshCcw, Search, Loader2, Plus, Smartphone, ChevronLeft } from 'lucide-react';
+import { Trophy, Share2, RefreshCcw, Search, Loader2, Plus, Smartphone, ChevronLeft, Download } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -173,6 +173,45 @@ export default function RifaPage() {
             setLoading(false);
         }
     };
+    
+    const handleExportTxt = () => {
+        if (!raffle) return;
+        
+        const now = new Date().toLocaleString('pt-BR');
+        let content = `RIFA: ${raffle.title}\n`;
+        content += `GRUPO: ${selectedGroup?.groupName || 'N/A'}\n`;
+        content += `DATA EXPORTAÇÃO: ${now}\n`;
+        content += `------------------------------------------\n\n`;
+        
+        const reservationsMap = {};
+        (raffle.Reservations || []).forEach(r => {
+            reservationsMap[r.number] = r;
+        });
+        
+        const total = raffle.numbersCount || 100;
+        for (let j = 1; j <= total; j++) {
+            const i = j % total;
+            const numStr = i.toString().padStart(total > 100 ? 3 : 2, '0');
+            const res = reservationsMap[numStr];
+            
+            if (res) {
+                const status = res.status === 'PAID' ? '[PAGO]' : '[RESERVADO]';
+                content += `${numStr}: ${res.buyerName} - ${res.buyerPhone.split('@')[0]} ${status}\n`;
+            } else {
+                content += `${numStr}: LIVRE\n`;
+            }
+        }
+        
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `lista_rifa_${raffle.title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
 
     const dezenas = (raffle?.Reservations || []).map(r => ({
         number: r.number,
@@ -308,6 +347,15 @@ export default function RifaPage() {
                     <p className={styles.subtitle}>{selectedGroup?.groupName} — Acompanhe o grid em tempo real.</p>
                 </div>
                 <div className={styles.actions}>
+                    <Button
+                        variant="secondary"
+                        icon={Download}
+                        onClick={handleExportTxt}
+                        disabled={!raffle}
+                        style={{ marginRight: '12px' }}
+                    >
+                        Exportar Lista
+                    </Button>
                     <Button
                         variant="primary"
                         icon={Trophy}

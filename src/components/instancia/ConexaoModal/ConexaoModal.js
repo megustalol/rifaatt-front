@@ -126,7 +126,7 @@ const ConexaoModal = ({ isOpen, onClose, instance, onSuccess }) => {
                     <div className={styles.initSection}>
                         <div className={styles.infoBox}>
                             <Info size={18} />
-                            <p>Configure sua instância conectando-se ao seu servidor Uazapi.</p>
+                            <p>Configure sua instância conectando-se ao servidor central.</p>
                         </div>
 
                         <div className={styles.inputGroup}>

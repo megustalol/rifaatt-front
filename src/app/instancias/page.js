@@ -133,7 +133,7 @@ export default function InstanciasPage() {
                     onClose={() => setIsUpgradeModalOpen(false)}
                     featureName="Instâncias"
                     limit={user?.Plan?.instanceLimit || 1}
-                    isLocked={!user?.Plan}
+                    isLocked={!user?.Plan || (user?.planExpiresAt && new Date(user.planExpiresAt) < new Date())}
                 />
             </div>
         </DashboardLayout>

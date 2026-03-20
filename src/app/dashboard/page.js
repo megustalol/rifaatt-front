@@ -65,6 +65,11 @@ export default function DashboardPage() {
                                 icon={Smartphone}
                             />
                             <StatsCard
+                                label="Total de Reservas"
+                                value={summary?.totalReservations || 0}
+                                icon={Users}
+                            />
+                            <StatsCard
                                 label="Faturamento Total"
                                 value={(() => {
                                     // Remove R$, remove thousand separator (dot), replace decimal comma with dot
